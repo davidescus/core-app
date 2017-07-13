@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model {
+class Site extends Model {
 
-    protected $table = 'event';
+    protected $table = 'site';
 
     protected $fillable = [
         'name',
