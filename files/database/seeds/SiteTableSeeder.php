@@ -15,23 +15,23 @@ class SiteTableSeeder extends Seeder {
     {
 
         // insert automaticaly 5 sites in app
-        Site::create([
+        Site::firstOrCreate([
             'name'       => 'PayForTips',
         ]);
 
-        Site::create([
+        Site::firstOrCreate([
             'name'       => 'PopularSoccerTips',
         ]);
 
-        Site::create([
+        Site::firstOrCreate([
             'name'       => 'SoccerTipsArena',
         ]);
 
-        Site::create([
+        Site::firstOrCreate([
             'name'       => 'DailySoccerWins',
         ]);
 
-        Site::create([
+        Site::firstOrCreate([
             'name'       => 'FreshSoccerBets',
         ]);
     }
