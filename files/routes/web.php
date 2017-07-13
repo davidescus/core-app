@@ -12,5 +12,17 @@
 */
 
 $app->get('/', function () use ($app) {
+    return $app->version() . dfsdsfsdfdsfsdfdsf;
+});
+
+$app->get('/test', ['middleware' => 'auth'], function () use ($app) {
     return $app->version();
+});
+
+// all routes for administration
+$app->group(['prefix' => 'admin'], function ($app) {
+
+    $app->get('/event', function() use ($app) {
+        return \App\Event::all();
+    });
 });
