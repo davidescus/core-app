@@ -43,6 +43,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->put("/site/{id}", function(Request $request, $id) use ($app) {
         $site = \App\Site::where('id', '=', $id)->first();
 
+        // Here I was last time
         dd($site);
 
         $site->name = $request->input('name');
