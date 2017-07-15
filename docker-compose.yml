@@ -5,7 +5,7 @@ mysql:
     MYSQL_DATABASE: core_app
     MYSQL_ROOT_PASSWORD: 123456
   volumes:
-    - ./docker/mariadb:/var/lib/mysql
+    - ./database/mariadb:/var/lib/mysql
   ports:
     - 3306:3306
 
