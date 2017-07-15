@@ -14,7 +14,7 @@ php:
   dockerfile: ./docker-conf/php/Dockerfile
   container_name: core_php
   volumes:
-    - .:/home/core/app
+    - .:/root/projects/core-app
 
 nginx:
   image: nginx:1.10.3
