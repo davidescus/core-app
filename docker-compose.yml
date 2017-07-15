@@ -11,7 +11,7 @@ mysql:
 
 php:
   build: .
-  dockerfile: ./docker/php/Dockerfile
+  dockerfile: ./docker-conf/php/Dockerfile
   container_name: core_php
   volumes:
     - .:/home/core/app
