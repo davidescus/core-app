@@ -3,7 +3,7 @@ php:
   dockerfile: ./docker-conf/php/Dockerfile
   container_name: core_php
   volumes:
-    - ./files:/root/projects/core-app
+    - ./files:/var/www/core-app
 
 mysql:
   image: mariadb:10.1.22
@@ -26,7 +26,7 @@ nginx:
   links:
     - php
   ports:
-    - 80:80
+    - 8383:80
 
 phpmyadmin:
   image: phpmyadmin/phpmyadmin:latest
@@ -34,7 +34,7 @@ phpmyadmin:
   links:
     - mysql
   ports:
-    - 8181:80
+    - 80:80
   environment:
     MYSQL_USERNAME: root
     MYSQL_ROOT_PASSWORD: 123456
