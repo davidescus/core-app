@@ -14,7 +14,7 @@
 use Illuminate\Http\Request;
 
 $app->get('/', function () use ($app) {
-    return $app->version() . dfsdsfsdfdsfsdfdsf;
+    return $app->version();
 });
 
 $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
@@ -43,8 +43,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->put("/site/{id}", function(Request $request, $id) use ($app) {
         $site = \App\Site::where('id', '=', $id)->first();
 
-        // Here I was last time
-        dd($site);
+        // Site not exists retur status not exists
+        return response()->json([
+            "type" => "error",
+            "message" => "Site with id: $id not exists"
+        ]);
 
         $site->name = $request->input('name');
         $site->save();
