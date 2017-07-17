@@ -15,10 +15,9 @@ class CreatePredictionTable extends Migration
     {
         Schema::create('prediction', function(Blueprint $table) {
             $table->string('identifier')->primary();
-                $table->string('name')->unique();
-                $table->integer('group')->index();
-            });
-        })
+            $table->string('name')->unique();
+            $table->string('group')->index();
+        });
     }
 
     /**
