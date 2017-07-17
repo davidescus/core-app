@@ -44,20 +44,44 @@ $app->group(['prefix' => 'admin'], function ($app) {
         $site = \App\Site::where('id', '=', $id)->first();
 
         // Site not exists retur status not exists
-        return response()->json([
-            "type" => "error",
-            "message" => "Site with id: $id not exists"
-        ]);
+        if ($site === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with id: $id not exists"
+            ]);
+        }
 
+        // Todo: check if new name is valid
         $site->name = $request->input('name');
         $site->save();
-        return response()->json($site);
+        return response()->json([
+            "type" => "success",
+            "message" => "Site information was updated with success!"
+        ]);
     });
 
     // store new site
     $app->post("/site", function(Request $request) use ($app) {
-        $site = \App\Site::create($request->all());
-        return response()->json($site);
+
+        // Todo: check if new name is valid
+        $name = $request->input('name');
+
+        // Site name must be unique
+        $site = \App\Site::where('name', '=', $name)->first();
+        if ($site !== null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "This site already exists!"
+            ]);
+        }
+
+        $site = \App\Site::create([
+            "name" => $name
+        ]);
+        return response()->json([
+            "type" => "success",
+            "message" => "New site was added with success!"
+        ]);
     });
 
     // delete a site
