@@ -14,7 +14,7 @@ class PackageTableSeeder extends Seeder {
     public function run()
     {
         $sites = [
-            0 => [
+            1 => [
                 'normal_1' => [
                     'name' => '3 Tips',
                     'tipIdentifier' => 'tip_1',
@@ -34,7 +34,7 @@ class PackageTableSeeder extends Seeder {
                     'isVip'           => true,
                 ],
             ],
-            1 => [
+            2 => [
                 'normal_1' => [
                     'name' => '10 Tips',
                     'tipIdentifier' => 'tip_1',
@@ -48,7 +48,7 @@ class PackageTableSeeder extends Seeder {
                     'isVip'           => false,
                 ],
             ],
-            2 => [
+            3 => [
                 'normal_1' => [
                     'name' => 'Eugene Hendrix',
                     'tipIdentifier' => 'tip_1',
@@ -68,7 +68,7 @@ class PackageTableSeeder extends Seeder {
                     'isVip'           => false,
                 ],
             ],
-            3 => [
+            4 => [
                 'normal_1' => [
                     'name' => '1 Month accesss',
                     'tipIdentifier' => 'tip_1',
@@ -76,7 +76,7 @@ class PackageTableSeeder extends Seeder {
                     'isVip'           => false,
                 ],
             ],
-            4 => [
+            5 => [
                 'normal_1' => [
                     'name' => '3 Tips',
                     'tipIdentifier' => 'tip_1',
@@ -96,10 +96,10 @@ class PackageTableSeeder extends Seeder {
             foreach ($site as $packeIdentifier => $pack) {
                 Package::firstOrCreate([
                     'siteId'          => $siteId,
-                    'name'            => $pack->name,
-                    'tipIdentifier'   => $pack->tipIdentifier,
-                    'tableIdentifier' => $pack->tableIdentifier,
-                    'isVip'           => $pack->isVip,
+                    'name'            => $pack['name'],
+                    'tipIdentifier'   => $pack['tipIdentifier'],
+                    'tableIdentifier' => $pack['tableIdentifier'],
+                    'isVip'           => $pack['isVip'],
                 ]);
             }
         }
