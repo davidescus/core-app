@@ -41,7 +41,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // update a site
     $app->put("/site/{id}", function(Request $request, $id) use ($app) {
-        $site = \App\Site::where('id', '=', $id)->first();
+        $site = \App\Site::find($id);
 
         // Site not exists retur status not exists
         if ($site === null) {
@@ -87,7 +87,18 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // delete a site
     $app->delete("/site/{id}", function($id) use ($app) {
         $site = \App\Site::find($id);
+
+        // Site not exists retur status not exists
+        if ($site === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with id: $id not exists"
+            ]);
+        }
         $site->delete();
-        return response()->json('Removed successfully');
+        return response()->json([
+            "type" => "success",
+            "message" => "Site with id: $id was deleted with success!"
+        ]);
     });
 });
