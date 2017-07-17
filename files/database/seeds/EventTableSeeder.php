@@ -32,7 +32,7 @@ class EventTableSeeder extends Seeder {
             'under_25',
         ];
 
-        for($x = 0; $x < 500; $x++) {
+        for($x = 0; $x < 200; $x++) {
 
             // set random event date
             $eventDate = date('Y-m-d H:i:s', strtotime($gmtDate . '+' . rand(100, 700) . 'minute'));
