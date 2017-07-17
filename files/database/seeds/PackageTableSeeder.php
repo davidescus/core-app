@@ -95,11 +95,11 @@ class PackageTableSeeder extends Seeder {
         foreach ($sites as $siteId => $site) {
             foreach ($site as $packeIdentifier => $pack) {
                 Package::firstOrCreate([
-                    'siteId' => $siteId,
-                    'name'       => $pack->name,
-                    'tipIdentifier'      => $pack->tipIdentifier
-                    'tableIdentifier'      => $pack->tableIdentifier
-                    'isVip'      => $pack->isVip
+                    'siteId'          => $siteId,
+                    'name'            => $pack->name,
+                    'tipIdentifier'   => $pack->tipIdentifier,
+                    'tableIdentifier' => $pack->tableIdentifier,
+                    'isVip'           => $pack->isVip,
                 ]);
             }
         }
