@@ -17,7 +17,6 @@ class CreatePackageTable extends Migration
             $table->increments('id');
             $table->integer('siteId');
             $table->string('name');
-            $table->string('identifier');
             $table->string('tipIdentifier');
             $table->string('tableIdentifier');
             $table->boolean('isVip');
