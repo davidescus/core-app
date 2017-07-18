@@ -26,7 +26,7 @@ nginx:
   links:
     - php
   ports:
-    - 8383:80
+    - 80:80
 
 phpmyadmin:
   image: phpmyadmin/phpmyadmin:latest
@@ -34,8 +34,14 @@ phpmyadmin:
   links:
     - mysql
   ports:
-    - 80:80
+    - 8181:80
   environment:
     MYSQL_USERNAME: root
     MYSQL_ROOT_PASSWORD: 123456
     PMA_HOST: mysql
+
+composer:
+  image: composer/composer:php7
+  volumes_from:
+    - php
+  working_dir: /var/www/core-app
