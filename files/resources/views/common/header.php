@@ -34,8 +34,8 @@
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/template7/1.2.3/template7.js"></script>
 
-    <!--  main js    -->
-    <script src="assets/js/app/main.js"></script>
+    <!-- js general configuration -->
+    <script src="assets/js/app/config.js"></script>
 </head>
 <body>
 
