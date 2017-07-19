@@ -12,6 +12,10 @@ $('#left-menu li').on('click', function() {
     setActivePage();
 });
 
+/*
+ * Make visible active page and trigger setControlFlow()
+ * te retrive json with data for current page
+ */
 function setActivePage() {
 
     // add class active for left mennu
@@ -21,4 +25,12 @@ function setActivePage() {
     // show content of desired page
     $('.page-container').addClass('hidden');
     $('.page-container.' + config.activePage).removeClass('hidden');
+}
+
+/*
+ * This function will controll methods
+ * executed by specific page
+ */
+function setControlFlow() {
+
 }
