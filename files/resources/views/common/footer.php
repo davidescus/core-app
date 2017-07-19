@@ -57,3 +57,9 @@
 
 	<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 	<!--<script src="assets/js/demo.js"></script>-->
+
+    <!--  main js    -->
+    <script src="assets/js/app/main.js"></script>
+
+    <!--  association.js    -->
+    <script src="assets/js/app/association.js"></script>
