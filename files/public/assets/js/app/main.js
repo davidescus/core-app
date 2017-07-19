@@ -1,5 +1,6 @@
 var config = {
-    coreUrl = 'http://51.15.78.71/admin';
+    coreUrl: "http://51.15.78.71/admin",
+    activePage: "dashboard"
 };
 
 $('#left-menu li').on('click', function() {
