@@ -1,14 +1,21 @@
+/*
+*  This method will retrive events info
+*  object args {
+*               table
+*               tipster
+*               league
+*               oddMin
+*               oddMax
+*               }
+*/
 function getEventsInfo(args) {
 
-    /*
-     *  create ajax request to get information
-     */
     $.ajax({
-        url: config.coreUrl + "/event/" + args.table + "/info";
+        url: config.coreUrl + "/event/" + args.table + "/info",
         type: "post",
         dataType: "json",
         data: {},
-        beforeSend: function() {};
+        beforeSend: function() {},
         success: function (response) {
 
             console.log(response);
