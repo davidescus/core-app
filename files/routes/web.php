@@ -38,6 +38,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return \App\Event::all();
     });
 
+    // return distinct pproviders and leagues based on table selection
     $app->get('/event/info', function(Request $request) use ($app) {
 
         $table = $request->get('table');
@@ -73,6 +74,38 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 ])->groupBy('league')->get();
         }
 
+        return $data;
+    });
+
+    // return events number based on selection: table, proviser, minOdd, maxOdd
+    $app->get('/event/number', function(Request $request) use ($app) {
+
+        $table = $request->get('table');
+        $provider = $request->get('provider');
+        $minOdd = $request->get('minOdd');
+        $maxOdd = $request->get('maxOdd');
+
+        $where = [];
+        if ($provider)
+            $where[] = ['provider', '=', $provider];
+
+        if ($minOdd)
+            $where[] = ['odd', '>=', $minOdd];
+
+        if ($maxOdd)
+            $where[] = ['odd', '<=', $maxOdd];
+
+        if ($table == 'run' || $table == 'ruv')
+            $where[] = ['eventDate', '>', Carbon::now('UTC')->addMinutes(20)];
+
+        if ($table == 'nun' || $table == 'nuv') {
+            $where[] = ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')];
+            $where[] = ['result', '<>', ''];
+            $where[] = ['statusId', '<>', ''];
+        }
+
+        $eventNumber = \App\Event::where($where)->count();
+        $data['number'] = $eventNumber ? $eventNumber : 0;
         return $data;
     });
 
