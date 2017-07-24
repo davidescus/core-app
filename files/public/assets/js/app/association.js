@@ -13,8 +13,6 @@ function getEventsInfo(args) {
         //        beforeSend: function() {},
         success: function (response) {
 
-            console.log(response);
-
             var table = $('#table-association-' + args.table);
 
             // autocomplete provider select
