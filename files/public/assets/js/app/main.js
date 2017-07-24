@@ -34,13 +34,10 @@ $(document).ready(function() {
     function setControlFlow() {
 
         if (config.activePage == 'association') {
-            getEventsInfo({
-                table:"all",
-                tipster:"",
-                league:"",
-                oddMin:"",
-                oddMax:"",
-            });
+            getEventsInfo({ table:"run" });
+            getEventsInfo({ table:"ruv" });
+            getEventsInfo({ table:"nun" });
+            getEventsInfo({ table:"nuv" });
         }
     }
 });
