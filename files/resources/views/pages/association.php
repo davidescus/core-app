@@ -10,25 +10,23 @@
                                     <div class="form-group">
                                         <div class="col-md-3">
                                             <label>Provider</label>
-                                            <select class="form-control select-provider">
-                                                <script id="template-select-provider" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each tipsters}}
-                                                   <option value="{{provider}}">{{provider}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-provider"></select>
+                                            <script id="template-select-provider" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each tipsters}}
+                                               <option value="{{provider}}">{{provider}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-3">
                                             <label>League</label>
-                                            <select class="form-control select-league">
-                                                <script id="template-select-league" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each leagues}}
-                                                   <option value="{{league}}">{{league}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-league"></select>
+                                            <script id="template-select-league" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each leagues}}
+                                               <option value="{{league}}">{{league}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-2">
                                             <label>Odd From</label>
@@ -111,25 +109,23 @@
                                     <div class="form-group">
                                         <div class="col-md-3">
                                             <label>Provider</label>
-                                            <select class="form-control select-provider">
-                                                <script id="template-select-provider" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each tipsters}}
-                                                   <option value="{{provider}}">{{provider}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-provider"></select>
+                                            <script id="template-select-provider" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each tipsters}}
+                                               <option value="{{provider}}">{{provider}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-3">
                                             <label>League</label>
-                                            <select class="form-control select-league">
-                                                <script id="template-select-league" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each leagues}}
-                                                   <option value="{{league}}">{{league}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-league"> </select>
+                                            <script id="template-select-league" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each leagues}}
+                                               <option value="{{league}}">{{league}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-2">
                                             <label>Odd From</label>
@@ -211,25 +207,23 @@
                                     <div class="form-group">
                                         <div class="col-md-3">
                                             <label>Provider</label>
-                                            <select class="form-control select-provider">
-                                                <script id="template-select-provider" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each tipsters}}
-                                                   <option value="{{provider}}">{{provider}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-provider"></select>
+                                            <script id="template-select-provider" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each tipsters}}
+                                               <option value="{{provider}}">{{provider}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-3">
                                             <label>League</label>
-                                            <select class="form-control select-league">
-                                                <script id="template-select-league" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each leagues}}
-                                                   <option value="{{league}}">{{league}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-league"></select>
+                                            <script id="template-select-league" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each leagues}}
+                                               <option value="{{league}}">{{league}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-2">
                                             <label>Odd From</label>
@@ -311,25 +305,23 @@
                                     <div class="form-group">
                                         <div class="col-md-3">
                                             <label>Provider</label>
-                                            <select class="form-control select-provider">
-                                                <script id="template-select-provider" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each tipsters}}
-                                                   <option value="{{provider}}">{{provider}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-provider"></select>
+                                            <script id="template-select-provider" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each tipsters}}
+                                               <option value="{{provider}}">{{provider}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-3">
                                             <label>League</label>
-                                            <select class="form-control select-league">
-                                                <script id="template-select-league" type="text/template7">
-                                                   <option value=""> -- all -- </option>
-                                                   {{#each leagues}}
-                                                   <option value="{{league}}">{{league}} </option>
-                                                   {{/each}}
-                                                </script>
-                                            </select>
+                                            <select class="form-control select-league"></select>
+                                            <script id="template-select-league" type="text/template7">
+                                               <option value=""> -- all -- </option>
+                                               {{#each leagues}}
+                                               <option value="{{league}}">{{league}} </option>
+                                               {{/each}}
+                                            </script>
                                         </div>
                                         <div class="col-md-2">
                                             <label>Odd From</label>
