@@ -9,9 +9,10 @@
 | It is a breeze. Simply tell Lumen the URIs it should respond to
 | and give it the Closure to call when that URI is requested.
 |
-*/
+ */
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 $app->get('/', function () use ($app) {
     return $app->version();
@@ -29,10 +30,51 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return view('main');
     });
 
-    $app->get('/event', function() use ($app) {
+
+    /*****************************************************************
+     * Manage events
+     * **************************************************************/
+    $app->get('/event/all', function() use ($app) {
         return \App\Event::all();
     });
 
+    $app->get('/event/info', function(Request $request) use ($app) {
+
+        $table = $request->get('table');
+
+        $data = [
+            'tipsters' => [],
+            'leagues'  => []
+        ];
+
+        if ($table == 'run' || $table == 'ruv') {
+            $data['tipsters'] = \App\Event::distinct()->select('provider')
+                                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
+                                ->groupBy('provider')->get();
+
+            $data['leagues'] = \App\Event::distinct()->select('league')
+                                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
+                                ->groupBy('league')->get();
+        }
+
+        if ($table == 'nun' || $table == 'nuv') {
+            $data['tipsters'] = \App\Event::distinct()->select('provider')
+                ->where([
+                    ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
+                    ['result', '<>', ''],
+                    ['statusId', '<>', '']
+                ])->groupBy('provider')->get();
+
+            $data['leagues'] = \App\Event::distinct()->select('league')
+                ->where([
+                    ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
+                    ['result', '<>', ''],
+                    ['statusId', '<>', '']
+                ])->groupBy('league')->get();
+        }
+
+        return $data;
+    });
 
     /*****************************************************************
      * Manage Sites
