@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use App\Event;
 
 class EventTableSeeder extends Seeder {
@@ -32,10 +33,15 @@ class EventTableSeeder extends Seeder {
             'under_25',
         ];
 
-        for($x = 0; $x < 200; $x++) {
+        for($x = 0; $x < 400; $x++) {
 
             // set random event date
-            $eventDate = date('Y-m-d H:i:s', strtotime($gmtDate . '+' . rand(100, 700) . 'minute'));
+            $type = rand(0, 1);
+            if ($type == 0)
+               $eventDate = Carbon::now('UTC')->modify('+' . rand(100, 700) . 'minute');
+            else
+               $eventDate = Carbon::now('UTC')->modify('-' . rand(105, 700) . 'minute');
+
 
             Event::create([
                 'source'       => 'tipstersPortal',
