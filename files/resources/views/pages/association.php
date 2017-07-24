@@ -5,13 +5,18 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div id="table-association-run" class="header">
-                                <h4 class="title">Real Users Normal<small class="pull-right">0 events found</small></h4>
+                                <h4 class="title">Real Users Normal
+                                    <span class="events-number"></span>
+                                    <script class="template-events-number" type="text/template7">
+                                        <small class="pull-right">{{number}} events found</small>
+                                    </script>
+                                </h4>
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
                                             <label>Provider</label>
                                             <select class="form-control select-provider"></select>
-                                            <script id="template-select-provider" type="text/template7">
+                                            <script class="template-select-provider" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each tipsters}}
                                                <option value="{{provider}}">{{provider}} </option>
@@ -21,7 +26,7 @@
                                         <div class="col-md-3">
                                             <label>League</label>
                                             <select class="form-control select-league"></select>
-                                            <script id="template-select-league" type="text/template7">
+                                            <script class="template-select-league" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each leagues}}
                                                <option value="{{league}}">{{league}} </option>
@@ -110,7 +115,7 @@
                                         <div class="col-md-3">
                                             <label>Provider</label>
                                             <select class="form-control select-provider"></select>
-                                            <script id="template-select-provider" type="text/template7">
+                                            <script class="template-select-provider" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each tipsters}}
                                                <option value="{{provider}}">{{provider}} </option>
@@ -120,7 +125,7 @@
                                         <div class="col-md-3">
                                             <label>League</label>
                                             <select class="form-control select-league"> </select>
-                                            <script id="template-select-league" type="text/template7">
+                                            <script class="template-select-league" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each leagues}}
                                                <option value="{{league}}">{{league}} </option>
@@ -208,7 +213,7 @@
                                         <div class="col-md-3">
                                             <label>Provider</label>
                                             <select class="form-control select-provider"></select>
-                                            <script id="template-select-provider" type="text/template7">
+                                            <script class="template-select-provider" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each tipsters}}
                                                <option value="{{provider}}">{{provider}} </option>
@@ -218,7 +223,7 @@
                                         <div class="col-md-3">
                                             <label>League</label>
                                             <select class="form-control select-league"></select>
-                                            <script id="template-select-league" type="text/template7">
+                                            <script class="template-select-league" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each leagues}}
                                                <option value="{{league}}">{{league}} </option>
@@ -306,7 +311,7 @@
                                         <div class="col-md-3">
                                             <label>Provider</label>
                                             <select class="form-control select-provider"></select>
-                                            <script id="template-select-provider" type="text/template7">
+                                            <script class="template-select-provider" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each tipsters}}
                                                <option value="{{provider}}">{{provider}} </option>
@@ -316,7 +321,7 @@
                                         <div class="col-md-3">
                                             <label>League</label>
                                             <select class="form-control select-league"></select>
-                                            <script id="template-select-league" type="text/template7">
+                                            <script class="template-select-league" type="text/template7">
                                                <option value=""> -- all -- </option>
                                                {{#each leagues}}
                                                <option value="{{league}}">{{league}} </option>
