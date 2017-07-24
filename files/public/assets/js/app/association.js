@@ -17,13 +17,13 @@ function getEventsInfo(args) {
 
             var table = $('#table-association-' + args.table);
 
-            // autocomplete tipster select
-            var template = table.find('#template-select-tipster').html();
+            // autocomplete provider select
+            var template = table.find('#template-select-provider').html();
             // compile it with Template7
             var compiledTemplate = Template7.compile(template);
             // Now we may render our compiled template by passing required context
             var html = compiledTemplate(response);
-            table.find('.select-tipster').html(html);
+            table.find('.select-provider').html(html);
 
             // autocomplete league select
             var template = table.find('#template-select-league').html();
@@ -36,4 +36,12 @@ function getEventsInfo(args) {
         },
         error: function () {}
     });
+}
+
+/*
+* this function will retrive and show available events number
+* object args: table, provider, minOdd, maxOdd
+*/
+function getAvailableEventsnumber(args) {
+
 }
