@@ -9,9 +9,9 @@
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
-                                            <label>Tipster</label>
-                                            <select class="form-control select-tipster">
-                                                <script id="template-select-tipster" type="text/template7">
+                                            <label>Provider</label>
+                                            <select class="form-control select-provider">
+                                                <script id="template-select-provider" type="text/template7">
                                                    <option value=""> -- all -- </option>
                                                    {{#each tipsters}}
                                                    <option value="{{provider}}">{{provider}} </option>
@@ -110,9 +110,9 @@
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
-                                            <label>Tipster</label>
-                                            <select class="form-control select-tipster">
-                                                <script id="template-select-tipster" type="text/template7">
+                                            <label>Provider</label>
+                                            <select class="form-control select-provider">
+                                                <script id="template-select-provider" type="text/template7">
                                                    <option value=""> -- all -- </option>
                                                    {{#each tipsters}}
                                                    <option value="{{provider}}">{{provider}} </option>
@@ -210,9 +210,9 @@
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
-                                            <label>Tipster</label>
-                                            <select class="form-control select-tipster">
-                                                <script id="template-select-tipster" type="text/template7">
+                                            <label>Provider</label>
+                                            <select class="form-control select-provider">
+                                                <script id="template-select-provider" type="text/template7">
                                                    <option value=""> -- all -- </option>
                                                    {{#each tipsters}}
                                                    <option value="{{provider}}">{{provider}} </option>
@@ -310,9 +310,9 @@
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
-                                            <label>Tipster</label>
-                                            <select class="form-control select-tipster">
-                                                <script id="template-select-tipster" type="text/template7">
+                                            <label>Provider</label>
+                                            <select class="form-control select-provider">
+                                                <script id="template-select-provider" type="text/template7">
                                                    <option value=""> -- all -- </option>
                                                    {{#each tipsters}}
                                                    <option value="{{provider}}">{{provider}} </option>
