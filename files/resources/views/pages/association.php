@@ -109,7 +109,12 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div id="table-association-ruv" class="header">
-                                <h4 class="title">Real Users Vip<small class="pull-right">0 events found</small></h4>
+                                <h4 class="title">Real Users Vip
+                                    <span class="events-number"></span>
+                                    <script class="template-events-number" type="text/template7">
+                                        <small class="pull-right">{{number}} events found</small>
+                                    </script>
+                                </h4>
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
@@ -207,7 +212,12 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div id="table-association-nun" class="header">
-                                <h4 class="title">No Users Normal<small class="pull-right">0 events found</small></h4>
+                                <h4 class="title">No Users Normal
+                                    <span class="events-number"></span>
+                                    <script class="template-events-number" type="text/template7">
+                                        <small class="pull-right">{{number}} events found</small>
+                                    </script>
+                                </h4>
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
@@ -305,7 +315,12 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div id="table-association-nuv" class="header">
-                                <h4 class="title">No Users Vip<small class="pull-right">0 events found</small></h4>
+                                <h4 class="title">No Users Vip
+                                    <span class="events-number"></span>
+                                    <script class="template-events-number" type="text/template7">
+                                        <small class="pull-right">{{number}} events found</small>
+                                    </script>
+                                </h4>
                                 <div class="row selection-param">
                                     <div class="form-group">
                                         <div class="col-md-3">
