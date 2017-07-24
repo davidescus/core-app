@@ -40,6 +40,6 @@ function getEventsInfo(args) {
 * this function will retrive and show available events number
 * object args: table, provider, minOdd, maxOdd
 */
-function getAvailableEventsnumber(args) {
+function getAvailableEventsNumber(args) {
 
 }
