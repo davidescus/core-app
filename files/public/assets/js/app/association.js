@@ -43,7 +43,7 @@ function getEventsInfo(args) {
 function getAvailableEventsNumber(args) {
 
     $.ajax({
-        url: config.coreUrl + "/event/info?" + $.param(args),
+        url: config.coreUrl + "/event/number?" + $.param(args),
         type: "get",
         //        dataType: "json",
         //        data: {},
@@ -53,20 +53,12 @@ function getAvailableEventsNumber(args) {
             var table = $('#table-association-' + args.table);
 
             // autocomplete provider select
-            var template = table.find('#template-select-provider').html();
+            var template = table.find('.template-events-number').html();
             // compile it with Template7
             var compiledTemplate = Template7.compile(template);
             // Now we may render our compiled template by passing required context
             var html = compiledTemplate(response);
-            table.find('.select-provider').html(html);
-
-            // autocomplete league select
-            var template = table.find('#template-select-league').html();
-            // compile it with Template7
-            var compiledTemplate = Template7.compile(template);
-            // Now we may render our compiled template by passing required context
-            var html = compiledTemplate(response);
-            table.find('.select-league').html(html);
+            table.find('.events-number').html(html);
 
         },
         error: function () {}
