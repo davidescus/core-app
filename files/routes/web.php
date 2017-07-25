@@ -82,12 +82,16 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
         $table = $request->get('table');
         $provider = $request->get('provider');
+        $league = $request->get('league');
         $minOdd = $request->get('minOdd');
         $maxOdd = $request->get('maxOdd');
 
         $where = [];
         if ($provider)
             $where[] = ['provider', '=', $provider];
+
+        if ($league)
+            $where[] = ['league', '=', $league];
 
         if ($minOdd)
             $where[] = ['odd', '>=', $minOdd];
