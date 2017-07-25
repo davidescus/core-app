@@ -5,11 +5,26 @@
 /*
 * refresh provider, leagues and available events number
 */
-$('.refresh-event-info').on('click', function() {
+$('.table-association').on('click', '.refresh-event-info', function() {
     var table = $(this).parents('.table-association').attr('data-table');
 
     getEventsInfo({ table: table });
     getAvailableEventsNumber({ table: table });
+});
+
+/*
+ *  show available events when change provider, league, odds selection
+ */
+$('.table-association').on('change', '.select-provider, .select-league, .select-minOdd, .select-maxOdd', function() {
+    var parrentTable = $(this).parents('.table-association');
+
+    getAvailableEventsNumber({
+        table: parrentTable.attr('data-table'),
+        provider: parrentTable.find('.select-provider').val(),
+        league: parrentTable.find('.select-league').val(),
+        minOdd: parrentTable.find('.select-minOdd').val(),
+        maxOdd: parrentTable.find('.select-maxOdd').val()
+    });
 });
 
 
