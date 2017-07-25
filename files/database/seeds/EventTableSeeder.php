@@ -50,7 +50,7 @@ class EventTableSeeder extends Seeder {
                 'league'       => 'league_' . rand(0, 500),
                 'homeTeam'     => 'team_' . rand(0, 5000),
                 'awayTeam'     => 'team_' . rand(0, 5000),
-                'odd'          => rand(1.50, 2.50),
+                'odd'          => round((rand(130, 250) / 100), 2),
                 'predictionId' => $predictions[rand(0, 6)],
                 'result'       => $type == 1 ? rand(0, 5) . '-' . rand(0, 5) : '',
                 'statusId'     => $type == 1 ? rand(1, 4) : '',
