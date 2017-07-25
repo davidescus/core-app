@@ -473,8 +473,8 @@
                 </div>
             </script>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Import Selected Events</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
