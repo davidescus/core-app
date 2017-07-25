@@ -440,6 +440,7 @@
                 <div class="content table-responsive table-full-width">
                     <table class="table table-hover table-striped">
                         <thead>
+                            <th>Use</th>
                             <th>Id</th>
                             <th>Country</th>
                             <th>League</th>
@@ -453,7 +454,8 @@
                         </thead>
                         <tbody>
                         {{#each events}}
-                            <tr>
+                            <tr class="event">
+                                <td><input class="use" type="checkbox" data-id="{{id}}"></td>
                                 <td>{{id}}</td>
                                 <td>{{country}}</td>
                                 <td>{{league}}</td>

@@ -43,6 +43,14 @@ $('.table-association').on('click', '.modal-get-event', function() {
 });
 
 /*
+ *  Check event on modal row click
+ */
+    $('#modal-available-events').on('click', '.event', function() {
+        var c = $(this).find('.use');
+        (c.is(':checked')) ?  c.prop('checked', false) : c.prop('checked', true);
+    });
+
+/*
 *  This method will retrive events info
 *  object args {table}
 *  will retribe like tipsters, leagues
