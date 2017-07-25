@@ -27,6 +27,20 @@ $('.table-association').on('change', '.select-provider, .select-league, .select-
     });
 });
 
+/*
+ *  get events filtered by selection and launch modal
+ */
+$('.table-association').on('click', '.modal-get-event', function() {
+    var parrentTable = $(this).parents('.table-association');
+
+    getAvailableEvents({
+        table: parrentTable.attr('data-table'),
+        provider: parrentTable.find('.select-provider').val(),
+        league: parrentTable.find('.select-league').val(),
+        minOdd: parrentTable.find('.select-minOdd').val(),
+        maxOdd: parrentTable.find('.select-maxOdd').val()
+    });
+});
 
 /*
 *  This method will retrive events info
@@ -81,6 +95,37 @@ function getAvailableEventsNumber(args) {
         success: function (response) {
 
             var table = $('#table-association-' + args.table);
+
+            // autocomplete provider select
+            var template = table.find('.template-events-number').html();
+            // compile it with Template7
+            var compiledTemplate = Template7.compile(template);
+            // Now we may render our compiled template by passing required context
+            var html = compiledTemplate(response);
+            table.find('.events-number').html(html);
+
+        },
+        error: function () {}
+    });
+}
+
+/*
+* this function will retribe available events based on selection
+* object args: table, provider, minOdd, maxOdd
+*/
+function getAvailableEvents(args) {
+
+    $.ajax({
+        url: config.coreUrl + "/event/events?" + $.param(args),
+        type: "get",
+        //        dataType: "json",
+        //        data: {},
+        //        beforeSend: function() {},
+        success: function (response) {
+
+            console.log(response);
+
+            var modal = $('#table-association-' + args.table);
 
             // autocomplete provider select
             var template = table.find('.template-events-number').html();

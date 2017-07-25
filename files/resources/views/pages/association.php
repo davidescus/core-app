@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-info btn-fill pull-right">Go</button>
+                                            <button class="btn btn-info btn-fill pull-right modal-get-event">Go</button>
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
@@ -171,7 +171,7 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-info btn-fill pull-right">Go</button>
+                                            <button class="btn btn-info btn-fill pull-right modal-get-event">Go</button>
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
@@ -276,7 +276,7 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-info btn-fill pull-right">Go</button>
+                                            <button class="btn btn-info btn-fill pull-right modal-get-event">Go</button>
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
@@ -381,7 +381,7 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-info btn-fill pull-right">Go</button>
+                                            <button class="btn btn-info btn-fill pull-right modal-get-event">Go</button>
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
