@@ -13,7 +13,25 @@ class CreateAssociationTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('association', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('source');
+            $table->string('provider');
+            $table->string('isNoTip');
+            $table->string('type');
+            $table->string('isVip');
+            $table->string('country');
+            $table->string('league');
+            $table->string('homeTeam');
+            $table->string('awayTeam');
+            $table->string('odd');
+            $table->string('predictionId');
+            $table->string('result');
+            $table->string('statusId', 2);
+            $table->timestamp('eventDate')->nullable();
+            $table->timestamp('systemDate')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +41,6 @@ class CreateAssociationTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('association');
     }
 }
