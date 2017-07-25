@@ -418,31 +418,62 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
 
-
-<div id="modal-import-event" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <p>One fine body&hellip;</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
+<!-- modal import available events -->
+<div id="modal-available-events" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Import events</h4>
+            </div>
+            <div class="modal-body"></div>
+            <script class="template-modal-body" type="text/template7">
+                <div class="content table-responsive table-full-width">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <th>Id</th>
+                            <th>Country</th>
+                            <th>League</th>
+                            <th>Home Team</th>
+                            <th>Away Team</th>
+                            <th>Odd</th>
+                            <th>Prediction</th>
+                            <th>Result</th>
+                            <th>Status</th>
+                            <th>Event Date</th>
+                        </thead>
+                        <tbody>
+                        {{#each events}}
+                            <tr>
+                                <td>{{id}}</td>
+                                <td>{{country}}</td>
+                                <td>{{league}}</td>
+                                <td>{{homeTeam}}</td>
+                                <td>{{awayTeam}}</td>
+                                <td>{{odd}}</td>
+                                <td>{{predictionId}}</td>
+                                <td>{{result}}</td>
+                                <td>{{statusId}}</td>
+                                <td>{{eventDate}}</td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </script>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
