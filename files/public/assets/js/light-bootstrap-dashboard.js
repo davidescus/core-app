@@ -51,6 +51,8 @@ $(document).ready(function(){
         $(this).parent(".input-group").removeClass("input-group-focus");
     });
 
+    // fix modal showing
+    $('.modal').appendTo("body");
     // Fixes sub-nav not working as expected on IOS
 $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 });
