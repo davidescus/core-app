@@ -24,7 +24,7 @@ class CreateEventTable extends Migration
             $table->float('odd', 5, 2);
             $table->string('predictionId');
             $table->string('result');
-            $table->integer('statusId');
+            $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamps();
         });
