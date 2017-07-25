@@ -97,20 +97,14 @@ function getAvailableEventsNumber(args) {
     $.ajax({
         url: config.coreUrl + "/event/number?" + $.param(args),
         type: "get",
-        //        dataType: "json",
-        //        data: {},
-        //        beforeSend: function() {},
         success: function (response) {
 
-            var table = $('#table-association-' + args.table);
+            var element = $('#table-association-' + args.table);
 
-            // autocomplete provider select
             var template = table.find('.template-events-number').html();
-            // compile it with Template7
             var compiledTemplate = Template7.compile(template);
-            // Now we may render our compiled template by passing required context
             var html = compiledTemplate(response);
-            table.find('.events-number').html(html);
+            element.find('.events-number').html(html);
 
         },
         error: function () {}
@@ -126,30 +120,20 @@ function getAvailableEvents(args) {
     $.ajax({
         url: config.coreUrl + "/event/events?" + $.param(args),
         type: "get",
-        //        dataType: "json",
-        //        data: {},
-        //        beforeSend: function() {},
         success: function (response) {
 
-            console.log(response);
-            var modal = $('#modal-available-events');
-
+            var element = $('#modal-available-events');
             var data = {
                 table: args.table,
                 events: response.events,
             };
 
-
-            // autocomplete provider select
             var template = modal.find('.template-modal-body').html();
-            // compile it with Template7
             var compiledTemplate = Template7.compile(template);
-            // Now we may render our compiled template by passing required context
             var html = compiledTemplate(data);
-            modal.find('.modal-body').html(html);
+            element.find('.modal-body').html(html);
 
-
-            modal.modal();
+            element.modal();
         },
         error: function () {}
     });
