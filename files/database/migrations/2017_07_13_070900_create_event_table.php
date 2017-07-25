@@ -21,7 +21,7 @@ class CreateEventTable extends Migration
             $table->string('league');
             $table->string('homeTeam');
             $table->string('awayTeam');
-            $table->float('odd', 5, 2);
+            $table->string('odd');
             $table->string('predictionId');
             $table->string('result');
             $table->string('statusId', 2);
