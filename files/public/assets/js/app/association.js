@@ -124,17 +124,24 @@ function getAvailableEvents(args) {
         success: function (response) {
 
             console.log(response);
+            var modal = $('#modal-available-events');
 
-            var modal = $('#table-association-' + args.table);
+            var data = {
+                table: args.table,
+                events: response.events,
+            };
+
 
             // autocomplete provider select
-            var template = table.find('.template-events-number').html();
+            var template = modal.find('.template-modal-body').html();
             // compile it with Template7
             var compiledTemplate = Template7.compile(template);
             // Now we may render our compiled template by passing required context
-            var html = compiledTemplate(response);
-            table.find('.events-number').html(html);
+            var html = compiledTemplate(data);
+            modal.find('.modal-body').html(html);
 
+
+            modal.modal();
         },
         error: function () {}
     });
