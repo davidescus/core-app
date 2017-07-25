@@ -38,7 +38,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return \App\Event::all();
     });
 
-    // return distinct pproviders and leagues based on table selection
+    // return distinct providers and leagues based on table selection
     $app->get('/event/info', function(Request $request) use ($app) {
 
         $table = $request->get('table');
@@ -77,8 +77,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return $data;
     });
 
-    // return events number based on selection: table, proviser, minOdd, maxOdd
-    $app->get('/event/number', function(Request $request) use ($app) {
+    // return events number or events based on selection: table, proviser, minOdd, maxOdd
+    $app->get('/event/{type}', function(Request $request, $type) use ($app) {
+
+        $data = [
+            'number' => 0,
+            'events' => []
+        ];
 
         $table = $request->get('table');
         $provider = $request->get('provider');
@@ -108,8 +113,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
             $where[] = ['statusId', '<>', ''];
         }
 
-        $eventNumber = \App\Event::where($where)->count();
-        $data['number'] = $eventNumber ? $eventNumber : 0;
+        if ($type == 'number') {
+            $eventNumber = \App\Event::where($where)->count();
+            $data['number'] = $eventNumber ? $eventNumber : 0;
+        }
+        if ($type == 'events') {
+            $data['events'] = \App\Event::where($where)->get();
+        }
         return $data;
     });
 
