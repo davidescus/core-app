@@ -4,7 +4,7 @@
 
                     <div class="col-md-12">
                         <div class="card">
-                            <div id="table-association-run" class="header">
+                            <div id="table-association-run" class="header table-association" data-table="run">
                                 <h4 class="title">Real Users Normal
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -69,7 +69,9 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-success btn-fill pull-right"><i class="pe-7s-refresh"></i></button>
+                                            <button class="btn btn-success btn-fill pull-right refresh-event-info">
+                                                <i class="pe-7s-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +110,7 @@
 
                     <div class="col-md-12">
                         <div class="card">
-                            <div id="table-association-ruv" class="header">
+                            <div id="table-association-ruv" class="header table-association" data-table="ruv">
                                 <h4 class="title">Real Users Vip
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -173,7 +175,9 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-success btn-fill pull-right"><i class="pe-7s-refresh"></i></button>
+                                            <button class="btn btn-success btn-fill pull-right refresh-event-info">
+                                                <i class="pe-7s-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +215,7 @@
 
                     <div class="col-md-12">
                         <div class="card">
-                            <div id="table-association-nun" class="header">
+                            <div id="table-association-nun" class="header table-association" data-table="nun">
                                 <h4 class="title">No Users Normal
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -276,7 +280,9 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-success btn-fill pull-right"><i class="pe-7s-refresh"></i></button>
+                                            <button class="btn btn-success btn-fill pull-right refresh-event-info">
+                                                <i class="pe-7s-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -314,7 +320,7 @@
 
                     <div class="col-md-12">
                         <div class="card">
-                            <div id="table-association-nuv" class="header">
+                            <div id="table-association-nuv" class="header table-association" data-table="nuv">
                                 <h4 class="title">No Users Vip
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -379,7 +385,9 @@
                                         </div>
                                         <div class="col-md-1">
                                             <label>&nbsp</label>
-                                            <button class="btn btn-success btn-fill pull-right"><i class="pe-7s-refresh"></i></button>
+                                            <button class="btn btn-success btn-fill pull-right refresh-event-info">
+                                                <i class="pe-7s-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

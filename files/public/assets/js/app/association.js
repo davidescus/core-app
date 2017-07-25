@@ -1,4 +1,19 @@
 /*
+ *  Clickable acctions
+ */
+
+/*
+* refresh provider, leagues and available events number
+*/
+$('.refresh-event-info').on('click', function() {
+    var table = $(this).parents('.table-association').attr('data-table');
+
+    getEventsInfo({ table: table });
+    getAvailableEventsNumber({ table: table });
+});
+
+
+/*
 *  This method will retrive events info
 *  object args {table}
 *  will retribe like tipsters, leagues
