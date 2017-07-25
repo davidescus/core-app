@@ -52,8 +52,8 @@ class EventTableSeeder extends Seeder {
                 'awayTeam'     => 'team_' . rand(0, 5000),
                 'odd'          => rand(1.50, 2.50),
                 'predictionId' => $predictions[rand(0, 6)],
-                'result'       => rand(0, 5) . '-' . rand(0, 5),
-                'statusId'     => rand(1, 4),
+                'result'       => $type == 1 ? rand(0, 5) . '-' . rand(0, 5) : '',
+                'statusId'     => $type == 1 ? rand(1, 4) : '',
                 'eventdate'    => $eventDate,
             ]);
         }
