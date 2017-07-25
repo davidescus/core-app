@@ -17,8 +17,8 @@ class CreateAssociationTable extends Migration
             $table->increments('id');
             $table->string('source');
             $table->string('provider');
-            $table->string('isNoTip');
             $table->string('type');
+            $table->string('isNoTip');
             $table->string('isVip');
             $table->string('country');
             $table->string('league');
