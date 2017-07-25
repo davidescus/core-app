@@ -101,7 +101,7 @@ function getAvailableEventsNumber(args) {
 
             var element = $('#table-association-' + args.table);
 
-            var template = table.find('.template-events-number').html();
+            var template = element.find('.template-events-number').html();
             var compiledTemplate = Template7.compile(template);
             var html = compiledTemplate(response);
             element.find('.events-number').html(html);
@@ -128,7 +128,7 @@ function getAvailableEvents(args) {
                 events: response.events,
             };
 
-            var template = modal.find('.template-modal-body').html();
+            var template = element.find('.template-modal-body').html();
             var compiledTemplate = Template7.compile(template);
             var html = compiledTemplate(data);
             element.find('.modal-body').html(html);
