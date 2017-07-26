@@ -33,7 +33,7 @@ class EventTableSeeder extends Seeder {
             'under_25',
         ];
 
-        for($x = 0; $x < 400; $x++) {
+        for($x = 0; $x < 80; $x++) {
 
             // set random event date
             $type = rand(0, 1);
