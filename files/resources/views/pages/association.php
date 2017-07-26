@@ -473,8 +473,18 @@
                 </div>
             </script>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary import">Import Selected Events</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>System Date</label>
+                            <input class="form-control system-date" type="text" value="2017-07-26 00:00:00">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary import">Import Selected Events</button>
+                    </div>
+                </div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
