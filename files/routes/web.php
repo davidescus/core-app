@@ -124,6 +124,70 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     /*****************************************************************
+     * Manage Associations
+     * **************************************************************/
+
+    // get all asociations by table type: run, ruv, nun, nuv
+    $app->get('/association/{type}', function($type) use ($app) {
+        return \App\Site::where(['type', '=', $type]);
+    });
+
+    // create new association
+    $app->post("/association", function(Request $request) use ($app) {
+
+        $eventsIds = $request->input('eventsIds');
+        $table = $request->input('table');
+        $systemDate = $request->input('systemDate');
+
+        if (empty($eventsIds))
+            return response()->json([
+                "type" => "error",
+                "message" => "You must select at least one event"
+            ]);
+
+
+        return $eventsIds;
+
+        // Todo: check if new name is valid
+        $name = $request->input('name');
+
+        // Site name must be unique
+        $site = \App\Site::where('name', '=', $name)->first();
+        if ($site !== null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "This site already exists!"
+            ]);
+        }
+
+        $site = \App\Site::create([
+            "name" => $name
+        ]);
+        return response()->json([
+            "type" => "success",
+            "message" => "New site was added with success!"
+        ]);
+    });
+
+    // delete a site
+    $app->delete("/site/{id}", function($id) use ($app) {
+        $site = \App\Site::find($id);
+
+        // Site not exists retur status not exists
+        if ($site === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with id: $id not exists"
+            ]);
+        }
+        $site->delete();
+        return response()->json([
+            "type" => "success",
+            "message" => "Site with id: $id was deleted with success!"
+        ]);
+    });
+
+    /*****************************************************************
      * Manage Sites
      * **************************************************************/
 
