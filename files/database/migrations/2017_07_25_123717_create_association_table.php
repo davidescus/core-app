@@ -15,6 +15,7 @@ class CreateAssociationTable extends Migration
     {
         Schema::create('association', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('eventId');
             $table->string('source');
             $table->string('provider');
             $table->string('type');
