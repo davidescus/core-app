@@ -7,6 +7,7 @@ class Association extends Model {
     protected $table = 'association';
 
     protected $fillable = [
+        'eventId',
         'source',
         'provider',
         'type',
