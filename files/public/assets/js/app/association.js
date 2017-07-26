@@ -45,10 +45,45 @@ $('.table-association').on('click', '.modal-get-event', function() {
 /*
  *  Check event on modal row click
  */
-    $('#modal-available-events').on('click', '.event', function() {
-        var c = $(this).find('.use');
-        (c.is(':checked')) ?  c.prop('checked', false) : c.prop('checked', true);
+$('#modal-available-events').on('click', '.event', function() {
+    var c = $(this).find('.use');
+    (c.is(':checked')) ?  c.prop('checked', false) : c.prop('checked', true);
+});
+
+/*
+ * Button click for import events
+ */
+$('#modal-available-events').on('click', '.import', function() {
+    // get events ids for association
+    var ids = [];
+    $('#modal-available-events .use:checked').each(function() {
+        ids.push($(this).attr('data-id'));
     });
+
+    //    if($.isEmptyObject(ids)) {
+    //        alert("You must select at least one event");
+    //        return;
+    //    }
+
+    // getSystemDate
+    $.ajax({
+        url: config.coreUrl + "/association",
+        type: "post",
+        dataType: "json",
+        data: {
+            eventsIds: ids,
+            table : $('#modal-available-events .table-identifier').val(),
+            systemDate: $('#modal-available-events .system-date').val(),
+        },
+        beforeSend: function() {},
+        success: function (response) {
+
+            console.log(response);
+
+        },
+        error: function () {}
+    });
+});
 
 /*
 *  This method will retrive events info
@@ -128,10 +163,10 @@ function getAvailableEvents(args) {
                 events: response.events,
             };
 
-            var template = element.find('.template-modal-body').html();
+            var template = element.find('.template-modal-content').html();
             var compiledTemplate = Template7.compile(template);
             var html = compiledTemplate(data);
-            element.find('.modal-body').html(html);
+            element.find('.modal-content').html(html);
 
             element.modal();
         },
