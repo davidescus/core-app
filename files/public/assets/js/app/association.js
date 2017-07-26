@@ -79,6 +79,7 @@ $('#modal-available-events').on('click', '.import', function() {
         success: function (response) {
 
             console.log(response);
+            alert("Type: --- " + response.type + " --- \r\n" + response.message);
 
         },
         error: function () {}
