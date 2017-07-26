@@ -50,28 +50,28 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
         if ($table == 'run' || $table == 'ruv') {
             $data['tipsters'] = \App\Event::distinct()->select('provider')
-                                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
-                                ->groupBy('provider')->get();
+                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
+                ->groupBy('provider')->get();
 
             $data['leagues'] = \App\Event::distinct()->select('league')
-                                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
-                                ->groupBy('league')->get();
+                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
+                ->groupBy('league')->get();
         }
 
         if ($table == 'nun' || $table == 'nuv') {
             $data['tipsters'] = \App\Event::distinct()->select('provider')
                 ->where([
                     ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
-                    ['result', '<>', ''],
-                    ['statusId', '<>', '']
-                ])->groupBy('provider')->get();
+                        ['result', '<>', ''],
+                        ['statusId', '<>', '']
+                    ])->groupBy('provider')->get();
 
             $data['leagues'] = \App\Event::distinct()->select('league')
                 ->where([
                     ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
-                    ['result', '<>', ''],
-                    ['statusId', '<>', '']
-                ])->groupBy('league')->get();
+                        ['result', '<>', ''],
+                        ['statusId', '<>', '']
+                    ])->groupBy('league')->get();
         }
 
         return $data;
@@ -129,7 +129,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all asociations by table type: run, ruv, nun, nuv
     $app->get('/association/{type}', function($type) use ($app) {
-        return \App\Site::where(['type', '=', $type]);
+        return \App\Association::where(['type', '=', $type]);
     });
 
     // create new association
@@ -145,47 +145,64 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 "message" => "You must select at least one event"
             ]);
 
+        // TODO check $systemDate is a vlid date
 
-        return $eventsIds;
+        $vip = ($table === 'ruv' || $table === 'nuv') ? '1' : '';
 
-        // Todo: check if new name is valid
-        $name = $request->input('name');
+        $notFound = 0;
+        $alreadyExists = 0;
+        $success = 0;
+        $returnMessage = '';
 
-        // Site name must be unique
-        $site = \App\Site::where('name', '=', $name)->first();
-        if ($site !== null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "This site already exists!"
-            ]);
+        foreach ($eventsIds as $id) {
+
+            if (!\App\Event::find($id)) {
+                $notFound++;
+                continue;
+            }
+
+            $event = \App\Event::find($id)->toArray();
+
+            // Check if already exists in association table
+            if (\App\Association::where([
+                ['eventId', '=', (int)$id],
+                ['type', '=', $table],
+                ['predictionId', '=', $event['predictionId']],
+            ])->count()) {
+                $alreadyExists++;
+                continue;
+            }
+
+            $event['eventId'] = (int)$event['id'];
+            unset($event['id']);
+            unset($event['created_at']);
+            unset($event['updated_at']);
+
+            $event['isNoTip'] = '';
+            $event['isVip'] = $vip;
+            $event['type'] = $table;
+            $event['systemDate'] = $systemDate;
+
+            \App\Association::create($event);
+            $success++;
         }
 
-        $site = \App\Site::create([
-            "name" => $name
-        ]);
+        if ($notFound)
+            $returnMessage .= $notFound . " - events not found (maybe was deleted)\r\n";
+
+        if ($alreadyExists)
+            $returnMessage .= $alreadyExists . " - already associated with this table\r\n";
+
+        if ($success)
+            $returnMessage .= $success . " - events was added with success\r\n";
+
         return response()->json([
             "type" => "success",
-            "message" => "New site was added with success!"
+            "message" => $returnMessage
         ]);
     });
 
-    // delete a site
-    $app->delete("/site/{id}", function($id) use ($app) {
-        $site = \App\Site::find($id);
-
-        // Site not exists retur status not exists
-        if ($site === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Site with id: $id not exists"
-            ]);
-        }
-        $site->delete();
-        return response()->json([
-            "type" => "success",
-            "message" => "Site with id: $id was deleted with success!"
-        ]);
-    });
+    // delete an event
 
     /*****************************************************************
      * Manage Sites
