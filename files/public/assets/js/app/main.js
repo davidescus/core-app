@@ -46,6 +46,12 @@ $(document).ready(function() {
             getAvailableEventsNumber({ table: "ruv" });
             getAvailableEventsNumber({ table: "nun" });
             getAvailableEventsNumber({ table: "nuv" });
+
+            // get already associated events
+            getEventsAssociations('run');
+            getEventsAssociations('ruv');
+            getEventsAssociations('nun');
+            getEventsAssociations('nuv');
         }
     }
 });
