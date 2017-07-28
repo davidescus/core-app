@@ -422,3 +422,69 @@
         </script>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!-- modal associate events -->
+<div id="modal-associate-events" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content"></div>
+        <script class="template-modal-content" type="text/template7">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Import events: {{table}}</h4>
+        </div>
+        <div class="modal-body">
+            <input class="table-identifier" type="hidden" value="{{table}}"/>
+            <div class="content table-responsive table-full-width">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <th>Use</th>
+                        <th>Id</th>
+                        <th>Country</th>
+                        <th>League</th>
+                        <th>Home Team</th>
+                        <th>Away Team</th>
+                        <th>Odd</th>
+                        <th>Prediction</th>
+                        <th>Result</th>
+                        <th>Status</th>
+                        <th>Event Date</th>
+                    </thead>
+                    <tbody>
+                    {{#each events}}
+                        <tr class="event">
+                            <td><input class="use" type="checkbox" data-id="{{id}}"></td>
+                            <td>{{id}}</td>
+                            <td>{{country}}</td>
+                            <td>{{league}}</td>
+                            <td>{{homeTeam}}</td>
+                            <td>{{awayTeam}}</td>
+                            <td>{{odd}}</td>
+                            <td>{{predictionId}}</td>
+                            <td>{{result}}</td>
+                            <td>{{statusId}}</td>
+                            <td>{{eventDate}}</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>System Date</label>
+                        <input class="form-control system-date" type="text" value="2017-07-26 00:00:00">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary import">Import Selected Events</button>
+                </div>
+            </div>
+        </div>
+        </script>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -90,16 +90,33 @@ $('#modal-available-events').on('click', '.import', function() {
  */
 $('.table-association').on('click', '.modal-available-packages', function() {
 
-    var id = $(this).parents('tr').attr('data-id');
+    var associateEventId = $(this).parents('tr').attr('data-id');
+    $.ajax({
+        url: config.coreUrl + "/association/package/available/" + associateEventId,
+        type: "get",
+        success: function (response) {
 
-    alert(id);
-    console.log(this);
+            if (response.type === "error") {
+                alert("Type: --- " + response.type + " --- \r\n" + response.message);
+                return;
+            }
+            console.log(response);
 
+            var element = $('#modal-associate-events');
+
+            var template = element.find('.template-modal-content').html();
+            var compiledTemplate = Template7.compile(template);
+            var html = compiledTemplate(response);
+            element.find('.modal-content').html(html);
+
+            element.modal();
+        },
+        error: function () {}
+    });
 });
 
 /*
-*  launch modal for associate event with package
-*  on click table row event
+*  delete event associate with table
  */
 $('.table-association').on('click', '.delete-event', function() {
 
