@@ -3,8 +3,8 @@
                 <div class="row">
 
                     <div class="col-md-12">
-                        <div class="card">
-                            <div id="table-association-run" class="header table-association" data-table="run">
+                        <div id="table-association-run" class="card table-association" data-table="run">
+                            <div class="header">
                                 <h4 class="title">Real Users Normal
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -76,41 +76,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Salary</th>
-                                        <th>Country</th>
-                                        <th>City</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Dakota Rice</td>
-                                            <td>$36,738</td>
-                                            <td>Niger</td>
-                                            <td>Oud-Turnhout</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Minerva Hooper</td>
-                                            <td>$23,789</td>
-                                            <td>Curaçao</td>
-                                            <td>Sinaai-Waas</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                            <div class="table-association"></div>
                         </div>
                     </div>
 
-
                     <div class="col-md-12">
-                        <div class="card">
-                            <div id="table-association-ruv" class="header table-association" data-table="ruv">
+                        <div id="table-association-ruv" class="card table-association" data-table="ruv">
+                            <div class="header">
                                 <h4 class="title">Real Users Vip
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -182,40 +154,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Salary</th>
-                                        <th>Country</th>
-                                        <th>City</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Dakota Rice</td>
-                                            <td>$36,738</td>
-                                            <td>Niger</td>
-                                            <td>Oud-Turnhout</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Minerva Hooper</td>
-                                            <td>$23,789</td>
-                                            <td>Curaçao</td>
-                                            <td>Sinaai-Waas</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                            <div class="table-association"></div>
                         </div>
                     </div>
 
                     <div class="col-md-12">
-                        <div class="card">
-                            <div id="table-association-nun" class="header table-association" data-table="nun">
+                        <div id="table-association-nun" class="card table-association" data-table="nun">
+                            <div class="header">
                                 <h4 class="title">No Users Normal
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -287,40 +232,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Salary</th>
-                                        <th>Country</th>
-                                        <th>City</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Dakota Rice</td>
-                                            <td>$36,738</td>
-                                            <td>Niger</td>
-                                            <td>Oud-Turnhout</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Minerva Hooper</td>
-                                            <td>$23,789</td>
-                                            <td>Curaçao</td>
-                                            <td>Sinaai-Waas</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                            <div class="table-association"></div>
                         </div>
                     </div>
 
                     <div class="col-md-12">
-                        <div class="card">
-                            <div id="table-association-nuv" class="header table-association" data-table="nuv">
+                        <div id="table-association-nuv" class="card table-association" data-table="nuv">
+                            <div class="header">
                                 <h4 class="title">No Users Vip
                                     <span class="events-number"></span>
                                     <script class="template-events-number" type="text/template7">
@@ -392,38 +310,48 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Salary</th>
-                                        <th>Country</th>
-                                        <th>City</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Dakota Rice</td>
-                                            <td>$36,738</td>
-                                            <td>Niger</td>
-                                            <td>Oud-Turnhout</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Minerva Hooper</td>
-                                            <td>$23,789</td>
-                                            <td>Curaçao</td>
-                                            <td>Sinaai-Waas</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div class="table-association"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+<!-- content of table association -->
+<script id="template-table-association" type="text/template7">
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <th>Id</th>
+                <th>Country</th>
+                <th>League</th>
+                <th>Home Team</th>
+                <th>Away Team</th>
+                <th>Odd</th>
+                <th>Prediction</th>
+                <th>Result</th>
+                <th>Status</th>
+                <th>Event Date</th>
+                <th>Actions</th>
+            </thead>
+            <tbody class="table-body"></tbody>
+                {{#each associations}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{country}}</td>
+                    <td>{{league}}</td>
+                    <td>{{homeTeam}}</td>
+                    <td>{{awayTeam}}</td>
+                    <td>{{odd}}</td>
+                    <td>{{predictionId}}</td>
+                    <td>{{result}}</td>
+                    <td>{{statusId}}</td>
+                    <td>{{eventDate}}</td>
+                </tr>
+                {{/each}}
+        </table>
+    </div>
+</script>
 
 <!-- modal import available events -->
 <div id="modal-available-events" class="modal fade" tabindex="-1" role="dialog">
@@ -434,7 +362,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title">Import events</h4>
+            <h4 class="modal-title">Import events: {{table}}</h4>
         </div>
         <div class="modal-body">
             <input class="table-identifier" type="hidden" value="{{table}}"/>

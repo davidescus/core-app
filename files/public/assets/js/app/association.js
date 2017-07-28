@@ -54,33 +54,31 @@ $('#modal-available-events').on('click', '.event', function() {
  * Button click for import events
  */
 $('#modal-available-events').on('click', '.import', function() {
-    // get events ids for association
+
     var ids = [];
+    var table = $('#modal-available-events .table-identifier').val();
+
+    // get events ids for association
     $('#modal-available-events .use:checked').each(function() {
         ids.push($(this).attr('data-id'));
     });
 
-    //    if($.isEmptyObject(ids)) {
-    //        alert("You must select at least one event");
-    //        return;
-    //    }
-
-    // getSystemDate
     $.ajax({
         url: config.coreUrl + "/association",
         type: "post",
         dataType: "json",
         data: {
             eventsIds: ids,
-            table : $('#modal-available-events .table-identifier').val(),
+            table : table,
             systemDate: $('#modal-available-events .system-date').val(),
         },
         beforeSend: function() {},
         success: function (response) {
 
-            console.log(response);
             alert("Type: --- " + response.type + " --- \r\n" + response.message);
 
+            $('#modal-available-events').modal('hide');
+            getEventsAssociations(table);
         },
         error: function () {}
     });
@@ -174,3 +172,37 @@ function getAvailableEvents(args) {
         error: function () {}
     });
 }
+
+/*
+* get association and populate table
+*  arg = table
+*/
+function getEventsAssociations(arg) {
+
+    $.ajax({
+        url: config.coreUrl + "/association/" + arg,
+        type: "get",
+        success: function (response) {
+
+            var element = $('#table-association-' + arg);
+            var data = {associations: response};
+
+            var template = $('#template-table-association').html();
+            var compiledTemplate = Template7.compile(template);
+            var html = compiledTemplate(data);
+            element.find('.table-association').html(html);
+
+        },
+        error: function () {}
+    });
+}
+
+
+
+
+
+
+
+
+
+
