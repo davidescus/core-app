@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\PackagePredictionGroup;
 
-class PackagePredictionGroupSeeder extends Seeder {
+class PackagePredictionGroupTableSeeder extends Seeder {
 
     /**
      * Run the database seeds.
@@ -14,10 +14,9 @@ class PackagePredictionGroupSeeder extends Seeder {
      */
     public function run()
     {
-            PackagePredictionGroup::create([
-                'packageId'       => 1,
-                'predictionGroup' => '1x2',
-            ]);
-        }
+        PackagePredictionGroup::create([
+            'packageId'       => 1,
+            'predictionGroup' => '1x2',
+        ]);
     }
 }
