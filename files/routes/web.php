@@ -129,7 +129,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all asociations by table type: run, ruv, nun, nuv
     $app->get('/association/{type}', function($type) use ($app) {
-        return \App\Association::where(['type', '=', $type]);
+        return \App\Association::where([['type', '=', $type]])->get();
     });
 
     // create new association
@@ -202,7 +202,41 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ]);
     });
 
-    // delete an event
+    // delete an associate event
+
+    // get available packages and sites according to associateEvent prediction
+    $app->get('/association/package/available/{associateEventId}', function($associateEventId) use ($app) {
+
+        $associateEvent = \App\Association::find($associateEventId);
+
+        if (!$associateEvent)
+            return response()->json([
+                "type" => "error",
+                "message" => "Event id: $associateEventId not exist anymore!"
+            ]);
+
+        // get prediction group
+        $prediction = \App\Prediction::select('group')->where('identifier', $associateEvent->predictionId)->first();
+
+        // get all packages associated with this prediction group
+        $packagesIds = \App\PackagePredictionGroup::select('packageId')->where('predictionGroup', $prediction->group)->get();
+
+        $data = [];
+        foreach ($packagesIds as $p) {
+            // get package
+            $package = \App\Package::find($p->packageId);
+
+            // get site
+            $site = \App\Site::find($package->siteId);
+
+            // create array
+            $data[$site->name][] = [
+                'packageName' => $package->name,
+            ];
+        }
+
+        return $data;
+    });
 
     /*****************************************************************
      * Manage Sites
