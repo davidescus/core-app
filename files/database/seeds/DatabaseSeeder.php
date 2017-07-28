@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call('SiteTableSeeder');
         $this->call('PredictionTableSeeder');
         $this->call('PackageTableSeeder');
+        $this->call('PackagePredictionGroupTableSeeder');
     }
 }
