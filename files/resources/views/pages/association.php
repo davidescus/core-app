@@ -432,7 +432,19 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title">Import events: {{table}}</h4>
+            <div class="row">
+                <div class="col-sm-2"><h4>Associate: </h4></div>
+                <div class="col-sm-10">
+                    <h5 class="modal-title">
+                        {{event.country}} :
+                        {{event.league}}
+                        {{event.homeTeam}} -
+                        {{event.awayTeam}}
+                        {{event.predictionId}}
+                        {{event.eventDate}}
+                    </h5>
+                </div>
+            </div>
         </div>
         <div class="modal-body">
             <input class="table-identifier" type="hidden" value="{{table}}"/>
