@@ -318,7 +318,7 @@
         </div>
 
 <!-- content of table association -->
-<script id="template-table-association" type="text/template7">
+<script id="template-table-association-content" type="text/template7">
     <div class="content table-responsive table-full-width">
         <table class="table table-hover table-striped">
             <thead>
