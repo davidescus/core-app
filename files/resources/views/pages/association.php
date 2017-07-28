@@ -336,7 +336,7 @@
             </thead>
             <tbody class="table-body"></tbody>
                 {{#each associations}}
-                <tr>
+                <tr data-id="{{id}}">
                     <td>{{id}}</td>
                     <td>{{country}}</td>
                     <td>{{league}}</td>
@@ -347,6 +347,10 @@
                     <td>{{result}}</td>
                     <td>{{statusId}}</td>
                     <td>{{eventDate}}</td>
+                    <td>
+                        <button class="btn btn-info btn-fill associate-event">Assoc</button>
+                        <button class="btn btn-danger btn-fill delete-event">Del</button>
+                    </td>
                 </tr>
                 {{/each}}
         </table>
