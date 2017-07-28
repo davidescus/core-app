@@ -23,15 +23,7 @@ class EventTableSeeder extends Seeder {
             'David Kraig',
         ];
 
-        $predictions = [
-            'team_1',
-            'team_2',
-            'both_to_score',
-            'over_25',
-            'over_15',
-            'under_15',
-            'under_25',
-        ];
+        $predictions = \App\Prediction::all();
 
         for($x = 0; $x < 30; $x++) {
 
@@ -51,7 +43,7 @@ class EventTableSeeder extends Seeder {
                 'homeTeam'     => 'team_' . rand(0, 5000),
                 'awayTeam'     => 'team_' . rand(0, 5000),
                 'odd'          => round((rand(130, 250) / 100), 2),
-                'predictionId' => $predictions[rand(0, 6)],
+                'predictionId' => $predictions[rand(0, count($predictions) - 1)]->identifier,
                 'result'       => $type == 1 ? rand(0, 5) . '-' . rand(0, 5) : '',
                 'statusId'     => $type == 1 ? rand(1, 4) : '',
                 'eventdate'    => $eventDate,
