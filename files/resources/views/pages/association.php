@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-association"></div>
+                            <div class="table-association-content"></div>
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-association"></div>
+                            <div class="table-association-content"></div>
                         </div>
                     </div>
 
@@ -232,7 +232,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-association"></div>
+                            <div class="table-association-content"></div>
                         </div>
                     </div>
 
@@ -310,7 +310,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-association"></div>
+                            <div class="table-association-content"></div>
                         </div>
                     </div>
                 </div>
@@ -348,8 +348,8 @@
                     <td>{{statusId}}</td>
                     <td>{{eventDate}}</td>
                     <td>
-                        <button class="btn btn-info btn-fill associate-event">Assoc</button>
-                        <button class="btn btn-danger btn-fill delete-event">Del</button>
+                        <button type="button" class="btn btn-info btn-fill modal-available-packages">Assoc</button>
+                        <button type="button" class="btn btn-danger btn-fill delete-event">Del</button>
                     </td>
                 </tr>
                 {{/each}}
