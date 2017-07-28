@@ -85,6 +85,32 @@ $('#modal-available-events').on('click', '.import', function() {
 });
 
 /*
+*  launch modal for associate event with package
+*  on click table row event
+ */
+$('.table-association').on('click', '.modal-available-packages', function() {
+
+    var id = $(this).parents('tr').attr('data-id');
+
+    alert(id);
+    console.log(this);
+
+});
+
+/*
+*  launch modal for associate event with package
+*  on click table row event
+ */
+$('.table-association').on('click', '.delete-event', function() {
+
+    var id = $(this).parents('tr').attr('data-id');
+
+    alert(id);
+    console.log(this);
+
+});
+
+/*
 *  This method will retrive events info
 *  object args {table}
 *  will retribe like tipsters, leagues
@@ -187,10 +213,10 @@ function getEventsAssociations(arg) {
             var element = $('#table-association-' + arg);
             var data = {associations: response};
 
-            var template = $('#template-table-association').html();
+            var template = $('#template-table-association-content').html();
             var compiledTemplate = Template7.compile(template);
             var html = compiledTemplate(data);
-            element.find('.table-association').html(html);
+            element.find('.table-association-content').html(html);
 
         },
         error: function () {}
