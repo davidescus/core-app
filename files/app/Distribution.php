@@ -8,6 +8,7 @@ class Distribution extends Model {
 
     protected $fillable = [
         'id',
+        'eventId',
         'packageId',
         'source',
         'provider',

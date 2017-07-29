@@ -15,6 +15,7 @@ class CreateDistributionTable extends Migration
     {
         Schema::create('distribution', function (Blueprint $table) {
             $table->integer('id')->default(0)->index();
+            $table->integer('eventId');
             $table->integer('packageId')->default(0)->index();
             $table->string('source');
             $table->string('provider');
