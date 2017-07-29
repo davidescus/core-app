@@ -155,6 +155,8 @@ $('#modal-associate-events').on('click', '.associate-event', function() {
         },
         success: function (response) {
 
+            console.log(response);
+
             alert("Type: --- " + response.type + " --- \r\n" + response.message);
 
             $('#modal-associate-events').modal('hide');

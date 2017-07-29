@@ -260,6 +260,23 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     /*****************************************************************
+     * Manage Tips Distribution
+     * **************************************************************/
+
+    // create new Tips Distribution
+    $app->post("/distribution", function(Request $request) use ($app) {
+
+        $eventId = $request->input('eventId');
+        $packagesIds = $request->input('packagesIds');
+
+        return [
+            'eventId' => $eventId,
+            'packagesIds' => $packagesIds
+        ];
+
+    });
+
+    /*****************************************************************
      * Manage Sites
      * **************************************************************/
 
