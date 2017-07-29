@@ -7,10 +7,11 @@ class Distribution extends Model {
     protected $table = 'distribution';
 
     protected $fillable = [
-        'eventId',
+        'id',
+        'packageId',
         'source',
         'provider',
-        'type',
+        'isPublish',
         'isNotip',
         'isVip',
         'country',
@@ -19,10 +20,11 @@ class Distribution extends Model {
         'awayTeam',
         'odd',
         'predictionId',
+        'predictionName',
         'result',
         'statusId',
         'eventDate',
-        'systemDate',
+        'mailingDate',
     ];
 
 //    protected $hidden = [ ‘password’ ];
