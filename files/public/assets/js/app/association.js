@@ -101,13 +101,18 @@ $('.table-association').on('click', '.modal-available-packages', function() {
                 alert("Type: --- " + response.type + " --- \r\n" + response.message);
                 return;
             }
-            console.log(response);
+
+            // add table to show in front
+            var data = response;
+            data.table = table;
+
+            console.log(data);
 
             var element = $('#modal-associate-events');
 
             var template = element.find('.template-modal-content').html();
             var compiledTemplate = Template7.compile(template);
-            var html = compiledTemplate(response);
+            var html = compiledTemplate(data);
             element.find('.modal-content').html(html);
 
             element.modal();
@@ -127,6 +132,35 @@ $('.table-association').on('click', '.delete-event', function() {
     alert(id);
     console.log(this);
 
+});
+
+/*
+ * Associtate event with packages
+ */
+$('#modal-associate-events').on('click', '.associate-event', function() {
+
+    // get events ids for association
+    var packagesIds = [];
+    $('#modal-associate-events .use:checked').each(function() {
+        packagesIds.push($(this).attr('data-id'));
+    });
+
+    $.ajax({
+        url: config.coreUrl + "/distribution",
+        type: "post",
+        dataType: "json",
+        data: {
+            packagesIds: packagesIds,
+            eventId : $('#modal-associate-events .event-id').val(),
+        },
+        success: function (response) {
+
+            alert("Type: --- " + response.type + " --- \r\n" + response.message);
+
+            $('#modal-associate-events').modal('hide');
+        },
+        error: function () {}
+    });
 });
 
 /*
