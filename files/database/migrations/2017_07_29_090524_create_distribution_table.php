@@ -34,6 +34,7 @@ class CreateDistributionTable extends Migration
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
             $table->timestamp('systemDate')->nullable();
+            $table->timestamps();
         });
     }
 
