@@ -434,7 +434,10 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <div class="row">
-                <div class="col-sm-2"><h4>Associate: </h4></div>
+                <div class="col-sm-2">
+                    <h5>Associate: </h5>
+                    <h4>{{table}}</h4>
+                </div>
                 <div class="col-sm-10">
                     <h5 class="modal-title">
                         {{event.country}} :
@@ -467,7 +470,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary import">Associate event with packages</button>
+            <button type="button" class="btn btn-primary associate-event">Associate event with packages</button>
         </div>
         </script>
     </div><!-- /.modal-dialog -->
