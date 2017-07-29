@@ -207,21 +207,24 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // get available packages and sites according to associateEvent prediction
     $app->get('/association/package/available/{associateEventId}', function($associateEventId) use ($app) {
 
-        $associateEvent = \App\Association::find($associateEventId);
+        $data = [];
 
-        if (!$associateEvent)
+        $data['event'] = \App\Association::find($associateEventId);
+
+        if (!$data['event'])
             return response()->json([
                 "type" => "error",
                 "message" => "Event id: $associateEventId not exist anymore!"
             ]);
 
         // get prediction group
-        $prediction = \App\Prediction::select('group')->where('identifier', $associateEvent->predictionId)->first();
+        $prediction = \App\Prediction::select('group')->where('identifier', $data['event']->predictionId)->first();
 
         // get all packages associated with this prediction group
         $packagesIds = \App\PackagePredictionGroup::select('packageId')->where('predictionGroup', $prediction->group)->get();
 
-        $data = [];
+        $keys = [];
+        $increments = 0;
         foreach ($packagesIds as $p) {
             // get package
             $package = \App\Package::find($p->packageId);
@@ -230,8 +233,15 @@ $app->group(['prefix' => 'admin'], function ($app) {
             $site = \App\Site::find($package->siteId);
 
             // create array
-            $data[$site->name][] = [
-                'packageName' => $package->name,
+            if (!array_key_exists($site->name, $keys)) {
+                $keys[$site->name] = $increments;
+                $increments++;
+            }
+
+            $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
+            $data['sites'][$keys[$site->name]]['packages'][] = [
+                'id' => $package->id,
+                'name' => $package->name,
             ];
         }
 

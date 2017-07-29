@@ -428,6 +428,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content"></div>
         <script class="template-modal-content" type="text/template7">
+        <input class="event-id" type="hidden" value="{{event.id}}">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -447,55 +448,26 @@
             </div>
         </div>
         <div class="modal-body">
-            <input class="table-identifier" type="hidden" value="{{table}}"/>
-            <div class="content table-responsive table-full-width">
-                <table class="table table-hover table-striped">
-                    <thead>
-                        <th>Use</th>
-                        <th>Id</th>
-                        <th>Country</th>
-                        <th>League</th>
-                        <th>Home Team</th>
-                        <th>Away Team</th>
-                        <th>Odd</th>
-                        <th>Prediction</th>
-                        <th>Result</th>
-                        <th>Status</th>
-                        <th>Event Date</th>
-                    </thead>
-                    <tbody>
-                    {{#each events}}
-                        <tr class="event">
-                            <td><input class="use" type="checkbox" data-id="{{id}}"></td>
-                            <td>{{id}}</td>
-                            <td>{{country}}</td>
-                            <td>{{league}}</td>
-                            <td>{{homeTeam}}</td>
-                            <td>{{awayTeam}}</td>
-                            <td>{{odd}}</td>
-                            <td>{{predictionId}}</td>
-                            <td>{{result}}</td>
-                            <td>{{statusId}}</td>
-                            <td>{{eventDate}}</td>
-                        </tr>
+            {{#each sites}}
+            <div class="row">
+                <div class="col-sm-3">
+                    {{siteName}}
+                </div>
+                <div class="col-sm-9">
+                    {{#each packages}}
+                    <div>
+                        <input class="use" type="checkbox" value="{{id}}">
+                        {{name}}
+                    </div>
                     {{/each}}
-                    </tbody>
-                </table>
+                </div>
             </div>
+            </br>
+            {{/each}}
         </div>
         <div class="modal-footer">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>System Date</label>
-                        <input class="form-control system-date" type="text" value="2017-07-26 00:00:00">
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary import">Import Selected Events</button>
-                </div>
-            </div>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary import">Associate event with packages</button>
         </div>
         </script>
     </div><!-- /.modal-dialog -->
