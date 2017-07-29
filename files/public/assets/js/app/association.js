@@ -91,8 +91,9 @@ $('#modal-available-events').on('click', '.import', function() {
 $('.table-association').on('click', '.modal-available-packages', function() {
 
     var associateEventId = $(this).parents('tr').attr('data-id');
+    var table = $(this).parents('.table-association').attr('data-table');
     $.ajax({
-        url: config.coreUrl + "/association/package/available/" + associateEventId,
+        url: config.coreUrl + "/association/package/available/" + table + "/" + associateEventId,
         type: "get",
         success: function (response) {
 
@@ -122,6 +123,7 @@ $('.table-association').on('click', '.delete-event', function() {
 
     var id = $(this).parents('tr').attr('data-id');
 
+    //TODO management for delete event
     alert(id);
     console.log(this);
 

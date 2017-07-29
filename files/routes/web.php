@@ -205,7 +205,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // delete an associate event
 
     // get available packages and sites according to associateEvent prediction
-    $app->get('/association/package/available/{associateEventId}', function($associateEventId) use ($app) {
+    $app->get('/association/package/available/{table}/{associateEventId}', function($table, $associateEventId) use ($app) {
 
         $data = [];
 
@@ -228,6 +228,17 @@ $app->group(['prefix' => 'admin'], function ($app) {
         foreach ($packagesIds as $p) {
             // get package
             $package = \App\Package::find($p->packageId);
+
+            // check if table is vip or not
+            if ($table == "ruv" || $table == "nuv") {
+                if (!$package->isVip)
+                    continue;
+            } elseif ($table == "run" || $table == "nun") {
+                if ($package->isVip)
+                    continue;
+            }
+
+            // TODO check if table is for real users or for no users
 
             // get site
             $site = \App\Site::find($package->siteId);
