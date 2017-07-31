@@ -293,7 +293,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
             // delete distribution
             if (!in_array($item->packageId, $packagesIds)) {
 
-                // TODO check if distribution is available for delete
+                // TODO check if distributed event is available for delete
 
                 $item->delete();
                 $deleted++;
