@@ -459,7 +459,7 @@
                 <div class="col-sm-9">
                     {{#each packages}}
                     <div>
-                        <input class="use" type="checkbox" data-id="{{id}}">
+                        <input class="use" type="checkbox" {{#if eventIsAssociated}}checked="checked"{{/if}} data-id="{{id}}">
                         {{name}}
                     </div>
                     {{/each}}
