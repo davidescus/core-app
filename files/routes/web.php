@@ -264,14 +264,76 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * **************************************************************/
 
     // create new Tips Distribution
+    // delete unwanted association
     $app->post("/distribution", function(Request $request) use ($app) {
 
-        $eventId = $request->input('eventId');
-        $packagesIds = $request->input('packagesIds');
+        // check if association still exist
+        if (\App\Association::find($request->input('eventId')) === null)
+            return response()->json([
+                "type" => "error",
+                "message" => "association id: " . $request->input('eventId') . "not exist anymore!"
+            ]);
+
+        // get association as object
+        $association = \App\Association::where('id', $request->input('eventId'))->first();
+
+        //transform in array
+        $association = json_decode(json_encode($association), true);
+
+        unset($association['created_at']);
+        unset($association['updated_at']);
+
+        $packagesIds = $request->input('packagesIds') ? $request->input('packagesIds') : [];
+
+        // create array with existing packageId
+        // also delete unwanted distribution
+        $deleted = 0;
+        $distributionExists = [];
+        foreach (\App\Distribution::where('associationId', $association['id'])->get() as $item) {
+            // delete distribution
+            if (!in_array($item->packageId, $packagesIds)) {
+
+                // TODO check if distribution is available for delete
+
+                $item->delete();
+                $deleted++;
+            }
+
+            $distributionExists[] = $item->packageId;
+        }
+
+        // id from association table became associationId
+        $association['associationId'] = $association['id'];
+        unset($association['id']);
+
+        $inserted = 0;
+        $alreadyExists = 0;
+        foreach ($packagesIds as $id) {
+
+            // do not insert if already exists
+            if (in_array($id, $distributionExists)) {
+                $alreadyExists++;
+                continue;
+            }
+
+            // set packageId
+            $association['packageId'] = $id;
+
+            \App\Distribution::create($association);
+            $inserted++;
+        }
+
+        $message = '';;
+        if($inserted)
+            $message .= "$inserted: new distribution added \r\n";
+        if($deleted)
+            $message .= "$deleted: distribution was deleted \r\n";
+        if($alreadyExists)
+            $message .= "$alreadyExists: distribution already exists \r\n";
 
         return [
-            'eventId' => $eventId,
-            'packagesIds' => $packagesIds
+            "type" => "success",
+            "message" => $message
         ];
 
     });
