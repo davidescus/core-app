@@ -273,10 +273,16 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 $increments++;
             }
 
+            $distributionExists = \App\Distribution::where([
+                ['associationId', '=', $data['event']->id],
+                ['packageId', '=', $package->id]
+            ])->count();
+
             $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
             $data['sites'][$keys[$site->name]]['packages'][] = [
                 'id' => $package->id,
                 'name' => $package->name,
+                'eventIsAssociated' => $distributionExists,
             ];
         }
 
