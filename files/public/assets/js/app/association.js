@@ -126,12 +126,20 @@ $('.table-association').on('click', '.modal-available-packages', function() {
  */
 $('.table-association').on('click', '.delete-event', function() {
 
-    var id = $(this).parents('tr').attr('data-id');
+    var $this = $(this);
+    var id = $this.parents('tr').attr('data-id');
 
-    //TODO management for delete event
-    alert(id);
-    console.log(this);
+    $.ajax({
+        url: config.coreUrl + "/association/" + id,
+        type: "delete",
+        success: function (response) {
 
+            alert("Type: --- " + response.type + " --- \r\n" + response.message);
+
+            getEventsAssociations($this.parents('.table-association').attr('data-table'));
+        },
+        error: function () {}
+    });
 });
 
 /*
