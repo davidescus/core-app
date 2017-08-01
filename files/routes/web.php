@@ -293,7 +293,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 'name' => $package->name,
                 'tipsPerDay' => $package->tipsPerDay,
                 'eventIsAssociated' => $distributionExists,
-                'eventsExistsOnSystemDate' => $eventsExistsOnSystemDate,
+                'packageAssociatedEventsNumber' => $eventsExistsOnSystemDate,
             ];
         }
 

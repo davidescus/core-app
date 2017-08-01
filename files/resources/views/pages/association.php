@@ -436,11 +436,10 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <div class="row">
-                <div class="col-sm-2">
-                    <h5>Associate: </h5>
-                    <h4>{{table}}</h4>
+                <div class="col-sm-12">
+                    <h4>Associate on table: {{table}}<span class="pull-right"> System Date: {{event.systemDate}}</span></h4>
                 </div>
-                <div class="col-sm-10">
+                <div class="col-sm-12">
                     <h5 class="modal-title">
                         {{event.country}} :
                         {{event.league}}
@@ -460,9 +459,14 @@
                 </div>
                 <div class="col-sm-9">
                     {{#each packages}}
-                    <div>
-                        <input class="use" type="checkbox" {{#if eventIsAssociated}}checked="checked"{{/if}} data-id="{{id}}">
-                        {{name}}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <input class="use" type="checkbox" {{#if eventIsAssociated}}checked="checked"{{/if}} data-id="{{id}}">
+                            {{name}}
+                        </div>
+                        <div class="col-sm-4">
+                            {{packageAssociatedEventsNumber}} / {{tipsPerDay}}
+                        </div>
                     </div>
                     {{/each}}
                 </div>
