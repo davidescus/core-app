@@ -53,7 +53,7 @@
             </div>
 
             <ul id="left-menu" class="nav">
-                <li class="active" target="dashboard">
+                <li target="dashboard">
                     <a>
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
@@ -63,6 +63,12 @@
                     <a>
                         <i class="pe-7s-note2"></i>
                         <p>Associations</p>
+                    </a>
+                </li>
+                <li target="distribution">
+                    <a>
+                        <i class="pe-7s-note2"></i>
+                        <p>Tips Distributions</p>
                     </a>
                 </li>
             </ul>
