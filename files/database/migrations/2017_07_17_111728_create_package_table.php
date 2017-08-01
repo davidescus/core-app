@@ -19,7 +19,20 @@ class CreatePackageTable extends Migration
             $table->string('name');
             $table->string('tipIdentifier');
             $table->string('tableIdentifier');
+            $table->string('paymentName');
             $table->boolean('isVip');
+            $table->boolean('isRecurring');
+            $table->string('subscriptionType');
+            $table->integer('tipsPerDay');
+            $table->integer('tipsTotal');
+            $table->string('aliasTipsPerDay');
+            $table->string('aliasTipsTotal');
+            $table->string('oldPrice');
+            $table->string('discount');
+            $table->string('price');
+            $table->string('email');
+            $table->string('fromName');
+            $table->string('subject');
             $table->timestamps();
         });
     }
