@@ -30,7 +30,7 @@ class CreateAssociationTable extends Migration
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
-            $table->timestamp('systemDate')->nullable();
+            $table->string('systemDate')->nullable();
             $table->timestamps();
         });
     }
