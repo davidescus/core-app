@@ -14,7 +14,7 @@ class SitePackageTableSeeder extends Seeder {
     public function run()
     {
         // first we create packages and after we add this connection
-        $packages = \App\Prediction::all();
+        $packages = \App\Package::all();
 
         foreach ($packages as $package) {
 
