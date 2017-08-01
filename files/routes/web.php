@@ -273,16 +273,27 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 $increments++;
             }
 
+            // check if event alredy exists in tips distribution
             $distributionExists = \App\Distribution::where([
                 ['associationId', '=', $data['event']->id],
                 ['packageId', '=', $package->id]
+            ])->count();
+
+            // get event systemDate
+            $eventSystemDate = date('Y-m-d', strtotime($data['event']->systemDate));
+            // get number of associated events with package on event systemDate
+            $eventsExistsOnSystemDate = \App\Distribution::where([
+                ['packageId', '=', $package->id],
+                ['systemDate', '=', $eventSystemDate]
             ])->count();
 
             $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
             $data['sites'][$keys[$site->name]]['packages'][] = [
                 'id' => $package->id,
                 'name' => $package->name,
+                'tipsPerDay' => $package->tipsPerDay,
                 'eventIsAssociated' => $distributionExists,
+                'eventsExistsOnSystemDate' => $eventsExistsOnSystemDate,
             ];
         }
 
