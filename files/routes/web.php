@@ -118,7 +118,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
             $data['number'] = $eventNumber ? $eventNumber : 0;
         }
         if ($type == 'events') {
-            $data['events'] = \App\Event::where($where)->get();
+            $data['events'] = \App\Event::where($where)->orderBy('eventDate', 'desc')->get();
         }
         return $data;
     });
