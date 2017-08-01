@@ -4,4 +4,6 @@
 
 <?php include "pages/association.php"; ?>
 
+<?php include "pages/distribution.php"; ?>
+
 <?php include "common/footer.php"; ?>
