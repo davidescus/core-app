@@ -332,6 +332,7 @@
                 <th>Result</th>
                 <th>Status</th>
                 <th>Event Date</th>
+                <th>System Date</th>
                 <th>Actions</th>
             </thead>
             <tbody class="table-body"></tbody>
@@ -347,6 +348,7 @@
                     <td>{{result}}</td>
                     <td>{{statusId}}</td>
                     <td>{{eventDate}}</td>
+                    <td>{{systemDate}}</td>
                     <td>
                         <button type="button" class="btn btn-info btn-fill modal-available-packages">Assoc</button>
                         <button type="button" class="btn btn-danger btn-fill delete-event">Del</button>
