@@ -20,18 +20,21 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 2,
                 ],
                 'normal_2' => [
                     'name' => '30 Tips',
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 4,
                 ],
                 'vip_1' => [
                     'name' => '2 Vip Tips',
                     'tipIdentifier' => 'tip_2',
                     'tableIdentifier' => 'table_2',
                     'isVip'           => true,
+                    'tipsPerDay'      => 3,
                 ],
             ],
             2 => [
@@ -40,12 +43,14 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 1,
                 ],
                 'normal_2' => [
                     'name' => '45 Tips',
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 5,
                 ],
             ],
             3 => [
@@ -54,18 +59,21 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 2,
                 ],
                 'normal_2' => [
                     'name' => 'Marcus Spiros',
                     'tipIdentifier' => 'tip_2',
                     'tableIdentifier' => 'table_2',
                     'isVip'           => false,
+                    'tipsPerDay'      => 1,
                 ],
                 'normal_3' => [
                     'name' => 'Quentin Whatt',
                     'tipIdentifier' => 'tip_3',
                     'tableIdentifier' => 'table_3',
                     'isVip'           => false,
+                    'tipsPerDay'      => 2,
                 ],
             ],
             4 => [
@@ -74,6 +82,7 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 5,
                 ],
             ],
             5 => [
@@ -82,12 +91,14 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => false,
+                    'tipsPerDay'      => 2,
                 ],
                 'vip_1' => [
                     'name' => '1 VIP TIP',
                     'tipIdentifier' => 'tip_1',
                     'tableIdentifier' => 'table_1',
                     'isVip'           => true,
+                    'tipsPerDay'      => 1,
                 ],
             ],
         ];
