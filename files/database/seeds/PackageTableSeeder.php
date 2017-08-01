@@ -111,6 +111,7 @@ class PackageTableSeeder extends Seeder {
                     'tipIdentifier'   => $pack['tipIdentifier'],
                     'tableIdentifier' => $pack['tableIdentifier'],
                     'isVip'           => $pack['isVip'],
+                    'tipsPerDay'      => $pack['tipsPerDay'],
                 ]);
             }
         }
