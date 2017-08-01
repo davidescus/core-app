@@ -349,6 +349,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
         $inserted = 0;
         $alreadyExists = 0;
+        $message = '';;
         foreach ($packagesIds as $id) {
 
             // do not insert if already exists
@@ -357,6 +358,22 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 continue;
             }
 
+            // get siteId by package
+            $packageSite = \App\SitePackage::where('packageId', $id)->first();
+            if (!$packageSite) {
+                $message = "Could not associate event with package id: $id, this package must be associated with a site.";
+                continue;
+            }
+
+            // get site prediction name
+            $sitePrediction = \App\SitePrediction::where([
+                ['siteId', '=', $packageSite->siteId],
+                ['predictionIdentifier', '=', $association['predictionId']]
+            ])->first();
+
+            // set predictionName
+            $association['predictionName'] = $sitePrediction->name;
+
             // set packageId
             $association['packageId'] = $id;
 
@@ -364,7 +381,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
             $inserted++;
         }
 
-        $message = '';;
         if($inserted)
             $message .= "$inserted: new distribution added \r\n";
         if($deleted)
