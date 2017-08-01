@@ -25,14 +25,16 @@ class EventTableSeeder extends Seeder {
 
         $predictions = \App\Prediction::all();
 
-        for($x = 0; $x < 30; $x++) {
+        for($x = 0; $x < 300; $x++) {
 
             // set random event date
             $type = rand(0, 1);
             if ($type == 0)
-               $eventDate = Carbon::now('UTC')->modify('+' . rand(100, 700) . 'minute');
-            else
-               $eventDate = Carbon::now('UTC')->modify('-' . rand(105, 700) . 'minute');
+                $eventDate = Carbon::now('UTC')->modify('+' . rand(100, 700) . 'minute');
+            else {
+                $day = rand(0, 2);
+                $eventDate = Carbon::now('UTC')->modify('-' . rand(105, 700) . 'minute')->modify('-' . $day . 'day');
+            }
 
 
             Event::create([
