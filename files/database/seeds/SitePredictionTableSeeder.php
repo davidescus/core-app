@@ -22,7 +22,7 @@ class SitePredictionTableSeeder extends Seeder {
                 SitePrediction::firstOrCreate([
                     'siteId'               => $site->id,
                     'predictionIdentifier' => $prediction->identifier,
-                    'name'                 => str_replace('_', ' ', $prediction->identifier . $site->name);
+                    'name'                 => str_replace('_', ' ', $prediction->identifier) . '-' . $site->name,
                 ]);
             }
         }
