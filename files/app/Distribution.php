@@ -27,6 +27,7 @@ class Distribution extends Model {
         'result',
         'statusId',
         'eventDate',
+        'systemDate',
         'mailingDate',
     ];
 
