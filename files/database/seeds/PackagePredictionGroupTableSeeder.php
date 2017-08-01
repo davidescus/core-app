@@ -30,6 +30,11 @@ class PackagePredictionGroupTableSeeder extends Seeder {
         ]);
 
         PackagePredictionGroup::firstOrCreate([
+            'packageId'       => 3,
+            'predictionGroup' => 'o/u',
+        ]);
+
+        PackagePredictionGroup::firstOrCreate([
             'packageId'       => 4,
             'predictionGroup' => 'o/u',
         ]);
