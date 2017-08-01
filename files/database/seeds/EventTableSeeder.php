@@ -25,7 +25,7 @@ class EventTableSeeder extends Seeder {
 
         $predictions = \App\Prediction::all();
 
-        for($x = 0; $x < 300; $x++) {
+        for($x = 0; $x < 50; $x++) {
 
             // set random event date
             $type = rand(0, 1);
