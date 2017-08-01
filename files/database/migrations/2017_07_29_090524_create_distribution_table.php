@@ -34,7 +34,7 @@ class CreateDistributionTable extends Migration
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
-            $table->timestamp('systemDate')->nullable();
+            $table->string('systemDate')->nullable();
             $table->timestamps();
         });
     }
