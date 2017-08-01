@@ -412,7 +412,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>System Date</label>
-                        <input class="form-control system-date" type="text" value="2017-07-26 00:00:00">
+                        <input class="form-control system-date" type="text" value="{{currentDate}}">
                     </div>
                 </div>
                 <div class="col-sm-6">

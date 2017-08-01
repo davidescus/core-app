@@ -249,6 +249,7 @@ function getAvailableEvents(args) {
             var data = {
                 table: args.table,
                 events: response.events,
+                currentDate: new Date().toISOString().split('T')[0],
             };
 
             var template = element.find('.template-modal-content').html();
