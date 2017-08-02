@@ -411,6 +411,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
                 // set siteName
                 $data[$k]['sites'][$site->id]['name'] = $site->name;
+                $data[$k]['sites'][$site->id]['id'] = $site->id;
 
                 // get associated packages frm site_package
                 $associatedPackages = \App\SitePackage::select('packageId')->where('siteId', $site->id)->get()->toArray();
