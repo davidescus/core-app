@@ -395,6 +395,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     });
 
+    // get all events distributed
+    $app->get("/distribution", function(Request $request) use ($app) {
+         return \App\Distribution::all();
+    }
+
     /*****************************************************************
      * Manage Sites
      * **************************************************************/
