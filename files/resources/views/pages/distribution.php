@@ -15,7 +15,7 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="header">
-                                                    <h3>{{name}}</h3>
+                                                    <h3><input class="select-group-site" type="checkbox"> {{name}}</h3>
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
@@ -47,6 +47,7 @@
                                                                 <tbody class="table-body">
                                                                     {{#each events}}
                                                                     <tr data-id="{{id}}">
+                                                                        <td><input class="use" type="checkbox" data-id="{{id}}"/></td>
                                                                         <td>{{id}}</td>
                                                                         <td>{{country}}</td>
                                                                         <td>{{league}}</td>
@@ -58,6 +59,10 @@
                                                                         <td>{{statusId}}</td>
                                                                         <td>{{eventDate}}</td>
                                                                         <td>{{systemDate}}</td>
+                                                                    </tr>
+                                                                    {{else}}
+                                                                    <tr>
+                                                                        <td class="text-center">No events yet.</td>
                                                                     </tr>
                                                                     {{/each}}
                                                                 </tbody>

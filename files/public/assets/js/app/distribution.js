@@ -1,4 +1,16 @@
 /*
+ * Clickable events
+ */
+// seelect / deselect all events from a site
+    $('#container-distributed-events').on('change', '.select-group-site', function() {
+        if ($(this).is(':checked'))
+            $(this).closest('.row').find('.use').prop('checked', true);
+        else
+            $(this).closest('.row').find('.use').prop('checked', false);
+    });
+
+
+/*
  * This function will complete distribution table
  * with all distributed events
  */
