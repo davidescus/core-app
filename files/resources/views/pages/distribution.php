@@ -42,7 +42,6 @@
                                                                     <th>Status</th>
                                                                     <th>Event Date</th>
                                                                     <th>System Date</th>
-                                                                    <th>Actions</th>
                                                                 </thead>
                                                                 -->
                                                                 <tbody class="table-body">
@@ -59,9 +58,6 @@
                                                                         <td>{{statusId}}</td>
                                                                         <td>{{eventDate}}</td>
                                                                         <td>{{systemDate}}</td>
-                                                                        <td>
-                                                                            <button type="button" class="btn btn-success btn-fill publish">Pub</button>
-                                                                        </td>
                                                                     </tr>
                                                                     {{/each}}
                                                                 </tbody>
