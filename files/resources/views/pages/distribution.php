@@ -3,50 +3,77 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="container-distributed-events" class="card">
-                            <div class="header">
-                                <h4 class="title">Tips Distribution</h4>
-                            </div>
 
                             <!-- content of table distributed events -->
                             <div class="table-content"></div>
                             <script class="template-table-content" type="text/template7">
-                                <div class="content table-responsive table-full-width">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <th>Id</th>
-                                            <th>Country</th>
-                                            <th>League</th>
-                                            <th>Home Team</th>
-                                            <th>Away Team</th>
-                                            <th>Odd</th>
-                                            <th>Prediction</th>
-                                            <th>Result</th>
-                                            <th>Status</th>
-                                            <th>Event Date</th>
-                                            <th>System Date</th>
-                                            <th>Actions</th>
-                                        </thead>
-                                        <tbody class="table-body"></tbody>
-                                            {{#each distribution}}
-                                            <tr data-id="{{id}}">
-                                                <td>{{id}}</td>
-                                                <td>{{country}}</td>
-                                                <td>{{league}}</td>
-                                                <td>{{homeTeam}}</td>
-                                                <td>{{awayTeam}}</td>
-                                                <td>{{odd}}</td>
-                                                <td>{{predictionId}}</td>
-                                                <td>{{result}}</td>
-                                                <td>{{statusId}}</td>
-                                                <td>{{eventDate}}</td>
-                                                <td>{{systemDate}}</td>
-                                                <td>
-                                                    <button type="button" class="btn btn-success btn-fill publiish">Pub</button>
-                                                </td>
-                                            </tr>
-                                            {{/each}}
-                                    </table>
-                                </div>
+                                {{#each distribution}}
+                                    <div class="header">
+                                        <h4 class="title">Tips Distribution: {{systemDate}}</h4>
+                                    </div>
+                                    {{#each sites}}
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="header">
+                                                    <h3>{{name}}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                {{#each packages}}
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="header">
+                                                            <h5>{{name}} /{{tipsPerDay}}</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="content table-responsive table-full-width">
+                                                            <table class="table table-hover table-striped">
+                                                            <!--
+                                                                <thead>
+                                                                    <th>Id</th>
+                                                                    <th>Country</th>
+                                                                    <th>League</th>
+                                                                    <th>Home Team</th>
+                                                                    <th>Away Team</th>
+                                                                    <th>Odd</th>
+                                                                    <th>Prediction</th>
+                                                                    <th>Result</th>
+                                                                    <th>Status</th>
+                                                                    <th>Event Date</th>
+                                                                    <th>System Date</th>
+                                                                    <th>Actions</th>
+                                                                </thead>
+                                                                -->
+                                                                <tbody class="table-body">
+                                                                    {{#each events}}
+                                                                    <tr data-id="{{id}}">
+                                                                        <td>{{id}}</td>
+                                                                        <td>{{country}}</td>
+                                                                        <td>{{league}}</td>
+                                                                        <td>{{homeTeam}}</td>
+                                                                        <td>{{awayTeam}}</td>
+                                                                        <td>{{odd}}</td>
+                                                                        <td>{{predictionId}}</td>
+                                                                        <td>{{result}}</td>
+                                                                        <td>{{statusId}}</td>
+                                                                        <td>{{eventDate}}</td>
+                                                                        <td>{{systemDate}}</td>
+                                                                        <td>
+                                                                            <button type="button" class="btn btn-success btn-fill publish">Pub</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {{/each}}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                        </div>
+                                    {{/each}}
+                                {{/each}}
                             </script>
 
                         </div>
