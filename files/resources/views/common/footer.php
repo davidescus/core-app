@@ -61,5 +61,8 @@
     <!--  association.js    -->
     <script src="assets/js/app/association.js"></script>
 
+    <!--  distribution.js    -->
+    <script src="assets/js/app/distribution.js"></script>
+
     <!--  main js    -->
     <script src="assets/js/app/main.js"></script>

@@ -53,5 +53,9 @@ $(document).ready(function() {
             getEventsAssociations('nun');
             getEventsAssociations('nuv');
         }
+
+        if (config.activePage == 'distribution') {
+            getDistributedEvents();
+        }
     }
 });
