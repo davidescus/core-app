@@ -420,7 +420,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
                     $package = \App\Package::find($associatedPackage['packageId']);
 
                     // get events for package
-                    $distributedEvents = \App\Distribution::where('packageId', $package->id)->get();
+                    $distributedEvents = \App\Distribution::where('packageId', $package->id)->where('systemdate', $date->systemDate)->get();
 
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['name'] = $package->name;
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['tipsPerDay'] = $package->tipsPerDay;
