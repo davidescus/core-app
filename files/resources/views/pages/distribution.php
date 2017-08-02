@@ -3,14 +3,20 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="container-distributed-events" class="card">
+                            <div class="header">
+                                <h4>
+                                    <button class="btn btn-danger btn-fill pull-right">Delete</button>
+                                    <button class="btn btn-info btn-fill pull-right">Publish</button>
+                                </h4>
+                            </div>
 
                             <!-- content of table distributed events -->
                             <div class="table-content"></div>
                             <script class="template-table-content" type="text/template7">
                                 {{#each distribution}}
-                                    <div class="header">
-                                        <h4 class="title">Tips Distribution: {{systemDate}}</h4>
-                                    </div>
+                                <div class="header">
+                                    <h4 class="title">Tips Distribution: {{systemDate}}</h4>
+                                </div>
                                     {{#each sites}}
                                         <div class="row">
                                             <div class="col-sm-12">
