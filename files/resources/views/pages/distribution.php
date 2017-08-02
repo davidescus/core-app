@@ -23,7 +23,7 @@
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <div class="header">
-                                                            <h5>{{name}} /{{tipsPerDay}}</h5>
+                                                            <h5>{{name}} {{eventsNumber}}/{{tipsPerDay}}</h5>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-12">
