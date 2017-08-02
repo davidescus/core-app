@@ -54,7 +54,10 @@
                                                             {{#each events}}
                                                             <tr data-id="{{id}}">
                                                                 <td><input class="use" type="checkbox" data-id="{{id}}"/></td>
-                                                                <td>{{id}}</td>
+                                                                <td>
+                                                                    {{#if isPublish}} Published {{else}} Not Published {{/if}}
+                                                                {{id}}
+                                                                </td>
                                                                 <td>{{country}}</td>
                                                                 <td>{{league}}</td>
                                                                 <td>{{homeTeam}}</td>
