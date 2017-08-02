@@ -419,11 +419,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
                     // get package
                     $package = \App\Package::find($associatedPackage['packageId']);
 
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['name'] = $package->name;
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['tipsPerDay'] = $package->tipsPerDay;
-
                     // get events for package
                     $distributedEvents = \App\Distribution::where('packageId', $package->id)->get();
+
+                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['name'] = $package->name;
+                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['tipsPerDay'] = $package->tipsPerDay;
+                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['eventsNumber'] = count($distributedEvents);
+
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['events'] = $distributedEvents;
                 }
             }
