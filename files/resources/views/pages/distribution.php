@@ -54,7 +54,7 @@
                                                                         <td>{{homeTeam}}</td>
                                                                         <td>{{awayTeam}}</td>
                                                                         <td>{{odd}}</td>
-                                                                        <td>{{predictionId}}</td>
+                                                                        <td>{{predictionName}}</td>
                                                                         <td>{{result}}</td>
                                                                         <td>{{statusId}}</td>
                                                                         <td>{{eventDate}}</td>
