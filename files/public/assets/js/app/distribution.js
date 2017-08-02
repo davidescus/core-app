@@ -2,12 +2,41 @@
  * Clickable events
  */
 // seelect / deselect all events from a site
-    $('#container-distributed-events').on('change', '.select-group-site', function() {
-        if ($(this).is(':checked'))
-            $(this).closest('.row').find('.use').prop('checked', true);
-        else
-            $(this).closest('.row').find('.use').prop('checked', false);
+$('#container-distributed-events').on('change', '.select-group-site', function() {
+    if ($(this).is(':checked'))
+        $(this).closest('.row').find('.use').prop('checked', true);
+    else
+        $(this).closest('.row').find('.use').prop('checked', false);
+});
+
+/*
+ * Manual publish events in archive
+ */
+$('#container-distributed-events').on('click', '.action-publish', function() {
+    var data = [];
+
+    // get events ids for association
+    $('#container-distributed-events .use:checked').each(function() {
+        var parentSiteId = $(this).closest('.site-row').attr('data-id');
+        data.push({
+            siteId: parentSiteId,
+            eventId: $(this).attr('data-id'),
+        });
     });
+
+    $.ajax({
+        url: config.coreUrl + "/archive",
+        type: "post",
+        dataType: "json",
+        data: {
+            data: data,
+        },
+        success: function (response) {
+            console.log(response);
+        },
+        error: function () {}
+    });
+});
 
 
 /*
