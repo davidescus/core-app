@@ -10,8 +10,6 @@ function getDistributedEvents() {
 
             var data = response;
 
-            console.log(data);
-
             var element = $('#container-distributed-events');
 
             var template = element.find('.template-table-content').html();
