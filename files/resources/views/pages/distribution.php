@@ -5,8 +5,8 @@
                 <div id="container-distributed-events" class="card">
                     <div class="header">
                         <h4>
-                            <button class="btn btn-danger btn-fill pull-right">Delete</button>
-                            <button class="btn btn-info btn-fill pull-right">Publish</button>
+                            <button class="btn btn-danger btn-fill pull-right action-delete">Delete</button>
+                            <button class="btn btn-info btn-fill pull-right action-publish">Publish</button>
                         </h4>
                     </div>
 
@@ -18,7 +18,7 @@
                             <h4 class="title">Tips Distribution: {{systemDate}}</h4>
                         </div>
                             {{#each sites}}
-                                <div class="row">
+                                <div class="row site-row" data-id="{{id}}">
                                     <div class="col-sm-12">
                                         <div class="header">
                                             <h3><input class="select-group-site" type="checkbox"> {{name}}</h3>
