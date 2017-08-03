@@ -60,7 +60,7 @@ $(document).ready(function() {
 
         if (config.activePage == 'archive-big') {
             // this is only for moment to get show all events inside archive_big table
-            getAllEventsForBigAchives();
+            getAllEventsForArchivesBig();
         }
     }
 });
