@@ -32,7 +32,9 @@ $('#container-distributed-events').on('click', '.action-publish', function() {
             data: data,
         },
         success: function (response) {
-            console.log(response);
+
+            alert("Type: --- " + response.type + " --- \r\n" + response.message);
+            getDistributedEvents();
         },
         error: function () {}
     });
