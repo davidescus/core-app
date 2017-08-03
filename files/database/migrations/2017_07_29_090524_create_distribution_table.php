@@ -17,6 +17,7 @@ class CreateDistributionTable extends Migration
             $table->increments('id');
             $table->integer('associationId')->index();
             $table->integer('eventId');
+            $table->integer('siteId');
             $table->integer('packageId')->default(0)->index();
             $table->string('source');
             $table->string('provider');
