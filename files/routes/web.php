@@ -451,6 +451,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ];
     });
 
+    // get all events distributed
+    $app->get("/distribution", function(Request $request) use ($app) {
+        $data = $request->input('data');
+
+        return $data;
+    });
+
     // manual publish events in archive
     $app->post('/archive', function(Request $request) use ($app) {
         $data = $request->input('data');
