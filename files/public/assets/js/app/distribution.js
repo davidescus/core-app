@@ -60,9 +60,8 @@ $('#container-distributed-events').on('click', '.action-delete', function() {
         },
         success: function (response) {
 
-            console.log(response);
-            //            alert("Type: --- " + response.type + " --- \r\n" + response.message);
-            //            getDistributedEvents();
+            alert("Type: --- " + response.type + " --- \r\n" + response.message);
+            getDistributedEvents();
         },
         error: function () {}
     });
