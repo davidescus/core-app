@@ -330,11 +330,15 @@ $app->group(['prefix' => 'admin'], function ($app) {
         // also delete unwanted distribution
         $deleted = 0;
         $distributionExists = [];
+        $message = '';
         foreach (\App\Distribution::where('associationId', $association['id'])->get() as $item) {
             // delete distribution
             if (!in_array($item->packageId, $packagesIds)) {
 
-                // TODO check if distributed event is available for delete
+                if ($item->isPublish) {
+                    $message .= "Can not delete association with package $item->packageId, was already published\r\n";
+                    continue;
+                }
 
                 $item->delete();
                 $deleted++;
@@ -342,6 +346,12 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
             $distributionExists[] = $item->packageId;
         }
+
+        if ($message !== '')
+            return [
+                "type" => "error",
+                "message" => $message
+            ];
 
         // id from association table became associationId
         $association['associationId'] = $association['id'];
