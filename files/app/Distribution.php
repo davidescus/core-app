@@ -13,6 +13,7 @@ class Distribution extends Model {
         'packageId',
         'source',
         'provider',
+        'tableIdentifier',
         'isPublish',
         'isNotip',
         'isVip',
