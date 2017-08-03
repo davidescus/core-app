@@ -21,6 +21,7 @@ class CreateDistributionTable extends Migration
             $table->integer('packageId')->default(0)->index();
             $table->string('source');
             $table->string('provider');
+            $table->string('tableIdentifier');
             $table->integer('isPublish')->default(0);
             $table->integer('isNoTip')->default(0);
             $table->integer('isVip')->default(0);
