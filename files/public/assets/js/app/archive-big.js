@@ -1,7 +1,7 @@
 /*
  * Provisory function to get all events for archives
  */
-function getAllEventsForBigArive() {
+function getAllEventsForBigAchives() {
     $.ajax({
         url: config.coreUrl + "/archive",
         type: "get",
