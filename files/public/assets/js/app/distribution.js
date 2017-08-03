@@ -40,6 +40,37 @@ $('#container-distributed-events').on('click', '.action-publish', function() {
     });
 });
 
+/*
+ * Delete distributions (bulk)
+ */
+$('#container-distributed-events').on('click', '.action-delete', function() {
+    var data = [];
+
+    // get events ids for association
+    $('#container-distributed-events .use:checked').each(function() {
+        var parentPackageId = $(this).closest('.package-row').attr('data-id');
+        data.push({
+            packageId: parentPackageId,
+            distributionId: $(this).attr('data-id'),
+        });
+    });
+
+    $.ajax({
+        url: config.coreUrl + "/distribution",
+        type: "delete",
+        dataType: "json",
+        data: {
+            data: data,
+        },
+        success: function (response) {
+
+            console.log(data);
+            //            alert("Type: --- " + response.type + " --- \r\n" + response.message);
+            //            getDistributedEvents();
+        },
+        error: function () {}
+    });
+});
 
 /*
  * This function will complete distribution table
