@@ -26,7 +26,7 @@
                                     </div>
                                     <div class="col-sm-12">
                                         {{#each packages}}
-                                        <div class="row">
+                                        <div class="row package-row" data-id="{{id}}">
                                             <div class="col-sm-12">
                                                 <div class="header">
                                                     <h5>{{name}} {{eventsNumber}}/{{tipsPerDay}}</h5>
