@@ -423,6 +423,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
                     // get events for package
                     $distributedEvents = \App\Distribution::where('packageId', $package->id)->where('systemdate', $date->systemDate)->get();
 
+                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['id'] = $package->id;
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['name'] = $package->name;
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['tipsPerDay'] = $package->tipsPerDay;
                     $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['eventsNumber'] = count($distributedEvents);
