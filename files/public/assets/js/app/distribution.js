@@ -17,9 +17,9 @@ $('#container-distributed-events').on('click', '.action-publish', function() {
 
     // get events ids for association
     $('#container-distributed-events .use:checked').each(function() {
-        var parentSiteId = $(this).closest('.site-row').attr('data-id');
+        var parentPackageId = $(this).closest('.package-row').attr('data-id');
         data.push({
-            siteId: parentSiteId,
+            packageId: parentPackageId,
             eventId: $(this).attr('data-id'),
         });
     });
