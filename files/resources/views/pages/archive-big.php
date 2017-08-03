@@ -1,4 +1,4 @@
-<div class="content page-container distribution hidden">
+<div class="content page-container archive-big hidden">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
