@@ -371,6 +371,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 ['predictionIdentifier', '=', $association['predictionId']]
             ])->first();
 
+            // set siteId
+            $association['siteId'] = $packageSite->siteId;
+
             // set predictionName
             $association['predictionName'] = $sitePrediction->name;
 
@@ -436,6 +439,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return [
             'distribution' => $data
         ];
+    });
+
+    // manual publish events in archive
+    $app->post('/archive', function(Request $request) use ($app) {
+        $data = $request->input('data');
+
+        return $data;
     });
 
     /*****************************************************************
