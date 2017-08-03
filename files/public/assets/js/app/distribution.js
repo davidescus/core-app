@@ -44,15 +44,11 @@ $('#container-distributed-events').on('click', '.action-publish', function() {
  * Delete distributions (bulk)
  */
 $('#container-distributed-events').on('click', '.action-delete', function() {
-    var data = [];
+    var ids = [];
 
     // get events ids for association
     $('#container-distributed-events .use:checked').each(function() {
-        var parentPackageId = $(this).closest('.package-row').attr('data-id');
-        data.push({
-            packageId: parentPackageId,
-            distributionId: $(this).attr('data-id'),
-        });
+        ids.push($(this).attr('data-id'));
     });
 
     $.ajax({
@@ -60,11 +56,11 @@ $('#container-distributed-events').on('click', '.action-delete', function() {
         type: "delete",
         dataType: "json",
         data: {
-            data: data,
+            ids: ids,
         },
         success: function (response) {
 
-            console.log(data);
+            console.log(response);
             //            alert("Type: --- " + response.type + " --- \r\n" + response.message);
             //            getDistributedEvents();
         },
