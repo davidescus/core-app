@@ -507,7 +507,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all events for all archives
     $app->get('/archive', function() use ($app) {
-        return \App\ArchiveBig::all();
+        return [
+            "events" => \App\ArchiveBig::all()
+        ];
     });
 
     // manual publish events in archive
