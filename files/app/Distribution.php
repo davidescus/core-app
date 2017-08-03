@@ -11,6 +11,7 @@ class Distribution extends Model {
         'id',
         'associationId',
         'eventId',
+        'siteId',
         'packageId',
         'source',
         'provider',
