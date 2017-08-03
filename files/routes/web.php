@@ -505,6 +505,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ];
     });
 
+    // get all events for all archives
+    $app->get('/archive', function() use ($app) {
+        return \App\ArchiveBig::all();
+    });
+
     // manual publish events in archive
     $app->post('/archive', function(Request $request) use ($app) {
         $data = $request->input('data');
