@@ -358,10 +358,17 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 continue;
             }
 
+            // get package
+            $package = \App\Package::find($id);
+            if (!$package) {
+                $message = "Could not find package with id: $id, maybe was deleted \r\n";
+                continue;
+            }
+
             // get siteId by package
             $packageSite = \App\SitePackage::where('packageId', $id)->first();
             if (!$packageSite) {
-                $message = "Could not associate event with package id: $id, this package must be associated with a site.";
+                $message = "Could not associate event with package id: $id, this package must be associated with a site\r\n";
                 continue;
             }
 
@@ -373,6 +380,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
             // set siteId
             $association['siteId'] = $packageSite->siteId;
+
+            // set tableIdentifier
+            $association['tableIdentifier'] = $package->tableIdentifier;
 
             // set predictionName
             $association['predictionName'] = $sitePrediction->name;
