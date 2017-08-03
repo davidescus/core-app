@@ -7,11 +7,11 @@
                         <h4>Big Archive</h4>
                     </div>
                     <div class="content table-responsive table-full-width">
-                        <table class="table table-hover table-striped">
 
-                            <!-- content of table distributed events -->
-                            <div class="table-content"></div>
-                            <script class="template-table-content" type="text/template7">
+                        <!-- content of table distributed events -->
+                        <div class="table-content"></div>
+                        <script class="template-table-content" type="text/template7">
+                            <table class="table table-hover table-striped">
                                 <thead>
                                     <th>Id</th>
                                     <th>Country</th>
@@ -46,14 +46,12 @@
                                     </tr>
                                     {{/each}}
                                 </tbody>
-                            </script>
+                            </table>
+                        </script>
 
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
