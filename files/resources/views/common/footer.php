@@ -64,5 +64,8 @@
     <!--  distribution.js    -->
     <script src="assets/js/app/distribution.js"></script>
 
+    <!--  archive-big.js    -->
+    <script src="assets/js/app/archive-big.js"></script>
+
     <!--  main js    -->
     <script src="assets/js/app/main.js"></script>
