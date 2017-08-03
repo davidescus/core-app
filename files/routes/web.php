@@ -453,9 +453,46 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all events distributed
     $app->delete("/distribution", function(Request $request) use ($app) {
-        $data = $request->input('data');
+        $ids = $request->input('ids');
 
-        return $data;
+        if (!$ids)
+            return [
+                "type" => "error",
+                "message" => "No events provided!",
+            ];
+
+        $notFound = 0;
+        $canNotDelete = 0;
+        $deleted = 0;
+        foreach ($ids as $id) {
+            $distribution = \App\Distribution::find($id);
+
+            if (!$distribution) {
+                $notFound++;
+                continue;
+            }
+
+            if ($distribution->isPublish) {
+                $canNotDelete++;
+                continue;
+            }
+
+            $distribution->delete();
+            $deleted++;
+        }
+
+        $message = '';
+        if ($notFound)
+            $message .= "$notFound events not founded, maybe was deleted.\r\n";
+        if ($canNotDelete)
+            $message .= "$canNotDelete can not be deleted.\r\n";
+        if ($deleted)
+            $message .= "$deleted events was successful deleted.\r\n";
+
+        return [
+            "type" => "success",
+            "message" => $message
+        ];
     });
 
     // manual publish events in archive
