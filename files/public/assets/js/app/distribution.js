@@ -20,7 +20,7 @@ $('#container-distributed-events').on('click', '.action-publish', function() {
         var parentPackageId = $(this).closest('.package-row').attr('data-id');
         data.push({
             packageId: parentPackageId,
-            eventId: $(this).attr('data-id'),
+            distributionId: $(this).attr('data-id'),
         });
     });
 
