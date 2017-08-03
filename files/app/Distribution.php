@@ -5,10 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 class Distribution extends Model {
 
     protected $table = 'distribution';
-    public $incrementing = false;
 
     protected $fillable = [
-        'id',
         'associationId',
         'eventId',
         'siteId',
