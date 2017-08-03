@@ -461,6 +461,7 @@
                     {{#each packages}}
                     <div class="row">
                         <div class="col-sm-4">
+                            {{id}}&nbsp;&nbsp;&nbsp;
                             <input class="use" type="checkbox" {{#if eventIsAssociated}}checked="checked"{{/if}} data-id="{{id}}">
                             {{name}}
                         </div>
