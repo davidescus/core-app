@@ -43,9 +43,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
 
-    /*****************************************************************
-     * Manage Associations
-     * **************************************************************/
+    /*
+     * Associations - 4 tables
+     ---------------------------------------------------------------------*/
 
     // get all asociations by table type: run, ruv, nun, nuv
     $app->get('/association/{type}', function($type) use ($app) {
@@ -220,9 +220,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
         return $data;
     });
 
-    /*****************************************************************
-     * Manage Tips Distribution
-     * **************************************************************/
+    /*
+     * Distributions
+     ---------------------------------------------------------------------*/
 
     // create new Tips Distribution
     // delete unwanted association
@@ -486,9 +486,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ];
     });
 
-    /*****************************************************************
-     * Manage Sites
-     * **************************************************************/
+    /*
+     * Sites
+     ---------------------------------------------------------------------*/
 
     // get all sites
     $app->get('/site', function() use ($app) {
@@ -563,9 +563,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ]);
     });
 
-    /*****************************************************************
-     * Manage Packages
-     * **************************************************************/
+    /*
+     * Packages
+     ---------------------------------------------------------------------*/
 
     // getall packages for a specific site
     $app->get('package-site/{id}', function($id) use ($app) {
