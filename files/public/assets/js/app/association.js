@@ -246,7 +246,7 @@ function getAvailableEvents(filters) {
 
             var element = $('#modal-available-events');
             var data = {
-                table: args.table,
+                table: filters.table,
                 events: response,
                 currentDate: new Date().toISOString().split('T')[0],
             };
