@@ -20,4 +20,12 @@ class Event extends Controller
     {
         return \App\Event::all();
     }
+
+    public function get() {}
+
+    public function store() {}
+
+    public function update() {}
+
+    public function destroy() {}
 }
