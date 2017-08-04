@@ -21,7 +21,9 @@ $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
 // all routes for administration
 $app->group(['prefix' => 'admin'], function ($app) {
 
-    // dashboard for admin
+    /*
+     * Admin Dashboard
+     ---------------------------------------------------------------------*/
     $app->get('/', function () use ($app) {
         return view('main');
     });
