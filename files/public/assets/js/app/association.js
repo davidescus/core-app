@@ -211,20 +211,21 @@ function getTableAvailableFiltersValues(tableIdentifier) {
 
 /*
 * this function will retrive and show available events number
-* object args: table, provider, minOdd, maxOdd
+* object filters: table, provider, league, minOdd, maxOdd
 */
-function getAvailableEventsNumber(args) {
+function getAvailableEventsNumber(filters) {
 
     $.ajax({
-        url: config.coreUrl + "/event/number?" + $.param(args),
+        url: config.coreUrl + "/event/available/number?" + $.param(filters),
         type: "get",
         success: function (response) {
 
-            var element = $('#table-association-' + args.table);
+            var data = {number: response};
+            var element = $('#table-association-' + filters.table);
 
             var template = element.find('.template-events-number').html();
             var compiledTemplate = Template7.compile(template);
-            var html = compiledTemplate(response);
+            var html = compiledTemplate(data);
             element.find('.events-number').html(html);
 
         },
