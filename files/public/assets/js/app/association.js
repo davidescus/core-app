@@ -179,7 +179,7 @@ $('#modal-associate-events').on('click', '.associate-event', function() {
 function getEventsInfo(args) {
 
     $.ajax({
-        url: config.coreUrl + "/event/info?" + $.param(args),
+        url: config.coreUrl + "/event/available-filters-values/" + args.table,
         type: "get",
         //        dataType: "json",
         //        data: {},

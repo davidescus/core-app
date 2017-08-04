@@ -31,10 +31,8 @@ class Event extends Controller
 
     public function destroy() {}
 
-    public function getTablesFiltersValues(Request $request)
+    public function getTablesFiltersValues($table)
     {
-        $table = $request->get('table');
-
         $data = [
             'tipsters' => [],
             'leagues'  => []

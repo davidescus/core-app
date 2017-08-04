@@ -33,7 +33,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/all', 'Admin\Event@index');
 
     // return distinct providers and leagues based on table selection
-    $app->get('/event/info', 'Admin\Event@getTablesFiltersValues');
+    $app->get('/event/available-filters-values/{table}', 'Admin\Event@getTablesFiltersValues');
 
     // return events number or events based on selection: table, proviser, minOdd, maxOdd
     $app->get('/event/{type}', function(Request $request, $type) use ($app) {
