@@ -47,10 +47,8 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Associations - 4 tables
      ---------------------------------------------------------------------*/
 
-    // get all asociations by table type: run, ruv, nun, nuv
-    $app->get('/association/{type}', function($type) use ($app) {
-        return \App\Association::where([['type', '=', $type]])->get();
-    });
+    // get all asociations by tableIdentifier : run, ruv, nun, nuv
+    $app->get('/association/{tableIdentifier}', 'Admin\Association@index');
 
     // create new association
     $app->post("/association", function(Request $request) use ($app) {
