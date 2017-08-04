@@ -81,6 +81,14 @@ class Event extends Controller
     }
 
     /*
+     * @return array()
+     */
+    public function getAvailableEvents(Request $request)
+    {
+        return \App\Event::where($this->whereForAvailableEvents($request))->orderBy('eventDate', 'desc')->get();
+    }
+
+    /*
      * @return array() of filters for eloquent
      */
     private function whereForAvailableEvents(Request $request)
