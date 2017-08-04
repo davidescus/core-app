@@ -76,7 +76,7 @@ class Event extends Controller
      */
     public function getNumberOfAvailableEvents(Request $request)
     {
-        $nr = \App\Event::where(whereForAvailableEvents($request))->count();
+        $nr = \App\Event::where($this->whereForAvailableEvents($request))->count();
         return $nr ? $nr : 0;
     }
 
