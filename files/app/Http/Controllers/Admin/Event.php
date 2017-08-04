@@ -31,6 +31,9 @@ class Event extends Controller
 
     public function destroy() {}
 
+    /*
+     * @return array()
+     */
     public function getTablesFiltersValues($table)
     {
         $data = [
@@ -66,5 +69,44 @@ class Event extends Controller
 
         return $data;
 
+    }
+
+    /*
+     * @return int
+     */
+    public function getNumberOfAvailableEvents(Request $request)
+    {
+        $nr = \App\Event::where(whereForAvailableEvents($request))->count();
+        return $nr ? $nr : 0;
+    }
+
+    /*
+     * @return array() of filters for eloquent
+     */
+    private function whereForAvailableEvents(Request $request)
+    {
+        $where = [];
+        if ($request->get('provider'))
+            $where[] = ['provider', '=', $request->get('provider')];
+
+        if ($request->get('league'))
+            $where[] = ['league', '=', $request->get('league')];
+
+        if ($request->get('minOdd'))
+            $where[] = ['odd', '>=', $request->get('minOdd')];
+
+        if ($request->get('maxOdd'))
+            $where[] = ['odd', '<=', $request->get('maxOdd')];
+
+        if ($request->get('table') == 'run' || $request->get('table')== 'ruv')
+            $where[] = ['eventDate', '>', Carbon::now('UTC')->addMinutes(20)];
+
+        if ($request->get('table') == 'nun' || $request->get('table') == 'nuv') {
+            $where[] = ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')];
+            $where[] = ['result', '<>', ''];
+            $where[] = ['statusId', '<>', ''];
+        }
+
+        return $where;
     }
 }
