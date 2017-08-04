@@ -39,7 +39,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // return events number or events based on selection: table, provider, league, minOdd, maxOdd
     $app->get('/event/available/number', 'Admin\Event@getNumberOfAvailableEvents');
 
-    // return events number or events based on selection: table, provider, league, minOdd, maxOdd
+    // return events based on selection: table, provider, league, minOdd, maxOdd
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
 
