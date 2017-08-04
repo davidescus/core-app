@@ -17,8 +17,9 @@ class Association extends Controller
         //
     }
 
-    public function index()
+    public function index($tableIdentifier)
     {
+        return \App\Association::where([['type', '=', $tableIdentifier]])->get();
     }
 
     public function get() {}
