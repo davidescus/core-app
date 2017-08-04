@@ -36,10 +36,10 @@ $(document).ready(function() {
         if (config.activePage == 'association') {
 
             // autocomlete provider and league
-            getEventsInfo({ table:"run" });
-            getEventsInfo({ table:"ruv" });
-            getEventsInfo({ table:"nun" });
-            getEventsInfo({ table:"nuv" });
+            getTableAvailableFiltersValues({ table:"run" });
+            getTableAvailableFiltersValues({ table:"ruv" });
+            getTableAvailableFiltersValues({ table:"nun" });
+            getTableAvailableFiltersValues({ table:"nuv" });
 
             // get availlable events number
             getAvailableEventsNumber({ table: "run" });

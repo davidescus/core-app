@@ -8,7 +8,7 @@
 $('.table-association').on('click', '.refresh-event-info', function() {
     var table = $(this).parents('.table-association').attr('data-table');
 
-    getEventsInfo({ table: table });
+    getTableAvailableFiltersValues({ table: table });
     getAvailableEventsNumber({ table: table });
 });
 
@@ -176,7 +176,7 @@ $('#modal-associate-events').on('click', '.associate-event', function() {
 *  object args {table}
 *  will retribe like tipsters, leagues
 */
-function getEventsInfo(args) {
+function getTableAvailableFiltersValues(args) {
 
     $.ajax({
         url: config.coreUrl + "/event/available-filters-values/" + args.table,
