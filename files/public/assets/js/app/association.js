@@ -235,7 +235,7 @@ function getAvailableEventsNumber(filters) {
 
 /*
 * this function will retribe available events based on selection
-* object args: table, provider, minOdd, maxOdd
+* object args: table, provider, league, minOdd, maxOdd
 */
 function getAvailableEvents(filters) {
 
