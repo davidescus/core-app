@@ -8,7 +8,7 @@
 $('.table-association').on('click', '.refresh-event-info', function() {
     var table = $(this).parents('.table-association').attr('data-table');
 
-    getTableAvailableFiltersValues({ table: table });
+    getTableAvailableFiltersValues(table);
     getAvailableEventsNumber({ table: table });
 });
 
@@ -176,17 +176,17 @@ $('#modal-associate-events').on('click', '.associate-event', function() {
 *  object args {table}
 *  will retribe like tipsters, leagues
 */
-function getTableAvailableFiltersValues(args) {
+function getTableAvailableFiltersValues(tableIdentifier) {
 
     $.ajax({
-        url: config.coreUrl + "/event/available-filters-values/" + args.table,
+        url: config.coreUrl + "/event/available-filters-values/" + tableIdentifier,
         type: "get",
         //        dataType: "json",
         //        data: {},
         //        beforeSend: function() {},
         success: function (response) {
 
-            var table = $('#table-association-' + args.table);
+            var table = $('#table-association-' + tableIdentifier);
 
             // autocomplete provider select
             var template = table.find('.template-select-provider').html();
