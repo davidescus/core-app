@@ -14,10 +14,6 @@
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-$app->get('/', function () use ($app) {
-    return $app->version();
-});
-
 $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
     return $app->version();
 });
@@ -34,9 +30,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     /*****************************************************************
      * Manage events
      * **************************************************************/
-    $app->get('/event/all', function() use ($app) {
-        return \App\Event::all();
-    });
+    $app->get('/event/all', 'Admin\Event@index');
 
     // return distinct providers and leagues based on table selection
     $app->get('/event/info', function(Request $request) use ($app) {
