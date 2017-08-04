@@ -240,14 +240,14 @@ function getAvailableEventsNumber(filters) {
 function getAvailableEvents(args) {
 
     $.ajax({
-        url: config.coreUrl + "/event/events?" + $.param(args),
+        url: config.coreUrl + "/event/available?" + $.param(args),
         type: "get",
         success: function (response) {
 
             var element = $('#modal-available-events');
             var data = {
                 table: args.table,
-                events: response.events,
+                events: response,
                 currentDate: new Date().toISOString().split('T')[0],
             };
 
