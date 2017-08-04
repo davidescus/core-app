@@ -33,43 +33,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/all', 'Admin\Event@index');
 
     // return distinct providers and leagues based on table selection
-    $app->get('/event/info', function(Request $request) use ($app) {
-
-        $table = $request->get('table');
-
-        $data = [
-            'tipsters' => [],
-            'leagues'  => []
-        ];
-
-        if ($table == 'run' || $table == 'ruv') {
-            $data['tipsters'] = \App\Event::distinct()->select('provider')
-                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
-                ->groupBy('provider')->get();
-
-            $data['leagues'] = \App\Event::distinct()->select('league')
-                ->where('eventDate', '>', Carbon::now('UTC')->addMinutes(20))
-                ->groupBy('league')->get();
-        }
-
-        if ($table == 'nun' || $table == 'nuv') {
-            $data['tipsters'] = \App\Event::distinct()->select('provider')
-                ->where([
-                    ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
-                        ['result', '<>', ''],
-                        ['statusId', '<>', '']
-                    ])->groupBy('provider')->get();
-
-            $data['leagues'] = \App\Event::distinct()->select('league')
-                ->where([
-                    ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')],
-                        ['result', '<>', ''],
-                        ['statusId', '<>', '']
-                    ])->groupBy('league')->get();
-        }
-
-        return $data;
-    });
+    $app->get('/event/info', 'Admin\Event@getTablesFiltersValues');
 
     // return events number or events based on selection: table, proviser, minOdd, maxOdd
     $app->get('/event/{type}', function(Request $request, $type) use ($app) {
