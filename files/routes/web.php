@@ -27,13 +27,17 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
 
-    /*****************************************************************
-     * Manage events
-     * **************************************************************/
+    /*
+     * Events
+     ---------------------------------------------------------------------*/
+
     $app->get('/event/all', 'Admin\Event@index');
 
     // return distinct providers and leagues based on table selection
     $app->get('/event/available-filters-values/{table}', 'Admin\Event@getTablesFiltersValues');
+
+    // return events number or events based on selection: table, provider, league, minOdd, maxOdd
+    $app->get('/event/available/number', 'Admin\Event@getNumberOfAvailableEvents');
 
     // return events number or events based on selection: table, proviser, minOdd, maxOdd
     $app->get('/event/{type}', function(Request $request, $type) use ($app) {
