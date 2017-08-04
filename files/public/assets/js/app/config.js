@@ -2,6 +2,6 @@
  * general connnfiguration
  */
 var config = {
-    coreUrl: "http://<?php echo env('APP_IP'); ?>/admin",
+    coreUrl: "http://51.15.78.71/admin",
     activePage: "association"
 };
