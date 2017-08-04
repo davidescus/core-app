@@ -42,51 +42,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // return events number or events based on selection: table, provider, league, minOdd, maxOdd
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
-    // return events number or events based on selection: table, proviser, minOdd, maxOdd
-    $app->get('/event/{type}', function(Request $request, $type) use ($app) {
-
-        $data = [
-            'number' => 0,
-            'events' => []
-        ];
-
-        $table = $request->get('table');
-        $provider = $request->get('provider');
-        $league = $request->get('league');
-        $minOdd = $request->get('minOdd');
-        $maxOdd = $request->get('maxOdd');
-
-        $where = [];
-        if ($provider)
-            $where[] = ['provider', '=', $provider];
-
-        if ($league)
-            $where[] = ['league', '=', $league];
-
-        if ($minOdd)
-            $where[] = ['odd', '>=', $minOdd];
-
-        if ($maxOdd)
-            $where[] = ['odd', '<=', $maxOdd];
-
-        if ($table == 'run' || $table == 'ruv')
-            $where[] = ['eventDate', '>', Carbon::now('UTC')->addMinutes(20)];
-
-        if ($table == 'nun' || $table == 'nuv') {
-            $where[] = ['eventDate', '<', Carbon::now('UTC')->modify('-105 minutes')];
-            $where[] = ['result', '<>', ''];
-            $where[] = ['statusId', '<>', ''];
-        }
-
-        if ($type == 'number') {
-            $eventNumber = \App\Event::where($where)->count();
-            $data['number'] = $eventNumber ? $eventNumber : 0;
-        }
-        if ($type == 'events') {
-            $data['events'] = \App\Event::where($where)->orderBy('eventDate', 'desc')->get();
-        }
-        return $data;
-    });
 
     /*****************************************************************
      * Manage Associations
