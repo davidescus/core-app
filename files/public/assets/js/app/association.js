@@ -237,10 +237,10 @@ function getAvailableEventsNumber(filters) {
 * this function will retribe available events based on selection
 * object args: table, provider, minOdd, maxOdd
 */
-function getAvailableEvents(args) {
+function getAvailableEvents(filters) {
 
     $.ajax({
-        url: config.coreUrl + "/event/available?" + $.param(args),
+        url: config.coreUrl + "/event/available?" + $.param(filters),
         type: "get",
         success: function (response) {
 
