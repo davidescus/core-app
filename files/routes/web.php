@@ -161,11 +161,8 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 "message" => "Event id: $associateEventId not exist anymore!"
             ]);
 
-        // get prediction group
-        $prediction = \App\Prediction::select('group')->where('identifier', $data['event']->predictionId)->first();
-
-        // get all packages associated with this prediction group
-        $packagesIds = \App\PackagePredictionGroup::select('packageId')->where('predictionGroup', $prediction->group)->get();
+        // get all packages associated with this prediction
+        $packagesIds = \App\PackagePrediction::select('packageId')->where('predictionIdentifier', $data['event']->predictionId)->get();
 
         $keys = [];
         $increments = 0;
