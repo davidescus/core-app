@@ -487,10 +487,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Sites
      ---------------------------------------------------------------------*/
 
-    // get all sites
-    $app->get('/site', function() use ($app) {
-        return \App\Site::all();
-    });
+    // get all sites only ids and names
+    $app->get('/site/ids-and-names', 'Admin\Site@getIdsAndNames');
+
+    // get all sites with all proprieties
+    $app->get('/site', 'Admin\Site@index');
 
     // get specific site by id
     $app->get("/site/{id}", function($id) use ($app) {
