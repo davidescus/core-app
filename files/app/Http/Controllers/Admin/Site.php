@@ -22,7 +22,12 @@ class Site extends Controller
         return \App\Site::all();
     }
 
-    public function get() {}
+    /*
+     * return object
+     */
+    public function get($id) {
+        return \App\Site::find($id);
+    }
 
     public function store() {}
 
