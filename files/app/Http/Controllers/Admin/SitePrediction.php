@@ -25,10 +25,10 @@ class SitePrediction extends Controller
         $predictions = \App\Prediction::all()->toArray();
 
         foreach ($predictions as $key => $prediction) {
-            $sitePrediction = \App\SitePrediction::where('predictionIdentifier', $prediction->identifier)->where('siteId', $siteId)->first();
+            $sitePrediction = \App\SitePrediction::where('predictionIdentifier', $prediction['identifier'])->where('siteId', $siteId)->first();
 
             if ($sitePrediction) {
-                $predictions[$key]['siteName'] = $prediction->name;
+                $predictions[$key]['siteName'] = $sitePrediction['name'];
             }
         }
 
