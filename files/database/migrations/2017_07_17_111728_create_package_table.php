@@ -17,9 +17,11 @@ class CreatePackageTable extends Migration
             $table->increments('id');
             $table->integer('siteId');
             $table->string('name');
+            $table->string('identifier');
             $table->string('tipIdentifier');
             $table->string('tableIdentifier');
             $table->string('paymentName');
+            $table->string('vipFlag');
             $table->boolean('isVip');
             $table->boolean('isRecurring');
             $table->string('subscriptionType');

@@ -9,9 +9,11 @@ class Package extends Model {
     protected $fillable = [
         'siteId',
         'name',
+        'identifier',
         'tipIdentifier',
         'tableIdentifier',
         'paymentName',
+        'vipFlag',
         'isVip',
         'isRecurring',
         'subscriptionType',
