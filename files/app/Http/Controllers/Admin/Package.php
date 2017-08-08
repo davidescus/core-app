@@ -66,10 +66,10 @@ class Package extends Controller
             // create new array and sort predicitons
             $data = [];
             foreach ($pred as $p) {
-               $data[$p->group][] = $p;
+               $data[$p->group]['predictions'][] = $p;
             }
 
-            $packages[$k]['predictions'] = $data;
+            $packages[$k]['associatedPredictions'] = $data;
         }
 
         return $packages;
