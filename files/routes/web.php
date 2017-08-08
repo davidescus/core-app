@@ -56,7 +56,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // get all prediction for a site
-    $app->get('/site-prediction{siteId}', 'Admin\SitePrediction@index');
+    $app->get('/site-prediction/{siteId}', 'Admin\SitePrediction@index');
 
 
     /*
