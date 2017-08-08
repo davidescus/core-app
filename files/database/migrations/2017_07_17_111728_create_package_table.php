@@ -26,7 +26,7 @@ class CreatePackageTable extends Migration
             $table->boolean('isRecurring');
             $table->string('subscriptionType');
             $table->integer('tipsPerDay');
-            $table->integer('tipsTotal');
+            $table->integer('subscription');
             $table->string('aliasTipsPerDay');
             $table->string('aliasTipsTotal');
             $table->string('oldPrice');

@@ -18,7 +18,7 @@ class Package extends Model {
         'isRecurring',
         'subscriptionType',
         'tipsPerDay',
-        'tipsTotal',
+        'subscription',
         'aliasTipsPerDay',
         'aliasTipsTotal',
         'oldPrice',
