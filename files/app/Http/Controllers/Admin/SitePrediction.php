@@ -22,7 +22,7 @@ class SitePrediction extends Controller
      */
     public function index($siteId)
     {
-        $predictions = \App\Site::all()->toArray();
+        $predictions = \App\Prediction::all()->toArray();
 
         foreach ($predictions as $key => $prediction) {
             $sitePrediction = \App\SitePrediction::where('predictionIdentifier', $prediction->identifier)->where('siteId', $siteId)->first();
