@@ -49,9 +49,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('package-site/{id}', 'Admin\Package@getPackagesBySite');
 
     // get specific package by id
-    $app->get("/package/{id}", function($id) use ($app) {
-        return \App\Package::find($id);
-    });
+    $app->get("/package/{id}", 'Admin\Package@get');
 
     /*
      * Events
