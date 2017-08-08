@@ -52,6 +52,14 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get("/package/{id}", 'Admin\Package@get');
 
     /*
+     * Site Prediction
+     ---------------------------------------------------------------------*/
+
+    // get all prediction for a site
+    $app->get('/site-prediction{siteId}', 'Admin\SitePrediction@index');
+
+
+    /*
      * Events
      ---------------------------------------------------------------------*/
 
