@@ -42,6 +42,20 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get("/site/{id}", 'Admin\Site@get');
 
     /*
+     * Packages
+     ---------------------------------------------------------------------*/
+
+    // getall packages for a specific site
+    $app->get('package-site/{id}', function($id) use ($app) {
+        return \App\Package::where('siteId', '=', $id)->get();
+    });
+
+    // get specific package by id
+    $app->get("/package/{id}", function($id) use ($app) {
+        return \App\Package::find($id);
+    });
+
+    /*
      * Events
      ---------------------------------------------------------------------*/
 
@@ -558,19 +572,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ]);
     });
 
-    /*
-     * Packages
-     ---------------------------------------------------------------------*/
-
-    // getall packages for a specific site
-    $app->get('package-site/{id}', function($id) use ($app) {
-        return \App\Package::where('siteId', '=', $id)->get();
-    });
-
-    // get specific package by id
-    $app->get("/package/{id}", function($id) use ($app) {
-        return \App\Package::find($id);
-    });
 
     // update a package
     $app->put("/package/{id}", function(Request $request, $id) use ($app) {
