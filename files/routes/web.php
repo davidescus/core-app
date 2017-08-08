@@ -46,9 +46,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // getall packages for a specific site
-    $app->get('package-site/{id}', function($id) use ($app) {
-        return \App\Package::where('siteId', '=', $id)->get();
-    });
+    $app->get('package-site/{id}', 'Admin\Package@getPackagesBySite');
 
     // get specific package by id
     $app->get("/package/{id}", function($id) use ($app) {
