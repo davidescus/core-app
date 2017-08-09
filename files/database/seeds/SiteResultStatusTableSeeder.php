@@ -45,28 +45,28 @@ class SiteResultStatusTableSeeder extends Seeder {
 
             $statusType = rand(0,3);
 
-            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 1)->get())
+            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 1)->count())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 1,
                     'statusName'  => $statusName[$statusType][1],
                     'statusClass' => 'result win-result',
                 ]);
-            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 2)->get())
+            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 2)->count())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 2,
                     'statusName'  => $statusName[$statusType][2],
                     'statusClass' => 'result loss-result',
                 ]);
-            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 3)->get())
+            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 3)->count())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 3,
                     'statusName'  => $statusName[$statusType][3],
                     'statusClass' => 'result draw-result',
                 ]);
-            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 4)->get())
+            if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 4)->count())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 4,
