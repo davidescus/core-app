@@ -38,9 +38,29 @@ class SiteResultStatus extends Controller
      */
     public function get() {}
 
-    public function store() {}
+    public function storeOrUpdate(Request $r, $siteId) {
 
-    public function update() {}
+        $data = $r->input('data');
+        foreach ($data as $s) {
+            $row = \App\SiteResultStatus::where('siteId', $siteId)->where('statusId', $s['statusId'])->first();
+
+            if ($row) {
+                $row->statusName = $s['statusName'];
+                $row->statusClass = $s['statusClass'];
+                $row->update();
+                continue;
+            }
+
+            $s['siteId'] = $siteId;
+            \App\SiteResultStatus::create($s);
+        }
+
+        return response()->json([
+            "type" => "success",
+            "message" => "Results names and classes was update with success.",
+        ]);
+
+    }
 
     public function destroy() {}
 }
