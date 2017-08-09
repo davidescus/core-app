@@ -46,7 +46,30 @@ class SitePrediction extends Controller
      */
     public function get() {}
 
-    public function store() {}
+    /*
+     * return array()
+     */
+    public function storeOrUpdate(Request $r, $siteId) {
+
+        $data = $r->input('data');
+        foreach ($data as $p) {
+            $row = \App\SitePrediction::where('siteId', $siteId)->where('predictionIdentifier', $p['predictionIdentifier'])->first();
+
+            if ($row) {
+                $row->name = $p['name'];
+                $row->update();
+                continue;
+            }
+
+            $p['siteId'] = $siteId;
+            \App\SitePrediction::create($p);
+        }
+
+        return response()->json([
+            "type" => "success",
+            "message" => "Predictions names was update with success.",
+        ]);
+    }
 
     public function update() {}
 
