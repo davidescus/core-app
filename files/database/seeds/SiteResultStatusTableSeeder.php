@@ -57,21 +57,21 @@ class SiteResultStatusTableSeeder extends Seeder {
                     'siteId'      => $site->id,
                     'statusId'    => 2,
                     'statusName'  => $statusName[$statusType][2],
-                    'statusClass' => 'result win-result',
+                    'statusClass' => 'result loss-result',
                 ]);
             if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 3)->get())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 3,
                     'statusName'  => $statusName[$statusType][3],
-                    'statusClass' => 'result win-result',
+                    'statusClass' => 'result draw-result',
                 ]);
             if (!SiteResultStatus::where('siteId', $site->id)->where('statusId', 4)->get())
                 SiteResultStatus::create([
                     'siteId'      => $site->id,
                     'statusId'    => 4,
                     'statusName'  => $statusName[$statusType][4],
-                    'statusClass' => 'result win-result',
+                    'statusClass' => 'result postp-result',
                 ]);
         }
     }
