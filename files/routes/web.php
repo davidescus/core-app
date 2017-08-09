@@ -44,6 +44,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // store new site
     $app->post("/site", 'Admin\Site@store');
 
+    // update a site
+    $app->post("/site/update/{id}", 'Admin\Site@update');
+
     /*
      * Packages
      ---------------------------------------------------------------------*/
@@ -522,26 +525,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ];
     });
 
-    // update a site
-    $app->put("/site/{id}", function(Request $request, $id) use ($app) {
-        $site = \App\Site::find($id);
-
-        // Site not exists retur status not exists
-        if ($site === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Site with id: $id not exists"
-            ]);
-        }
-
-        // Todo: check if new name is valid
-        $site->name = $request->input('name');
-        $site->save();
-        return response()->json([
-            "type" => "success",
-            "message" => "Site information was updated with success!"
-        ]);
-    });
 
 
     // delete a site

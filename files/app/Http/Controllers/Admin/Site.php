@@ -54,7 +54,37 @@ class Site extends Controller
         ]);
     }
 
-    public function update() {}
+    public function update(Request $r, $id) {
+        $site = \App\Site::find($id);
+
+        // Site not exists retur status not exists
+        if ($site === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with id: $id not exists"
+            ]);
+        }
+
+        $where = [
+            ['name', '=', $r->input('name')],
+            ['id', '!=', $id],
+        ];
+        if (\App\Site::where($where)->count())
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with name: " . $r->input('name') . " already exists!",
+            ]);
+
+        if ($site->name !== $r->input('name')) {
+            $site->name = $r->input('name');
+            $site->save();
+        }
+
+        return response()->json([
+            "type" => "success",
+            "message" => "General site information was updated with success!"
+        ]);
+    }
 
     public function destroy() {}
 
