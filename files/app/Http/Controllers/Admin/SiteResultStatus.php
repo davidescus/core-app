@@ -38,6 +38,9 @@ class SiteResultStatus extends Controller
      */
     public function get() {}
 
+    /*
+     * return array()
+     */
     public function storeOrUpdate(Request $r, $siteId) {
 
         $data = $r->input('data');
