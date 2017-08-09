@@ -41,6 +41,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // get specific site by id
     $app->get("/site/{id}", 'Admin\Site@get');
 
+    // store new site
+    $app->post("/site", 'Admin\Site@store');
+
     /*
      * Packages
      ---------------------------------------------------------------------*/
@@ -540,29 +543,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ]);
     });
 
-    // store new site
-    $app->post("/site", function(Request $request) use ($app) {
-
-        // Todo: check if new name is valid
-        $name = $request->input('name');
-
-        // Site name must be unique
-        $site = \App\Site::where('name', '=', $name)->first();
-        if ($site !== null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "This site already exists!"
-            ]);
-        }
-
-        $site = \App\Site::create([
-            "name" => $name
-        ]);
-        return response()->json([
-            "type" => "success",
-            "message" => "New site was added with success!"
-        ]);
-    });
 
     // delete a site
     $app->delete("/site/{id}", function($id) use ($app) {
