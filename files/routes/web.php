@@ -61,8 +61,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Site Prediction
      ---------------------------------------------------------------------*/
 
-    // get all prediction for a site
+    // get all predictions names for a site
     $app->get('/site-prediction/{siteId}', 'Admin\SitePrediction@index');
+
+    // update or create all predictions names for a site
+    $app->get('/site-prediction/update/{siteId}', 'Admin\SitePrediction@storeOrUpdate');
 
     /*
      * Site Result Status
@@ -70,6 +73,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all results name and statuses for a site
     $app->get('/site-result-status/{siteId}', 'Admin\SiteResultStatus@index');
+
+    // update or create all results name and statuses for a site
+    $app->post('/site-result-status/update/{siteId}', 'Admin\SiteResultStatus@storeOrUpdate');
 
     /*
      * Events
