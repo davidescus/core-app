@@ -22,7 +22,15 @@ class SiteResultStatus extends Controller
      */
     public function index($siteId)
     {
-        return \App\SiteResultStatus::where('siteId', $siteId)->get();
+        $status = \App\SiteResultStatus::where('siteId', $siteId)->get();
+
+        // create index array as statusId
+        $data = [];
+        foreach ($status as $s) {
+            $data[$s->statusId] = $s;
+        }
+
+        return $data;
     }
 
     /*
