@@ -14,6 +14,7 @@ class CreateSitePredictionTable extends Migration
     public function up()
     {
         Schema::create('site_prediction', function(Blueprint $table) {
+            $table->increments('id');
             $table->string('siteId')->index();
             $table->string('predictionIdentifier')->index();
             $table->string('name');
