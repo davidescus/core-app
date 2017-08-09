@@ -65,7 +65,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/site-prediction/{siteId}', 'Admin\SitePrediction@index');
 
     // update or create all predictions names for a site
-    $app->get('/site-prediction/update/{siteId}', 'Admin\SitePrediction@storeOrUpdate');
+    $app->post('/site-prediction/update/{siteId}', 'Admin\SitePrediction@storeOrUpdate');
 
     /*
      * Site Result Status
