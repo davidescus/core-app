@@ -32,7 +32,13 @@ class SitePrediction extends Controller
             }
         }
 
-        return $predictions;
+        // sort predictions by group
+        $data = [];
+        foreach ($predictions as $p) {
+            $data[$p['group']]['predictions'][] = $p;
+        }
+
+        return $data;
     }
 
     /*
