@@ -14,6 +14,7 @@ class CreateSiteResultStatusTable extends Migration
     public function up()
     {
         Schema::create('site_result_status', function(Blueprint $table) {
+            $table->increments('id');
             $table->integer('siteId')->index();
             $table->integer('statusId')->index();
             $table->string('statusName');
