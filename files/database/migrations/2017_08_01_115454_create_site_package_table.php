@@ -14,6 +14,7 @@ class CreateSitePackageTable extends Migration
     public function up()
     {
         Schema::create('site_package', function(Blueprint $table) {
+            $table->increments('id');
             $table->integer('siteId')->index();
             $table->string('packageId')->index();
         });
