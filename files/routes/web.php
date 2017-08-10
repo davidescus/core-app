@@ -61,16 +61,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->post("/package/update/{id}", 'Admin\Package@update');
 
     // store new package
-    $app->post("/package", function(Request $request) use ($app) {
-
-        // Todo: check inputs for validity
-
-        $pack = \App\Package::create($request->all());
-        return response()->json([
-            "type" => "success",
-            "message" => "New site was added with success!"
-        ]);
-    });
+    $app->post("/package", 'Admin\Package@store');
 
     // delete a package
     $app->delete("/package/{id}", function($id) use ($app) {

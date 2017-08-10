@@ -29,7 +29,20 @@ class Package extends Controller
         return \App\Package::find($id);
     }
 
-    public function store() {}
+    /*
+     * @return array()
+     */
+    public function store(Request $r) {
+
+        // Todo: check inputs for validity
+
+        $pack = \App\Package::create($r->all());
+        return response()->json([
+            "type" => "success",
+            "message" => "New package: " . $r->input('name') . " was added with success!",
+            "data" => $pack,
+        ]);
+    }
 
     /*
      * @return array()
