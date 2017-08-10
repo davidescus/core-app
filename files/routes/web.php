@@ -97,9 +97,14 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // get all predictions order by group
     $app->get("/prediction", function() use ($app) {
 
-        $predictions = \App\Prediction::all();
+        $pred = \App\Prediction::all();
 
-        return $predictions;
+        $data = [];
+        foreach ($pred as $p) {
+            $data[$p['group']]['predictions'][] = $p;
+        }
+
+        return $data;
     });
 
     /*
