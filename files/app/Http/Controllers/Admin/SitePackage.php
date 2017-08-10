@@ -28,7 +28,12 @@ class SitePackage extends Controller
      * return array
      */
     public function get($siteId) {
-        return \App\SitePackage::where('siteId', $siteId)->get()->toArray();
+
+        $data = [];
+        foreach (\App\SitePackage::where('siteId', $siteId)->get()->toArray() as $p)
+           $data[] = $p['packageId'];
+
+        return $data;
     }
 
     /*
