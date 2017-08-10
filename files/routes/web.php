@@ -126,6 +126,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->post('/site-result-status/update/{siteId}', 'Admin\SiteResultStatus@storeOrUpdate');
 
     /*
+     * Package Prediction
+     ---------------------------------------------------------------------*/
+
+    // delete all package predictions and create allnew assocaitions
+    $app->post('/package-prediction', 'Admin\PackagePrediction@deleteAndStore');
+
+    /*
      * Events
      ---------------------------------------------------------------------*/
 
