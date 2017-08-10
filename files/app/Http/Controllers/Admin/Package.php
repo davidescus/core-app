@@ -31,7 +31,28 @@ class Package extends Controller
 
     public function store() {}
 
-    public function update() {}
+    /*
+     * @return array()
+     */
+    public function update(Request $r, $id) {
+
+        $pack = \App\Package::find($id);
+
+        // Package not exists retur status not exists
+        if ($pack === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Package with id: $id not exists anymore"
+            ]);
+        }
+
+        // Todo: check inputs for validity
+        $pack->update($r->input('data'));
+        return response()->json([
+            "type" => "success",
+            "message" => "Package information was updated with success!"
+        ]);
+    }
 
     public function destroy() {}
 
