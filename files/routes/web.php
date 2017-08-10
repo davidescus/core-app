@@ -112,6 +112,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Site Package
      ---------------------------------------------------------------------*/
 
+    // get all packages ids associated with site
+    $app->get('/site-package/{siteId}', 'Admin\SitePackage@get');
+
     // store if not exists a new association site - package
     $app->post('/site-package', 'Admin\SitePackage@storeIfNotExists');
 
