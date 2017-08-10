@@ -50,7 +50,7 @@ class Package extends Controller
         $pack->update($r->input('data'));
         return response()->json([
             "type" => "success",
-            "message" => "Package information was updated with success!"
+            "message" => "Package information " . $r->input('data')['name'] . " was updated with success!"
         ]);
     }
 
