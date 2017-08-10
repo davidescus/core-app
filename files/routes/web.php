@@ -113,7 +113,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // store if not exists a new association site - package
-    $app->get('/site-package', 'Admin\SitePackage@storeIfNotExists');
+    $app->post('/site-package', 'Admin\SitePackage@storeIfNotExists');
 
     /*
      * Site Result Status
