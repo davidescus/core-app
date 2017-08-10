@@ -109,6 +109,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->post('/site-prediction/update/{siteId}', 'Admin\SitePrediction@storeOrUpdate');
 
     /*
+     * Site Package
+     ---------------------------------------------------------------------*/
+
+    // store if not exists a new association site - package
+    $app->get('/site-package', 'Admin\SitePackage@storeIfNotExists');
+
+    /*
      * Site Result Status
      ---------------------------------------------------------------------*/
 
