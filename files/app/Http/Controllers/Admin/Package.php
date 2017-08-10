@@ -74,15 +74,15 @@ class Package extends Controller
      */
     public function getPackagesBySite($siteId)
     {
-        $packages = \App\Package::where('siteId', $siteId)->get();
+        $packages = \App\Package::where('siteId', $siteId)->get()->toArray();
 
-        $predictions = \App\Prediction::all();
+        $predictions = \App\Prediction::all()->toArray();
 
         //iterate al packages and get predictions
         foreach ($packages as $k => $package) {
 
             // get allowed predictions
-            $allowedPredictions = \App\PackagePrediction::where('packageId', $package['id'])->get();
+            $allowedPredictions = \App\PackagePrediction::where('packageId', $package['id'])->get()->toArray();
 
             $pred = $predictions;
             foreach ($pred as $kp => $p) {
@@ -92,18 +92,20 @@ class Package extends Controller
                 foreach ($allowedPredictions as $kap => $ap) {
 
                     // if association exists make it true
-                    if ($p->identifier === $ap->predictionIdentifier)
-                        $pred[$kp]['isAssociated'] = true;
+                    if ($p['identifier'] == $ap['predictionIdentifier'])
+                       $pred[$kp]['isAssociated'] = true;
                 }
             }
 
             // create new array and sort predicitons
             $data = [];
             foreach ($pred as $p) {
-               $data[$p->group]['predictions'][] = $p;
+               $data[$p['group']]['predictions'][] = $p;
             }
 
             $packages[$k]['associatedPredictions'] = $data;
+            //$packages[$k]['associatedPredictions'] = $allowedPredictions;
+
         }
 
         return $packages;
