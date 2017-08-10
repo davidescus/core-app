@@ -28,7 +28,7 @@ class CreatePackageTable extends Migration
             $table->integer('tipsPerDay');
             $table->integer('subscription');
             $table->string('aliasTipsPerDay');
-            $table->string('aliasTipsTotal');
+            $table->string('aliasSubscriptionType');
             $table->string('oldPrice');
             $table->string('discount');
             $table->string('price');

@@ -20,7 +20,7 @@ class Package extends Model {
         'tipsPerDay',
         'subscription',
         'aliasTipsPerDay',
-        'aliasTipsTotal',
+        'aliasSubscriptionType',
         'oldPrice',
         'discount',
         'price',
