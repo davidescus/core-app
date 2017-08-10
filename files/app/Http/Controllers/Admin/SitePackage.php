@@ -34,9 +34,26 @@ class SitePackage extends Controller
      */
     public function storeIfNotExists(Request $r)
     {
-        $data = $r->input('data');
+        $d = $r->input('data');
 
-        return $data;
+        if(!$d)
+            return response()->json([
+                "type" => "error",
+                "message" => "Invalid data for association.",
+            ]);
+
+        if (\App\SitePackage::where('siteId', $d['siteId'])->where('packageId', $d['packageId'])->count())
+            return response()->json([
+                "type" => "success",
+                "message" => "Package: " . $d['packageId'] . " already associated with site: " . $d['siteId'],
+            ]);
+
+        \App\SitePackage::create($d);
+
+        return response()->json([
+            "type" => "success",
+            "message" => "Package: " . $d['packageId'] . " successfful associated with site: " . $d['siteId'],
+        ]);
     }
 
     public function update() {}
