@@ -80,7 +80,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
         \App\SitePackage::where('packageId', $id)->delete();
 
         // delete associated predictions
-        \App\PackagePrediction::where('packageId')->delete();
+        \App\PackagePrediction::where('packageId', $id)->delete();
 
         return response()->json([
             "type" => "success",
