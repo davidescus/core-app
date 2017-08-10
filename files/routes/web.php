@@ -57,6 +57,39 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // get specific package by id
     $app->get("/package/{id}", 'Admin\Package@get');
 
+    // update a package
+    $app->post("/package/update/{id}", 'Admin\Package@update');
+
+    // store new package
+    $app->post("/package", function(Request $request) use ($app) {
+
+        // Todo: check inputs for validity
+
+        $pack = \App\Package::create($request->all());
+        return response()->json([
+            "type" => "success",
+            "message" => "New site was added with success!"
+        ]);
+    });
+
+    // delete a package
+    $app->delete("/package/{id}", function($id) use ($app) {
+        $pack = \App\Package::find($id);
+
+        // Package not exists retur status not exists
+        if ($pack === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Package with id: $id not exists"
+            ]);
+        }
+        $pack->delete();
+        return response()->json([
+            "type" => "success",
+            "message" => "Pack with id: $id was deleted with success!"
+        ]);
+    });
+
     /*
      * Site Prediction
      ---------------------------------------------------------------------*/
@@ -552,53 +585,4 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
 
-    // update a package
-    $app->put("/package/{id}", function(Request $request, $id) use ($app) {
-        $pack = \App\Package::find($id);
-
-        // Site not exists retur status not exists
-        if ($pack === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Package with id: $id not exists anymore"
-            ]);
-        }
-
-        // Todo: check inputs for validity
-        $pack->update($request->all());
-        return response()->json([
-            "type" => "success",
-            "message" => "Package information was updated with success!"
-        ]);
-    });
-
-    // store new package
-    $app->post("/package", function(Request $request) use ($app) {
-
-        // Todo: check inputs for validity
-
-        $pack = \App\Package::create($request->all());
-        return response()->json([
-            "type" => "success",
-            "message" => "New site was added with success!"
-        ]);
-    });
-
-    // delete a package
-    $app->delete("/package/{id}", function($id) use ($app) {
-        $pack = \App\Package::find($id);
-
-        // Package not exists retur status not exists
-        if ($pack === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Package with id: $id not exists"
-            ]);
-        }
-        $pack->delete();
-        return response()->json([
-            "type" => "success",
-            "message" => "Pack with id: $id was deleted with success!"
-        ]);
-    });
 });
