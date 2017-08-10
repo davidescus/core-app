@@ -91,6 +91,18 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     /*
+     * Predictions
+     ---------------------------------------------------------------------*/
+
+    // get all predictions order by group
+    $app->get("/prediction", function() use ($app) {
+
+        $predictions = \App\Prediction::all();
+
+        return $predictions;
+    });
+
+    /*
      * Site Prediction
      ---------------------------------------------------------------------*/
 
