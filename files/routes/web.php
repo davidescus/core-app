@@ -47,6 +47,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // update a site
     $app->post("/site/update/{id}", 'Admin\Site@update');
 
+    // delete a site
+    $app->get("/site/delete/{id}", 'Admin\Site@destroy');
+
     /*
      * Packages
      ---------------------------------------------------------------------*/
@@ -596,25 +599,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ];
     });
 
-
-
-    // delete a site
-    $app->delete("/site/{id}", function($id) use ($app) {
-        $site = \App\Site::find($id);
-
-        // Site not exists retur status not exists
-        if ($site === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Site with id: $id not exists"
-            ]);
-        }
-        $site->delete();
-        return response()->json([
-            "type" => "success",
-            "message" => "Site with id: $id was deleted with success!"
-        ]);
-    });
 
 
 });

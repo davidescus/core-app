@@ -86,7 +86,47 @@ class Site extends Controller
         ]);
     }
 
-    public function destroy() {}
+    /*
+     * @return array()
+     */
+    public function destroy($id) {
+
+        $site = \App\Site::find($id);
+
+        // Site not exists retur status not exists
+        if ($site === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Site with id: $id not exists"
+            ]);
+        }
+
+        // delete site predictions
+        \App\SitePrediction::where('siteId', $id)->delete();
+
+        // result class and status
+        \App\SiteResultStatus::where('siteId', $id)->delete();
+
+        // association with packages
+        \App\SitePackage::where('siteId', $id)->delete();
+
+        // packages and package associated predictions
+        $packages = \App\Package::where('siteId', $id)->get()->toArray();
+        foreach ($packages as $p) {
+
+            // associated predictions
+            \App\PackagePrediction::where('packageId', $p['id'])->delete();
+
+            // delete pacakge
+            \App\Package::find($p['id'])->delete();
+        }
+
+        $site->delete();
+        return response()->json([
+            "type" => "success",
+            "message" => "Site with id: $id was deleted with success!"
+        ]);
+    }
 
     /*
      * @return array()
