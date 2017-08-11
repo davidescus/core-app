@@ -67,29 +67,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->post("/package", 'Admin\Package@store');
 
     // delete a package
-    $app->get("/package/delete/{id}", function($id) use ($app) {
-        $pack = \App\Package::find($id);
-
-        // Package not exists retur status not exists
-        if ($pack === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Package with id: $id not exists"
-            ]);
-        }
-        $pack->delete();
-
-        // delete association with site
-        \App\SitePackage::where('packageId', $id)->delete();
-
-        // delete associated predictions
-        \App\PackagePrediction::where('packageId', $id)->delete();
-
-        return response()->json([
-            "type" => "success",
-            "message" => "Pack with id: $id was deleted with success!"
-        ]);
-    });
+    $app->get("/package/delete/{id}", 'Admin\Package@destroy');
 
     /*
      * Predictions

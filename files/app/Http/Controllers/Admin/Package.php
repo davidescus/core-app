@@ -67,7 +67,32 @@ class Package extends Controller
         ]);
     }
 
-    public function destroy() {}
+    /*
+     * @return array()
+     */
+    public function destroy() {
+        $pack = \App\Package::find($id);
+
+        // Package not exists retur status not exists
+        if ($pack === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Package with id: $id not exists"
+            ]);
+        }
+        $pack->delete();
+
+        // delete association with site
+        \App\SitePackage::where('packageId', $id)->delete();
+
+        // delete associated predictions
+        \App\PackagePrediction::where('packageId', $id)->delete();
+
+        return response()->json([
+            "type" => "success",
+            "message" => "Pack with id: $id was deleted with success!"
+        ]);
+    }
 
     /*
      * @return array()
