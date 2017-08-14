@@ -31,5 +31,29 @@ class Association extends Controller
 
     public function update() {}
 
-    public function destroy() {}
+    public function destroy($id) {
+
+        $association = \App\Association::find($id);
+
+        // Site not exists retur status not exists
+        if ($association === null) {
+            return response()->json([
+                "type" => "error",
+                "message" => "Event with id: $id not exists"
+            ]);
+        }
+
+        // could not delete an already distributed association
+        if (\App\Distribution::where('associationId', $id)->count())
+        return response()->json([
+            "type" => "error",
+            "message" => "Before delete event: $id  you must delete all distribution of this!"
+        ]);
+
+        $association->delete();
+        return response()->json([
+            "type" => "success",
+            "message" => "Site with id: $id was deleted with success!"
+        ]);
+    }
 }

@@ -138,7 +138,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // return events based on selection: table, provider, league, minOdd, maxOdd
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
-
     /*
      * Associations - 4 tables
      ---------------------------------------------------------------------*/
@@ -217,30 +216,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     // delete an association
-    $app->get("/association/delete/{id}", function($id) use ($app) {
-        $association = \App\Association::find($id);
-
-        // Site not exists retur status not exists
-        if ($association === null) {
-            return response()->json([
-                "type" => "error",
-                "message" => "Event with id: $id not exists"
-            ]);
-        }
-
-        // could not delete an already distributed association
-        if (\App\Distribution::where('associationId', $id)->count())
-        return response()->json([
-            "type" => "error",
-            "message" => "Before delete event: $id  you must delete all distribution of this!"
-        ]);
-
-        $association->delete();
-        return response()->json([
-            "type" => "success",
-            "message" => "Site with id: $id was deleted with success!"
-        ]);
-    });
+    $app->get("/association/delete/{id}", 'Admin\Association@destroy');
 
     // get available packages and sites according to associateEvent prediction
     $app->get('/association/package/available/{table}/{associateEventId}', function($table, $associateEventId) use ($app) {
