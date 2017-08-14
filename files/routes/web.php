@@ -146,6 +146,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/association/{tableIdentifier}', 'Admin\Association@index');
 
     // create new association
+    // TODO this not work in controller do not know why
     $app->post("/association", function(Request $request) use ($app) {
 
         $eventsIds = $request->input('eventsIds');
