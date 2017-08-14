@@ -143,7 +143,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // get all asociations by tableIdentifier : run, ruv, nun, nuv
-    $app->get('/association/{tableIdentifier}', 'Admin\Association@index');
+    $app->get('/association/event/{tableIdentifier}/{dateModifier}', 'Admin\Association@index');
 
     // create new association
     // TODO this not work in controller do not know why
