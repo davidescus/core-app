@@ -20,9 +20,14 @@ class Association extends Controller
     /*
      * @return array()
      */
-    public function index($tableIdentifier)
+    public function index($tableIdentifier, $dateModifier)
     {
-        return \App\Association::where([['type', '=', $tableIdentifier]])->get();
+        $where[] = ['type', '=', $tableIdentifier];
+
+        if ($dateModifier != '0')
+            $where[] = ['systemdate', '=', gmdate('Y-m-d', strtotime($dateModifier))];
+
+        return \App\Association::where($where)->get();
     }
 
     public function get() {}
