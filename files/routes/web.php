@@ -217,7 +217,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     // delete an association
-    $app->delete("/association/{id}", function($id) use ($app) {
+    $app->get("/association/delete/{id}", function($id) use ($app) {
         $association = \App\Association::find($id);
 
         // Site not exists retur status not exists
