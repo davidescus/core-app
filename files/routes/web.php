@@ -14,6 +14,59 @@
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+$app->get('/xml', function () use ($app) {
+
+    // load xml file
+    $xml = file_get_contents('http://tipstersportal.com/feed/matches.php');
+
+    // parse xml content
+    $c = Parser::xml($xml);
+
+    // iterate matches
+    foreach ($c['match'] as $match) {
+
+        // check if event already are imported
+        if (\App\Match::find($match['id']))
+            continue;
+
+        // create array
+        $m = [
+            'id' => $match['id'],
+            'country' => $match['tournament_country'],
+            'countryCode' => $match['tournament_country_code'],
+            'league' => $match['tournament_title'],
+            'homeTeam' => $match['home_team_name'],
+            'homeTeamId' => $match['home_team_id'],
+            'awayTeam' => $match['away_team_name'],
+            'awayTeamId' => $match['away_team_id'],
+            'result' => '',
+            'eventDate' => $match['utc_date'],
+        ];
+
+        // store country name and code if not exists
+        if(!\App\Country::where('code', $m['countryCode'])->first()) {
+            \App\Country::create([
+                'code' => $m['countryCode'],
+                'name' => $m['country']
+            ]);
+        }
+
+        // store league if not exist
+        // TODO find management for league id
+
+        // store new match
+        \App\Match::create($m);
+
+        echo $match['id'];
+    }
+
+
+
+    echo "<pre>";
+    print_r($c);
+    echo "</pre>";
+});
+
 $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
     return $app->version();
 });
