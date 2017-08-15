@@ -82,6 +82,10 @@ $app->routeMiddleware([
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+// xml parser
+$app->register('Nathanmac\Utilities\Parser\ParserServiceProvider');
+class_alias('Nathanmac\Utilities\Parser\Facades\Parser', 'Parser');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
