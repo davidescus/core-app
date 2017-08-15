@@ -7,6 +7,7 @@ class Match extends Model {
     protected $table = 'match';
 
     protected $fillable = [
+        'id',
         'country',
         'countryCode',
         'league',
