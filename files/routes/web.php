@@ -53,6 +53,28 @@ $app->get('/xml', function () use ($app) {
 
         // store league if not exist
         // TODO find management for league id
+        if(!\App\League::where('name', $m['league'])->count()) {
+            \App\League::create([
+                'identifier' => $match['tournament_id'],
+                'name' => $m['league']
+            ]);
+        }
+
+        // store homeTeam if not exists
+        if(!\App\Team::find($m['homeTeamId'])) {
+            \App\Team::create([
+                'id' => $m['homeTeamId'],
+                'name' => $m['homeTeam'],
+            ]);
+        }
+
+        // store awayTeam if not exists
+        if(!\App\Team::find($m['awayTeamId'])) {
+            \App\Team::create([
+                'id' => $m['awayTeamId'],
+                'name' => $m['awayTeam'],
+            ]);
+        }
 
         // store new match
         \App\Match::create($m);
