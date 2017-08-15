@@ -9,7 +9,6 @@ class League extends Model {
     protected $table = 'league';
 
     protected $fillable = [
-        'identifier',
         'name',
     ];
 
