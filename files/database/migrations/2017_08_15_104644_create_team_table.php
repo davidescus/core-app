@@ -13,10 +13,12 @@ class CreateTeamTable extends Migration
      */
     public function up()
     {
-        $table->integer('id');
-        $table->string('name');
+        Schema::create('team', function (Blueprint $table) {
+            $table->integer('id');
+            $table->string('name');
 
-        $table->primary('id');
+            $table->primary('id');
+        });
     }
 
     /**
