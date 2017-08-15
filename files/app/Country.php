@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class SitePackage extends Model {
+class Country extends Model {
 
     public $timestamps = false;
 
