@@ -55,7 +55,7 @@ $app->get('/xml', function () use ($app) {
         }
 
         if(!file_exists($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png')) {
-            $content = file_get_contents($match['tournament_country_icon']);
+            $content = @file_get_contents($match['tournament_country_icon']);
             file_put_contents($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png', $content);
         }
 
@@ -76,7 +76,7 @@ $app->get('/xml', function () use ($app) {
         }
 
         if(!file_exists($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png')) {
-            $content = file_get_contents($match['home_team_logo']);
+            $content = @file_get_contents($match['home_team_logo']);
             file_put_contents($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png', $content);
         }
 
@@ -89,7 +89,7 @@ $app->get('/xml', function () use ($app) {
         }
 
         if(!file_exists($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png')) {
-            $content = file_get_contents($match['away_team_logo']);
+            $content = @file_get_contents($match['away_team_logo']);
             file_put_contents($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png', $content);
         }
 
@@ -99,8 +99,6 @@ $app->get('/xml', function () use ($app) {
         echo 'Id :' . $k . "<br/>";
 
     }
-
-
 
     echo "<pre>";
     print_r($c);
