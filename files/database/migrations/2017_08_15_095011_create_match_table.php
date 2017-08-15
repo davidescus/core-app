@@ -14,7 +14,7 @@ class CreateMatchTable extends Migration
     public function up()
     {
         Schema::create('match', function (Blueprint $table) {
-            $table->primary('id');
+            $table->integer('id');
             $table->string('country');
             $table->string('countryCode');
             $table->string('league');
@@ -25,6 +25,8 @@ class CreateMatchTable extends Migration
             $table->string('result');
             $table->timestamp('eventDate')->nullable();
             $table->timestamps();
+
+            $table->primary('id');
         });
     }
 
