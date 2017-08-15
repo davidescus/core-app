@@ -16,6 +16,8 @@ use Carbon\Carbon;
 
 $app->get('/xml', function () use ($app) {
 
+    $rootDir =  dirname(__DIR__);
+
     // load xml file
     $xml = file_get_contents('http://tipstersportal.com/feed/matches.php');
 
@@ -23,7 +25,7 @@ $app->get('/xml', function () use ($app) {
     $c = Parser::xml($xml);
 
     // iterate matches
-    foreach ($c['match'] as $match) {
+    foreach ($c['match'] as $k => $match) {
 
         // check if event already are imported
         if (\App\Match::find($match['id']))
@@ -35,6 +37,7 @@ $app->get('/xml', function () use ($app) {
             'country' => $match['tournament_country'],
             'countryCode' => $match['tournament_country_code'],
             'league' => $match['tournament_title'],
+            'leagueId' => $match['tournament_id'],
             'homeTeam' => $match['home_team_name'],
             'homeTeamId' => $match['home_team_id'],
             'awayTeam' => $match['away_team_name'],
@@ -51,11 +54,15 @@ $app->get('/xml', function () use ($app) {
             ]);
         }
 
+        if(!file_exists($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png')) {
+            $content = file_get_contents($match['tournament_country_icon']);
+            file_put_contents($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png', $content);
+        }
+
         // store league if not exist
-        // TODO find management for league id
-        if(!\App\League::where('name', $m['league'])->count()) {
+        if(!\App\League::find($m['leagueId'])) {
             \App\League::create([
-                'identifier' => $match['tournament_id'],
+                'id' => $m['leagueId'],
                 'name' => $m['league']
             ]);
         }
@@ -68,6 +75,11 @@ $app->get('/xml', function () use ($app) {
             ]);
         }
 
+        if(!file_exists($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png')) {
+            $content = file_get_contents($match['home_team_logo']);
+            file_put_contents($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png', $content);
+        }
+
         // store awayTeam if not exists
         if(!\App\Team::find($m['awayTeamId'])) {
             \App\Team::create([
@@ -76,10 +88,16 @@ $app->get('/xml', function () use ($app) {
             ]);
         }
 
+        if(!file_exists($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png')) {
+            $content = file_get_contents($match['away_team_logo']);
+            file_put_contents($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png', $content);
+        }
+
         // store new match
         \App\Match::create($m);
 
-        echo $match['id'];
+        echo 'Id :' . $k . "<br/>";
+
     }
 
 
