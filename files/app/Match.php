@@ -11,6 +11,7 @@ class Match extends Model {
         'country',
         'countryCode',
         'league',
+        'leagueId',
         'homeTeam',
         'homeTeamId',
         'awayTeam',
