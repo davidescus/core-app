@@ -230,6 +230,19 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
     /*
+     * Matches
+     ---------------------------------------------------------------------*/
+
+    $app->get('/match/filter/{filter}', function($filter) use ($app) {
+        return \App\Match::where('country', 'like', '%' . $filter . '%')
+            ->orWhere('league', 'like', '%' . $filter . '%')
+            ->orWhere('homeTeam', 'like', '%' . $filter . '%')
+            ->orWhere('awayTeam', 'like', '%' . $filter . '%')
+            ->get();
+    });
+
+
+    /*
      * Associations - 4 tables
      ---------------------------------------------------------------------*/
 
