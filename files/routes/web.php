@@ -312,6 +312,41 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // get all asociations by tableIdentifier : run, ruv, nun, nuv
     $app->get('/association/event/{tableIdentifier}/{dateModifier}', 'Admin\Association@index');
 
+    // add no tip to a table
+    $app->post("/association/no-tip", function(Request $request) use ($app) {
+
+        $table = $request->input('table');
+        $systemDate = $request->input('systemDate');
+
+        // check if already exists no tip in selected date
+        if (\App\Association::where('type', $table)
+            ->where('isNoTip', '1')
+            ->where('systemDate', $systemDate)->count())
+        {
+            return response()->json([
+                "type" => "error",
+                "message" => "Already exists no tip table in selected date",
+            ]);
+        }
+
+        $a = new \App\Association();
+        $a->type = $table;
+        $a->isNoTip = '1';
+
+        if ($table === 'ruv' || $table === 'nuv')
+            $a->isVip = '1';
+
+        $a->systemDate = $systemDate;
+        $a->save();
+
+        return response()->json([
+            "type" => "success",
+            "message" => "No Tip was added with success!",
+        ]);
+
+    });
+
+
     // create new association
     // TODO this not work in controller do not know why
     $app->post("/association", function(Request $request) use ($app) {
