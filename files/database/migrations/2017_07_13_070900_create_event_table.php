@@ -20,7 +20,7 @@ class CreateEventTable extends Migration
             $table->string('country');
             $table->string('countryCode');
             $table->string('league');
-            $table->string('leagueId');
+            $table->integer('leagueId');
             $table->string('homeTeam');
             $table->integer('homeTeamId');
             $table->string('awayTeam');
