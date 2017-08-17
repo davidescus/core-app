@@ -252,6 +252,19 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
         $match = \App\Match::find($matchId)->toArray();
 
+        // check if event already exists with same prediciton
+        if (\App\Event::where('homeTeamId', $match['homeTeamId'])
+            ->where('awayTeamId', $match['awayTeamId'])
+            ->where('eventDate', $match['eventDate'])
+            ->where('predictionId', $predictionId)
+            ->count())
+        {
+            return [
+                'type' => 'error',
+                'message' => "This events already exists with same predictions",
+            ];
+        }
+
         if (!$match) {
             return [
                 'type' => 'error',
