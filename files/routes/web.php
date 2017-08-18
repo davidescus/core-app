@@ -422,7 +422,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
         ]);
     });
 
+    // @param int $id
     // delete an association
+    //    - Not Delete distributed association
     $app->get("/association/delete/{id}", 'Admin\Association@destroy');
 
     // get available packages and sites according to associateEvent prediction
