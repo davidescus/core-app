@@ -685,7 +685,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get("/distribution/{date}", 'Admin\Distribution@index');
 
     // get all events distributed
-    $app->delete("/distribution", function(Request $request) use ($app) {
+    $app->post("/distribution/delete", function(Request $request) use ($app) {
         $ids = $request->input('ids');
 
         if (!$ids)
