@@ -559,7 +559,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     /*
-     * Distributions
+     * Distribution
      ---------------------------------------------------------------------*/
 
     // Distribution
@@ -588,6 +588,10 @@ $app->group(['prefix' => 'admin'], function ($app) {
             "events" => \App\ArchiveBig::all()
         ];
     });
+
+    /*
+     * Archive
+     ---------------------------------------------------------------------*/
 
     // manual publish events in archive
     // @param array $ids (distributionId)
