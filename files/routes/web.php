@@ -735,22 +735,23 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     // manual publish events in archive
-    $app->post('/archive', function(Request $request) use ($app) {
-        $data = $request->input('data');
+    // @param array $ids (distributionId)
+    //  - mark events publish in distribution
+    //  - send events in archive
+    $app->post('/archive/publish', function(Request $request) use ($app) {
+        $ids = $request->input('ids');
 
         $alreadyPublish = 0;
         $inserted = 0;
 
-        if (!$data)
+        if (!$ids)
             return [
                 "type" => "error",
                 "message" => "No events provided!",
             ];
 
-        foreach ($data as $value) {
-
-            $distribution = \App\Distribution::where('id', $value['distributionId'])
-                ->where('packageId', $value['packageId'])->first();
+        foreach ($ids as $id) {
+            $distribution = \App\Distribution::where('id', $id)->first();
 
             // TODO check if distributed event exists
 
@@ -761,6 +762,8 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
             // set publish
             $distribution->isPublish = 1;
+
+            // update in distribution
             $distribution->update();
 
             // transform in array
