@@ -684,49 +684,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // @return array()
     $app->get("/distribution/{date}", 'Admin\Distribution@index');
 
-    // get all events distributed
-    $app->post("/distribution/delete", function(Request $request) use ($app) {
-        $ids = $request->input('ids');
-
-        if (!$ids)
-            return [
-                "type" => "error",
-                "message" => "No events provided!",
-            ];
-
-        $notFound = 0;
-        $canNotDelete = 0;
-        $deleted = 0;
-        foreach ($ids as $id) {
-            $distribution = \App\Distribution::find($id);
-
-            if (!$distribution) {
-                $notFound++;
-                continue;
-            }
-
-            if ($distribution->isPublish) {
-                $canNotDelete++;
-                continue;
-            }
-
-            $distribution->delete();
-            $deleted++;
-        }
-
-        $message = '';
-        if ($notFound)
-            $message .= "$notFound events not founded, maybe was deleted.\r\n";
-        if ($canNotDelete)
-            $message .= "$canNotDelete can not be deleted.\r\n";
-        if ($deleted)
-            $message .= "$deleted events was successful deleted.\r\n";
-
-        return [
-            "type" => "success",
-            "message" => $message
-        ];
-    });
+    // Distribution
+    // @param array $ids
+    // delete distributed events
+    //   - Not Delete events already sended in archives
+    $app->post("/distribution/delete", 'Admin\Distribution@destroy');
 
     // get all events for all archives
     $app->get('/archive', function() use ($app) {
