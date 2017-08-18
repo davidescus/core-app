@@ -18,7 +18,8 @@ class Distribution extends Controller
     }
 
     /*
-     * @string $date format: Y-m-d || 0
+     * @string $date format: Y-m-d || 0 || null
+     * get all distributed events for specific date.
      * @return array()
      */
     public function index($date = null)
