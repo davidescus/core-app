@@ -588,16 +588,14 @@ $app->group(['prefix' => 'admin'], function ($app) {
     //   - Not Delete events already sended in archives
     $app->post("/distribution/delete", 'Admin\Distribution@destroy');
 
-    // get all events for all archives
-    $app->get('/archive', function() use ($app) {
-        return [
-            "events" => \App\ArchiveBig::all()
-        ];
-    });
-
     /*
      * Archive
      ---------------------------------------------------------------------*/
+
+    // get all events for all archives
+    $app->get('/archive', function() use ($app) {
+        return \App\ArchiveBig::all();
+    });
 
     // manual publish events in archive
     // @param array $ids (distributionId)
