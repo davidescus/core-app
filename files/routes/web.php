@@ -678,48 +678,10 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     });
 
-    // get all events distributed
-    $app->get("/distribution", function(Request $request) use ($app) {
-
-        $data = [];
-
-        $sites = \App\Site::all();
-        $dates = \App\Distribution::select('systemDate')->distinct()->get();
-
-        foreach ($dates as $k => $date) {
-
-            $data[$k]['systemDate'] = $date->systemDate;
-
-            foreach ($sites as $site) {
-
-                // set siteName
-                $data[$k]['sites'][$site->id]['name'] = $site->name;
-                $data[$k]['sites'][$site->id]['id'] = $site->id;
-
-                // get associated packages frm site_package
-                $associatedPackages = \App\SitePackage::select('packageId')->where('siteId', $site->id)->get()->toArray();
-                foreach ($associatedPackages as $associatedPackage) {
-
-                    // get package
-                    $package = \App\Package::find($associatedPackage['packageId']);
-
-                    // get events for package
-                    $distributedEvents = \App\Distribution::where('packageId', $package->id)->where('systemdate', $date->systemDate)->get();
-
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['id'] = $package->id;
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['name'] = $package->name;
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['tipsPerDay'] = $package->tipsPerDay;
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['eventsNumber'] = count($distributedEvents);
-
-                    $data[$k]['sites'][$site->id]['packages'][$associatedPackage['packageId']]['events'] = $distributedEvents;
-                }
-            }
-        }
-
-        return [
-            'distribution' => $data
-        ];
-    });
+    // Distribution
+    // @string $date format: Y-m-d || 0
+    // @return array()
+    $app->get("/distribution/{date}", 'Admin\Distribution@index');
 
     // get all events distributed
     $app->delete("/distribution", function(Request $request) use ($app) {
