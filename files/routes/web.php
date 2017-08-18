@@ -309,7 +309,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Associations - 4 tables
      ---------------------------------------------------------------------*/
 
-    // get all asociations by tableIdentifier : run, ruv, nun, nuv
+    // @param string $tableIdentifier : run, ruv, nun, nuv
+    // @param string $date format: Y-m-d | 0 | null
+    // get all events associated with a table on sellected date
+    //     - $data = 0 | null => current date GMT
+    // @return object
     $app->get('/association/event/{tableIdentifier}/{date}', 'Admin\Association@index');
 
     // add no tip to a table

@@ -17,8 +17,9 @@ class Association extends Controller
         //
     }
 
-    /* @param $tableIdentifier run|ruv|nun|nuv
-     * @param $date format: Y-m-d | 0 | null
+    /* @param string $tableIdentifier run|ruv|nun|nuv
+     * @param string $date format: Y-m-d | 0 | null
+     *     - $date = 0 | null => current date GMT
      * @return array()
      */
     public function index($tableIdentifier, $date)
