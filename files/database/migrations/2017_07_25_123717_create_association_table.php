@@ -22,9 +22,13 @@ class CreateAssociationTable extends Migration
             $table->string('isNoTip');
             $table->string('isVip');
             $table->string('country');
+            $table->string('countryCode');
             $table->string('league');
+            $table->integer('leagueId');
             $table->string('homeTeam');
+            $table->integer('homeTeamId');
             $table->string('awayTeam');
+            $table->integer('awayTeamId');
             $table->string('odd');
             $table->string('predictionId');
             $table->string('result');
