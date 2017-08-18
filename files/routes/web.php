@@ -680,6 +680,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // Distribution
     // @string $date format: Y-m-d || 0
+    // get all distributed events for specific date.
     // @return array()
     $app->get("/distribution/{date}", 'Admin\Distribution@index');
 
