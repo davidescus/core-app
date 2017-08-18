@@ -562,8 +562,12 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Distributions
      ---------------------------------------------------------------------*/
 
-    // create new Tips Distribution
-    // delete unwanted association
+    // Distribution
+    // @param string $eventId
+    // @param array  $packagesIds
+    // delete distributions of event - package (if packageId is not in $packagesIds)
+    //    - Not Delete events hwo was already published
+    // create new associations event - packages
     $app->post("/distribution", function(Request $request) use ($app) {
 
         // check if association still exist
