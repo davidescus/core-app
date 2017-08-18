@@ -32,7 +32,7 @@ class Distribution extends Controller
         foreach (\App\Site::all() as $site) {
             // set siteName
             $data[$site->id]['name'] = $site->name;
-            $data[$site->id]['id'] = $site->id;
+            $data[$site->id]['siteId'] = $site->id;
 
             // get associated packages frm site_package
             $assocPacks = \App\SitePackage::select('packageId')->where('siteId', $site->id)->get()->toArray();
