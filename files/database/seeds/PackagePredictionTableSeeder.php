@@ -14,6 +14,19 @@ class PackagePredictionTableSeeder extends Seeder {
      */
     public function run()
     {
+        $packages = \App\Package::all();
+        $predictions = \App\Prediction::all();
+
+        foreach ($packages as $pk) {
+            foreach ($predictions as $pred) {
+                PackagePrediction::firstOrCreate([
+                    'packageId'       => $pk->id,
+                    'predictionIdentifier' => $pred->identifier,
+                ]);
+            }
+        }
+
+        /*
         PackagePrediction::firstOrCreate([
             'packageId'       => 1,
             'predictionIdentifier' => 'over_15',
@@ -73,5 +86,6 @@ class PackagePredictionTableSeeder extends Seeder {
             'packageId'       => 11,
             'predictionIdentifier' => 'over_15',
         ]);
+         */
     }
 }
