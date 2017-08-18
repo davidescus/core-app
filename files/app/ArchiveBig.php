@@ -17,7 +17,7 @@ class ArchiveBig extends Model {
         'tableIdentifier',
         'isPublish',
         'isVisible',
-        'isNotip',
+        'isNoTip',
         'isVip',
         'country',
         'league',
