@@ -423,9 +423,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get available packages and sites according to associateEvent prediction
     $app->get('/association/package/available/{table}/{associateEventId}', function($table, $associateEventId) use ($app) {
-
         $data = [];
-
         $data['event'] = \App\Association::find($associateEventId);
 
         if (!$data['event'])
@@ -433,6 +431,66 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 "type" => "error",
                 "message" => "Event id: $associateEventId not exist anymore!"
             ]);
+
+        // if event is noTip will get packages according to table, and users
+        // and without any tip associated yet.
+        if ($data['event']->isNoTip) {
+
+            $where = [];
+            if ($table == "ruv" || $table == "nuv")
+                $where[] = ['isVip', '=', '1'];
+            elseif ($table == "run" || $table == "nun")
+                $where[] = ['isVip', '!=', '1'];
+
+            $keys = [];
+            $increments = 0;
+            $packages = \App\Package::where($where)->get()->toArray();
+            foreach ($packages as $p) {
+
+                // if package has already associate tip continue;
+                if (\App\Distribution::where('packageId', $p['id'])
+                    ->where('systemDate', $data['event']->systemDate)
+                    ->where('isNoTip', '0')->count())
+                {
+                    continue;
+                }
+
+                // get site
+                $sitePackage = \App\SitePackage::where('packageId', $p['id'])->first();
+                $site = \App\Site::find($sitePackage->siteId);
+
+                // create array
+                if (!array_key_exists($site->name, $keys)) {
+                    $keys[$site->name] = $increments;
+                    $increments++;
+                }
+
+                // check if event alredy exists in tips distribution
+                $distributionExists = \App\Distribution::where([
+                    ['associationId', '=', $data['event']->id],
+                    ['packageId', '=', $p['id']]
+                ])->count();
+
+                // get event systemDate
+                $eventSystemDate = date('Y-m-d', strtotime($data['event']->systemDate));
+                // get number of associated events with package on event systemDate
+                $eventsExistsOnSystemDate = \App\Distribution::where([
+                    ['packageId', '=', $p['id']],
+                    ['systemDate', '=', $eventSystemDate]
+                ])->count();
+
+                $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
+                $data['sites'][$keys[$site->name]]['packages'][] = [
+                    'id' => $p['id'],
+                    'name' => $p['name'],
+                    'tipsPerDay' => $p['tipsPerDay'],
+                    'eventIsAssociated' => $distributionExists,
+                    'packageAssociatedEventsNumber' => $eventsExistsOnSystemDate,
+                ];
+            }
+
+            return $data;
+        }
 
         // get all packages associated with this prediction
         $packagesIds = \App\PackagePrediction::select('packageId')->where('predictionIdentifier', $data['event']->predictionId)->get();
@@ -471,6 +529,16 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
             // get event systemDate
             $eventSystemDate = date('Y-m-d', strtotime($data['event']->systemDate));
+
+            // if package already have noTip continue;
+            if (\App\Distribution::where([
+                ['packageId', '=', $package->id],
+                ['systemDate', '=', $eventSystemDate],
+                ['isNoTip', '=', '1']])->count())
+            {
+                continue;
+            }
+
             // get number of associated events with package on event systemDate
             $eventsExistsOnSystemDate = \App\Distribution::where([
                 ['packageId', '=', $package->id],
@@ -572,20 +640,22 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 continue;
             }
 
-            // get site prediction name
-            $sitePrediction = \App\SitePrediction::where([
-                ['siteId', '=', $packageSite->siteId],
-                ['predictionIdentifier', '=', $association['predictionId']]
-            ])->first();
+            if (!$association['isNoTip']) {
+                // get site prediction name
+                $sitePrediction = \App\SitePrediction::where([
+                    ['siteId', '=', $packageSite->siteId],
+                    ['predictionIdentifier', '=', $association['predictionId']]
+                ])->first();
+
+                // set predictionName
+                $association['predictionName'] = $sitePrediction->name;
+            }
 
             // set siteId
             $association['siteId'] = $packageSite->siteId;
 
             // set tableIdentifier
             $association['tableIdentifier'] = $package->tableIdentifier;
-
-            // set predictionName
-            $association['predictionName'] = $sitePrediction->name;
 
             // set packageId
             $association['packageId'] = $id;
