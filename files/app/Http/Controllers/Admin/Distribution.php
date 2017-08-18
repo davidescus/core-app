@@ -57,7 +57,123 @@ class Distribution extends Controller
 
     public function get() {}
 
-    public function store() {}
+    /*
+     * @param string $eventId
+     * @param array  $packagesIds
+     * delete distributions of event - package (if packageId is not in $packagesIds)
+     *    - Not Delete events hwo was already published
+     * create new associations event - packages
+     */
+    public function storeAndDelete(Request $request) {
+        // check if association still exist
+        if (\App\Association::find($request->input('eventId')) === null)
+            return response()->json([
+                "type" => "error",
+                "message" => "association id: " . $request->input('eventId') . "not exist anymore!"
+            ]);
+
+        // get association as object
+        $association = \App\Association::where('id', $request->input('eventId'))->first();
+
+        //transform in array
+        $association = json_decode(json_encode($association), true);
+
+        unset($association['created_at']);
+        unset($association['updated_at']);
+
+        $packagesIds = $request->input('packagesIds') ? $request->input('packagesIds') : [];
+
+        // create array with existing packageId
+        // also delete unwanted distribution
+        $deleted = 0;
+        $distributionExists = [];
+        $message = '';
+        foreach (\App\Distribution::where('associationId', $association['id'])->get() as $item) {
+            // delete distribution
+            if (!in_array($item->packageId, $packagesIds)) {
+
+                if ($item->isPublish) {
+                    $message .= "Can not delete association with package $item->packageId, was already published\r\n";
+                    continue;
+                }
+                $item->delete();
+                $deleted++;
+            }
+            $distributionExists[] = $item->packageId;
+        }
+
+        if ($message !== '')
+            return [
+                "type" => "error",
+                "message" => $message
+            ];
+
+        // id from association table became associationId
+        $association['associationId'] = $association['id'];
+        unset($association['id']);
+
+        $inserted = 0;
+        $alreadyExists = 0;
+        $message = '';;
+        foreach ($packagesIds as $id) {
+
+            // do not insert if already exists
+            if (in_array($id, $distributionExists)) {
+                $alreadyExists++;
+                continue;
+            }
+
+            // get package
+            $package = \App\Package::find($id);
+            if (!$package) {
+                $message = "Could not find package with id: $id, maybe was deleted \r\n";
+                continue;
+            }
+
+            // get siteId by package
+            $packageSite = \App\SitePackage::where('packageId', $id)->first();
+            if (!$packageSite) {
+                $message = "Could not associate event with package id: $id, this package must be associated with a site\r\n";
+                continue;
+            }
+
+            if (!$association['isNoTip']) {
+                // get site prediction name
+                $sitePrediction = \App\SitePrediction::where([
+                    ['siteId', '=', $packageSite->siteId],
+                    ['predictionIdentifier', '=', $association['predictionId']]
+                ])->first();
+
+                // set predictionName
+                $association['predictionName'] = $sitePrediction->name;
+            }
+
+            // set siteId
+            $association['siteId'] = $packageSite->siteId;
+
+            // set tableIdentifier
+            $association['tableIdentifier'] = $package->tableIdentifier;
+
+            // set packageId
+            $association['packageId'] = $id;
+
+            \App\Distribution::create($association);
+            $inserted++;
+        }
+
+        if($inserted)
+            $message .= "$inserted: new distribution added \r\n";
+        if($deleted)
+            $message .= "$deleted: distribution was deleted \r\n";
+        if($alreadyExists)
+            $message .= "$alreadyExists: distribution already exists \r\n";
+
+        return [
+            "type" => "success",
+            "message" => $message
+        ];
+
+    }
 
     public function update() {}
 
