@@ -17,7 +17,8 @@ class Association extends Controller
         //
     }
 
-    /*
+    /* @param $tableIdentifier run|ruv|nun|nuv
+     * @param $date format: Y-m-d | 0 | null
      * @return array()
      */
     public function index($tableIdentifier, $date)

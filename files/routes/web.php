@@ -310,7 +310,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // get all asociations by tableIdentifier : run, ruv, nun, nuv
-    $app->get('/association/event/{tableIdentifier}/{dateModifier}', 'Admin\Association@index');
+    $app->get('/association/event/{tableIdentifier}/{date}', 'Admin\Association@index');
 
     // add no tip to a table
     $app->post("/association/no-tip", function(Request $request) use ($app) {
