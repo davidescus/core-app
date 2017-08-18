@@ -15,7 +15,7 @@ class Distribution extends Model {
         'provider',
         'tableIdentifier',
         'isPublish',
-        'isNotip',
+        'isNoTip',
         'isVip',
         'country',
         'league',
