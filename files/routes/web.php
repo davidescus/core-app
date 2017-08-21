@@ -163,17 +163,8 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // get all predictions order by group
-    $app->get("/prediction", function() use ($app) {
-
-        $pred = \App\Prediction::all();
-
-        $data = [];
-        foreach ($pred as $p) {
-            $data[$p['group']]['predictions'][] = $p;
-        }
-
-        return $data;
-    });
+    // @return array()
+    $app->get("/prediction", 'Admin\Prediction@index');
 
     /*
      * Site Prediction
