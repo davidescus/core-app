@@ -48,6 +48,10 @@ $app->get('/xml', function () use ($app) {
 
         // store country name and code if not exists
         if(!\App\Country::where('code', $m['countryCode'])->first()) {
+
+            if (!$m['countryCode'])
+                continue;
+
             \App\Country::create([
                 'code' => $m['countryCode'],
                 'name' => $m['country']
@@ -96,13 +100,7 @@ $app->get('/xml', function () use ($app) {
         // store new match
         \App\Match::create($m);
 
-        echo 'Id :' . $k . "<br/>";
-
     }
-
-    echo "<pre>";
-    print_r($c);
-    echo "</pre>";
 });
 
 $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
