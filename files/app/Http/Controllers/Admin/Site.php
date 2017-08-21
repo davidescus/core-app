@@ -136,4 +136,14 @@ class Site extends Controller
         return \App\Site::select('id', 'name')->get();
     }
 
+    /*
+     * @return array()
+     */
+    public function getAvailableTables($siteId)
+    {
+        // will get this relation for packages model
+        // each package has siteId
+        return \App\Package::select('tableIdentifier')->distinct()->where('siteId', $siteId)->get();
+    }
+
 }
