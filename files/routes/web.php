@@ -121,9 +121,6 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Sites
      ---------------------------------------------------------------------*/
 
-    // get all sites only ids and names
-    $app->get('/site/ids-and-names', 'Admin\Site@getIdsAndNames');
-
     // get all sites with all proprieties
     $app->get('/site', 'Admin\Site@index');
 
@@ -138,6 +135,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // delete a site
     $app->get("/site/delete/{id}", 'Admin\Site@destroy');
+
+    // get all sites only ids and names
+    $app->get('/site/ids-and-names', 'Admin\Site@getIdsAndNames');
+
+    // get all alvaillable tables(for archives)
+    // @return array()
+    $app->get('/site/available-table/{siteId}', 'Admin\Site@getIdsAndNames');
 
     /*
      * Packages
