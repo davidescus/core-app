@@ -141,7 +141,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     // get all alvaillable tables(for archives)
     // @return array()
-    $app->get('/site/available-table/{siteId}', 'Admin\Site@getIdsAndNames');
+    $app->get('/site/available-table/{siteId}', 'Admin\Site@getAvailableTables');
 
     /*
      * Packages
