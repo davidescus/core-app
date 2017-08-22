@@ -26,6 +26,18 @@ class Match extends Controller
 
     public function get() {}
 
+    // get all available matches by search
+    // @param string $filter
+    // @return array()
+    public function getMatchesByFilter($filter)
+    {
+        return \App\Match::where('country', 'like', '%' . $filter . '%')
+            ->orWhere('league', 'like', '%' . $filter . '%')
+            ->orWhere('homeTeam', 'like', '%' . $filter . '%')
+            ->orWhere('awayTeam', 'like', '%' . $filter . '%')
+            ->get();
+    }
+
     public function store() {}
 
     public function update() {}

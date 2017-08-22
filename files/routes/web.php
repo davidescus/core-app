@@ -295,14 +295,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
      * Matches
      ---------------------------------------------------------------------*/
 
+    // Matches
     // get all available matches by search
-    $app->get('/match/filter/{filter}', function($filter) use ($app) {
-        return \App\Match::where('country', 'like', '%' . $filter . '%')
-            ->orWhere('league', 'like', '%' . $filter . '%')
-            ->orWhere('homeTeam', 'like', '%' . $filter . '%')
-            ->orWhere('awayTeam', 'like', '%' . $filter . '%')
-            ->get();
-    });
+    // @param string $filter
+    // @return array()
+    $app->get('/match/filter/{filter}', 'Admin\Match@getMatchesByFilter');
 
     // get match by id
     $app->get('/match/{id}', function($id) use ($app) {
