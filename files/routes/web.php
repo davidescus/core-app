@@ -122,6 +122,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // Archive Big
+    // @param integer $id
+    // @return event || null
+    $app->get('/archive-big/event/{id}', 'Admin\ArchiveBig@get');
+
+    // Archive Big
     // @param integer $siteId
     // @param string $table
     // @param string $date

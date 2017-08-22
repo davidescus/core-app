@@ -24,7 +24,11 @@ class ArchiveBig extends Controller
     {
     }
 
-    public function get() {}
+    // @param integer $id
+    // @return event || null
+    public function get($id) {
+        return \App\ArchiveBig::find($id);
+    }
 
 
     // @param integer $siteId
