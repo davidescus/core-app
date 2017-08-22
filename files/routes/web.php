@@ -118,6 +118,27 @@ $app->group(['prefix' => 'admin'], function ($app) {
     });
 
     /*
+     * Archive Big
+     ---------------------------------------------------------------------*/
+
+    // Archive Big
+    // @param $siteId
+    // @param $table
+    // @param $date
+    // @return array()
+    $app->get('/archive-big/month-events', function(Request $r) use ($app) {
+
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+        $date = $r->input('date');
+
+        return \App\ArchiveBig::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->where('systemDate', '>=', $date . '-01')
+            ->where('systemDate', '<=', $date . '-31')->get()->toArray();
+    });
+
+    /*
      * Sites
      ---------------------------------------------------------------------*/
 
