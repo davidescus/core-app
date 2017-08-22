@@ -67,6 +67,27 @@ class ArchiveBig extends Controller
         return array_reverse($dates);
     }
 
+    // @param $id,
+    // toogle show/hide an event from archiveBig
+    // @return array()
+    public  function toogleShowHide($id)
+    {
+        $event = \App\ArchiveBig::find($id);
+
+        if (!$event)
+            return [
+                'type' => 'error',
+                'message' => "This event not exist anymore!",
+            ];
+
+        $event->isVisible ? $event->isVisible = '0' : $event->isVisible = '1';
+
+        return [
+            'type' => 'success',
+            'message' =>"Status of event was successfful changed!",
+        ];
+    }
+
     public function store() {}
 
     public function update() {}

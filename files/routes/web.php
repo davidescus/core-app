@@ -133,6 +133,12 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // @return array()
     $app->get('/archive-big/available-months', 'Admin\ArchiveBig@getAvailableMounths');
 
+    // Archive Big
+    // @param $id,
+    // toogle show/hide an event from archiveBig
+    // @return array()
+    $app->get('/archive-big/show-hide/{id}', 'Admin\ArchiveBig@toogleShowHide');
+
     /*
      * Sites
      ---------------------------------------------------------------------*/
