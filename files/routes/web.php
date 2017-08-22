@@ -128,6 +128,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // @return array()
     $app->get('/archive-big/month-events', 'Admin\ArchiveBig@getMonthEvents');
 
+    // Archive Big
+    // get array with available years and month based on archived events.
+    // @return array()
+    $app->get('/archive-big/available-months', 'Admin\ArchiveBig@getAvailableMounths');
+
     /*
      * Sites
      ---------------------------------------------------------------------*/
