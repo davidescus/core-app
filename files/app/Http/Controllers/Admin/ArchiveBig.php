@@ -27,9 +27,9 @@ class ArchiveBig extends Controller
     public function get() {}
 
 
-    // @param $siteId
-    // @param $table
-    // @param $date
+    // @param integer $siteId
+    // @param string $table
+    // @param string $date
     // @return array()
     public function getMonthEvents(Request $r)
     {

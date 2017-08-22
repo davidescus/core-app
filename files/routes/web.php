@@ -122,9 +122,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // Archive Big
-    // @param $siteId
-    // @param $tableIdentifier
-    // @param $date
+    // @param integer $siteId
+    // @param string $table
+    // @param string $date
     // @return array()
     $app->get('/archive-big/month-events', 'Admin\ArchiveBig@getMonthEvents');
 
