@@ -81,6 +81,7 @@ class ArchiveBig extends Controller
             ];
 
         $event->isVisible ? $event->isVisible = '0' : $event->isVisible = '1';
+        $event->save();
 
         return [
             'type' => 'success',
