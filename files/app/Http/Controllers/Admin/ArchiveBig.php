@@ -58,7 +58,10 @@ class ArchiveBig extends Controller
         $period   = new \DatePeriod($start, $interval, $end);
 
         foreach ($period as $dt) {
-            $dates[] = $dt->format("Y-m");
+            $dates[] = [
+                'year' => $dt->format("Y"),
+                'month' => $dt->format("m"),
+            ];
         }
 
         return array_reverse($dates);
