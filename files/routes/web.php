@@ -649,6 +649,7 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
         $alreadyPublish = 0;
         $inserted = 0;
+        $notHaveResultOrStatus = 0;
 
         if (!$ids)
             return [
@@ -663,6 +664,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
             if ($distribution->isPublish) {
                 $alreadyPublish++;
+                continue;
+            }
+
+            if (!$distribution->result || !$distribution->statusId) {
+                $notHaveResultOrStatus++;
                 continue;
             }
 
@@ -690,6 +696,8 @@ $app->group(['prefix' => 'admin'], function ($app) {
             $message .= "$alreadyPublish events already published to archive\r\n";
         if ($inserted)
             $message .= "$inserted events was published to archive\r\n";
+        if ($notHaveResultOrStatus)
+            $message .= "$notHaveResultOrStatus was NOT published becouse they not have result or status\r\n";
 
         return [
             "type" => "success",
