@@ -45,6 +45,39 @@ class Event extends Controller
 
     public function update() {}
 
+    // @param integer $id
+    // @param string  $result
+    // @param integer $statusId
+    // @retun array()
+    public function updateResultAndStatus(Request $r, $id) {
+        $result = $r->input('result');
+        $statusId = $r->input('statusId');
+
+        //  TODO check validity of result and status
+
+        $event = \App\Event::find($id);
+        if (!$event)
+            return [
+                'type' => 'error',
+                'message' => "This event not exist anymore!",
+            ];
+
+        // update event
+        $event->result = $result;
+        $event->statusId = $statusId;
+        $event->save();
+
+        // update associations
+
+        // update associations
+
+        return [
+            'type' => 'success',
+            'message' =>"Prediction and status was succesfful updated.",
+        ];
+
+    }
+
     public function destroy() {}
 
     /*

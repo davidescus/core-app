@@ -255,6 +255,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/by-id/{id}', 'Admin\Event@get');
 
     // Events
+    // @param integer $id
+    // @param string  $result
+    // @param integer $statusId
+    // @retun array()
+    $app->post('/event/update-result-status/{id}', 'Admin\Event@updateResultAndStatus');
+
+    // Events
     // get all distributed events
     // @return array()
     $app->get('/event/distributed-events', 'Admin\Event@getDistributedEvents');
