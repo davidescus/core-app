@@ -17,7 +17,7 @@ class CreateArchiveBigTable extends Migration
             $table->increments('id');
             $table->integer('distributionId')->index();
             $table->integer('associationId')->index();
-            $table->integer('eventId');
+            $table->integer('eventId')->index();
             $table->integer('siteId')->index();
             $table->integer('packageId')->index();
             $table->string('source');
@@ -28,9 +28,13 @@ class CreateArchiveBigTable extends Migration
             $table->integer('isNoTip')->default(0);
             $table->integer('isVip')->default(0);
             $table->string('country');
+            $table->string('countryCode');
             $table->string('league');
+            $table->integer('leagueId');
             $table->string('homeTeam');
+            $table->integer('homeTeamId');
             $table->string('awayTeam');
+            $table->string('awayTeamId');
             $table->string('odd');
             $table->string('predictionId');
             $table->string('predictionName');
