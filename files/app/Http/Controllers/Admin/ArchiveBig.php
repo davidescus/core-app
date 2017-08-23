@@ -97,6 +97,42 @@ class ArchiveBig extends Controller
 
     public function update() {}
 
+    // @param $id,
+    // @param $siteId,
+    // @param $predictionId,
+    // @param $StatusId,
+    // update prediction and status
+    // @return array()
+    public function updatePredictionAndStatus(Request $r, $id)
+    {
+        $siteId = $r->input('siteId');
+        $predictionId = $r->input('predictionId');
+        $statusId = $r->input('statusId');
+
+        $event = \App\ArchiveBig::find($id);
+        if (!$event)
+            return [
+                'type' => 'error',
+                'message' => "This event not exist anymore!",
+            ];
+
+        // get prediction according to site.
+        $sitePrediction = \App\SitePrediction::where([
+            ['siteId', '=', $siteId],
+            ['predictionIdentifier', '=', $predictionId],
+        ])->first();
+
+        $event->predictionName = $sitePrediction->name;
+        $event->predictionId = $predictionId;
+        $event->statusId = $statusId;
+        $event->save();
+
+        return [
+            'type' => 'success',
+            'message' =>"Prediction and status was succesfful updated.",
+        ];
+    }
+
     public function destroy() {}
 
 }

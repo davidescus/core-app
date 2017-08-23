@@ -144,6 +144,15 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // @return array()
     $app->get('/archive-big/show-hide/{id}', 'Admin\ArchiveBig@toogleShowHide');
 
+    // Archive Big
+    // @param $id,
+    // @param $siteId,
+    // @param $predictionId,
+    // @param $StatusId,
+    // update prediction and status
+    // @return array()
+    $app->post('/archive-big/update/prediction-and-status/{id}', 'Admin\ArchiveBig@updatePredictionAndStatus');
+
     /*
      * Sites
      ---------------------------------------------------------------------*/
