@@ -67,9 +67,17 @@ class Event extends Controller
         $event->statusId = $statusId;
         $event->save();
 
-        // update associations
+        $update = [
+            'result' => $result,
+            'statusId' => $statusId,
+        ];
 
         // update associations
+        \App\Association::where('eventId', $id)->update($update);
+
+        // update distribution
+        \App\Distribution::where('eventId', $id)->update($update);
+
 
         return [
             'type' => 'success',
