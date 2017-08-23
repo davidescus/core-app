@@ -23,7 +23,10 @@ class Event extends Controller
         return \App\Event::all();
     }
 
-    public function get() {}
+    // @retun object event
+    public function get($id) {
+        return \App\Event::find($id);
+    }
 
     // get all distributed events
     // @return array()

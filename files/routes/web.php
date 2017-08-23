@@ -251,6 +251,10 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->get('/event/all', 'Admin\Event@index');
 
     // Events
+    // @retun object event
+    $app->get('/event/by-id/{id}', 'Admin\Event@get');
+
+    // Events
     // get all distributed events
     // @return array()
     $app->get('/event/distributed-events', 'Admin\Event@getDistributedEvents');
