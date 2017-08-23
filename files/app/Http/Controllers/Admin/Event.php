@@ -25,6 +25,19 @@ class Event extends Controller
 
     public function get() {}
 
+    // get all distributed events
+    // @return array()
+    public function getDistributedEvents() {
+
+        $eventsIds = [];
+        $ids = \App\Distribution::select('eventId')->distinct()->where('eventId', '!=', '0')->get();
+
+        foreach ($ids as $id)
+            $eventsIds[] = $id->eventId;
+
+        return \App\Event::whereIn('id', $eventsIds)->get()->toArray();
+    }
+
     public function store() {}
 
     public function update() {}

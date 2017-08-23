@@ -250,6 +250,11 @@ $app->group(['prefix' => 'admin'], function ($app) {
 
     $app->get('/event/all', 'Admin\Event@index');
 
+    // Events
+    // get all distributed events
+    // @return array()
+    $app->get('/event/distributed-events', 'Admin\Event@getDistributedEvents');
+
     // return distinct providers and leagues based on table selection
     $app->get('/event/available-filters-values/{table}', 'Admin\Event@getTablesFiltersValues');
 
