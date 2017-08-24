@@ -262,9 +262,9 @@ $app->group(['prefix' => 'admin'], function ($app) {
     $app->post('/event/update-result-status/{id}', 'Admin\Event@updateResultAndStatus');
 
     // Events
-    // get all distributed events
+    // get all associated events
     // @return array()
-    $app->get('/event/distributed-events', 'Admin\Event@getDistributedEvents');
+    $app->get('/event/associated-events', 'Admin\Event@getAssociatedEvents');
 
     // return distinct providers and leagues based on table selection
     $app->get('/event/available-filters-values/{table}', 'Admin\Event@getTablesFiltersValues');

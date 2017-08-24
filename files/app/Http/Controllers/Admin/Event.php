@@ -28,12 +28,12 @@ class Event extends Controller
         return \App\Event::find($id);
     }
 
-    // get all distributed events
+    // get all associated events
     // @return array()
-    public function getDistributedEvents() {
+    public function getAssociatedEvents() {
 
         $eventsIds = [];
-        $ids = \App\Distribution::select('eventId')->distinct()->where('eventId', '!=', '0')->get();
+        $ids = \App\Association::select('eventId')->distinct()->where('eventId', '!=', '0')->get();
 
         foreach ($ids as $id)
             $eventsIds[] = $id->eventId;
