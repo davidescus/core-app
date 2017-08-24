@@ -11,13 +11,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call('PredictionTableSeeder');
-        $this->call('EventTableSeeder');
-        $this->call('SiteTableSeeder');
-        $this->call('PackageTableSeeder');
-        $this->call('PackagePredictionTableSeeder');
-        $this->call('SitePredictionTableSeeder');
-        $this->call('SitePackageTableSeeder');
-        $this->call('SiteResultStatusTableSeeder');
+        if (getenv('APP_ENV') === 'local') {
+            $this->call('PredictionTableSeeder');
+            $this->call('EventTableSeeder');
+            $this->call('SiteTableSeeder');
+            $this->call('PackageTableSeeder');
+            $this->call('PackagePredictionTableSeeder');
+            $this->call('SitePredictionTableSeeder');
+            $this->call('SitePackageTableSeeder');
+            $this->call('SiteResultStatusTableSeeder');
+        }
+
+        if (getenv('APP_ENV') === 'production') {
+            $this->call('PredictionTableSeeder');
+        }
     }
 }
