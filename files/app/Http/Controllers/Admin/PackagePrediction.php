@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Http\Controllers\Admin;
@@ -44,7 +43,7 @@ class PackagePrediction extends Controller
             ]);
 
         // delete all associated predictions
-        \App\PackagePrediction::delete()->where('packageId', $p[0]['packageId']);
+        \App\PackagePrediction::where('packageId', $p[0]['packageId'])->delete();
 
         foreach ($p as $v)
             \App\PackagePrediction::create($v);
