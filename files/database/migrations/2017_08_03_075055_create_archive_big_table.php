@@ -15,26 +15,26 @@ class CreateArchiveBigTable extends Migration
     {
         Schema::create('archive_big', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('distributionId')->index();
-            $table->integer('associationId')->index();
-            $table->integer('eventId')->index();
-            $table->integer('siteId')->index();
-            $table->integer('packageId')->index();
+            $table->integer('distributionId')->unsigned()->index();
+            $table->integer('associationId')->uunsigned()->index();
+            $table->integer('eventId')->unsigned()->index();
+            $table->integer('siteId')->unsigned()->index();
+            $table->integer('packageId')->unsigned()->index();
             $table->string('source');
             $table->string('provider');
-            $table->string('tableIdentifier');
-            $table->integer('isPublish')->default(0);
-            $table->integer('isVisible')->default(1);
-            $table->integer('isNoTip')->default(0);
-            $table->integer('isVip')->default(0);
+            $table->string('tableIdentifier')->index();
+            $table->integer('isPublish')->unsigned()->default(0)->index();
+            $table->integer('isVisible')->unsigned()->default(1)->index();
+            $table->integer('isNoTip')->unsigned()->default(0);
+            $table->integer('isVip')->unsigned()->default(0);
             $table->string('country');
             $table->string('countryCode');
             $table->string('league');
-            $table->integer('leagueId');
+            $table->integer('leagueId')->unsigned();
             $table->string('homeTeam');
-            $table->integer('homeTeamId');
+            $table->integer('homeTeamId')->unsigned();
             $table->string('awayTeam');
-            $table->string('awayTeamId');
+            $table->string('awayTeamId')->unsigned();
             $table->string('odd');
             $table->string('predictionId');
             $table->string('predictionName');
@@ -42,7 +42,7 @@ class CreateArchiveBigTable extends Migration
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
-            $table->string('systemDate')->nullable();
+            $table->string('systemDate')->nullable()->index();
             $table->timestamps();
         });
     }

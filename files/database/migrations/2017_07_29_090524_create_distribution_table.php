@@ -15,32 +15,32 @@ class CreateDistributionTable extends Migration
     {
         Schema::create('distribution', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('associationId')->index();
-            $table->integer('eventId');
+            $table->integer('associationId')->unsigned()->index();
+            $table->integer('eventId')->unsigned();
             $table->string('source');
             $table->string('provider');
-            $table->integer('siteId');
-            $table->integer('packageId')->default(0)->index();
+            $table->integer('siteId')->unsigned()->index();
+            $table->integer('packageId')->unsigned()->index();
             $table->string('tableIdentifier');
-            $table->integer('isPublish')->default(0);
-            $table->integer('isNoTip')->default(0);
-            $table->integer('isVip')->default(0);
+            $table->integer('isPublish')->unsigned()->index();
+            $table->integer('isNoTip')->unsigned()->index();
+            $table->integer('isVip')->unsigned();
             $table->string('country');
             $table->string('countryCode');
             $table->string('league');
-            $table->integer('leagueId');
+            $table->integer('leagueId')->unsigned();
             $table->string('homeTeam');
-            $table->integer('homeTeamId');
+            $table->integer('homeTeamId')->unsigned();
             $table->string('awayTeam');
-            $table->integer('awayTeamId');
+            $table->integer('awayTeamId')->unsigned();
             $table->string('odd');
             $table->string('predictionId');
             $table->string('predictionName');
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
-            $table->timestamp('mailingDate')->nullable();
-            $table->string('systemDate')->nullable();
+            $table->timestamp('mailingDate')->nullable()->index();
+            $table->string('systemDate')->nullable()->index();
             $table->timestamps();
         });
     }
