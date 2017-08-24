@@ -667,9 +667,12 @@ $app->group(['prefix' => 'admin'], function ($app) {
                 continue;
             }
 
-            if (!$distribution->result || !$distribution->statusId) {
-                $notHaveResultOrStatus++;
-                continue;
+            // noTip not have results and status
+            if (!$distribution->isNoTip) {
+                if (!$distribution->result || !$distribution->statusId) {
+                    $notHaveResultOrStatus++;
+                    continue;
+                }
             }
 
             // set publish
