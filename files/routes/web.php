@@ -111,13 +111,6 @@ $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
 $app->group(['prefix' => 'admin'], function ($app) {
 
     /*
-     * Admin Dashboard
-     ---------------------------------------------------------------------*/
-    $app->get('/', function () use ($app) {
-        return view('main');
-    });
-
-    /*
      * Archive Big
      ---------------------------------------------------------------------*/
 
