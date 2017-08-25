@@ -69,7 +69,7 @@ class ArchiveBig extends Controller
 
         return [
             'type' => 'success',
-            'message' =>"Status of event was successfful changed!",
+            'message' =>"Events beetwen $first - $last was published in site: $siteId",
         ];
 
 
