@@ -115,9 +115,12 @@ $app->get('/xml', function () use ($app) {
     echo 'Process Events: ' . $count . "</br>";
 });
 
-$app->get('/test', ['middleware' => 'auth'], function () use ($app) {
+$app->get('/test', ['middleware' => 'auth', function () use ($app) {
+    $user = Auth::user();
+
+    return $user->name;
     return $app->version();
-});
+}]);
 
 // all routes for administration
 $app->group(['prefix' => 'admin'], function ($app) {
