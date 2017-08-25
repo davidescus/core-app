@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ArchiveBig extends Controller
 {
@@ -45,6 +46,33 @@ class ArchiveBig extends Controller
             ->where('tableIdentifier', $tableIdentifier)
             ->where('systemDate', '>=', $date . '-01')
             ->where('systemDate', '<=', $date . '-31')->get()->toArray();
+    }
+
+    // @param $siteId,
+    // @param $date format: Y-m,
+    // set isPublishInSite 1 for all events fron site in selected month
+    // @return array()
+    public function publishMonth(Request $r)
+    {
+        $date   = $r->input('date');
+        $siteId = $r->input('siteId');
+
+        $first = $date . '-01';
+
+        $carbon = Carbon::parse($first);
+        $last = $carbon->endOfMonth()->toDateString();
+
+        \App\ArchiveBig::where('siteId', $siteId)
+            ->where('systemDate', '>=', $first)
+            ->where('systemDate', '<=', $last)
+            ->update(['isPublishInSite' => '1']);
+
+        return [
+            'type' => 'success',
+            'message' =>"Status of event was successfful changed!",
+        ];
+
+
     }
 
     // get array with available years and month based on archived events.

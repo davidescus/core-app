@@ -158,6 +158,13 @@ $app->group(['prefix' => 'admin'], function ($app) {
     // @return array()
     $app->post('/archive-big/update/prediction-and-status/{id}', 'Admin\ArchiveBig@updatePredictionAndStatus');
 
+    // Archive Big
+    // @param $siteId,
+    // @param $date format: Y-m,
+    // set isPublishInSite 1 for all events fron site in selected month
+    // @return array()
+    $app->post('/archive-big/publish-month', 'Admin\ArchiveBig@publishMonth');
+
     /*
      * Sites
      ---------------------------------------------------------------------*/
