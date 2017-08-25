@@ -25,11 +25,15 @@ $app->get('/xml', function () use ($app) {
     $c = Parser::xml($xml);
 
     // iterate matches
+    $count = 0;
+    $eventExists = 0;
     foreach ($c['match'] as $k => $match) {
 
         // check if event already are imported
-        if (\App\Match::find($match['id']))
+        if (\App\Match::find($match['id'])) {
+            $eventExists++;
             continue;
+        }
 
         // create array
         $m = [
@@ -49,8 +53,10 @@ $app->get('/xml', function () use ($app) {
         // store country name and code if not exists
         if(!\App\Country::where('code', $m['countryCode'])->first()) {
 
-            if (!$m['countryCode'])
+            if (!$m['countryCode']) {
+                echo "Missing country code for matchId: " . $m['id'] . "<br/>";
                 continue;
+            }
 
             \App\Country::create([
                 'code' => $m['countryCode'],
@@ -100,7 +106,13 @@ $app->get('/xml', function () use ($app) {
         // store new match
         \App\Match::create($m);
 
+        $count++;
     }
+
+    echo " ------------------------------------------------------ <br/> ";
+    echo 'Total events: ' . count($c['match']) . "</br>";
+    echo 'Already Exists: ' . $eventExists . "</br>";
+    echo 'Process Events: ' . $count . "</br>";
 });
 
 $app->get('/test', ['middleware' => 'auth'], function () use ($app) {
