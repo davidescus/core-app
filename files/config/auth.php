@@ -36,10 +36,6 @@ return [
 
     'guards' => [
         'api' => ['driver' => 'api'],
-        'admin' => [
-            'driver' => 'token',
-            'provider' => 'admins'
-        ]
     ],
 
     /*
@@ -59,12 +55,7 @@ return [
     |
     */
 
-    'providers' => [
-        'admins' => [
-            'driver' => 'eloquent',
-            'model'  => App\Admin::class
-        ]
-    ],
+    'providers' => [],
 
     /*
     |--------------------------------------------------------------------------
