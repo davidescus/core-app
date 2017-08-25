@@ -16,6 +16,7 @@ class ArchiveBig extends Model {
         'provider',
         'tableIdentifier',
         'isPublish',
+        'isPublishInSite',
         'isVisible',
         'isNoTip',
         'isVip',
