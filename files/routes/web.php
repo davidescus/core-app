@@ -148,7 +148,7 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
 }]);
 
 // all routes for administration
-$app->group(['prefix' => 'admin'], function ($app) {
+$app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
      * Archive Big
