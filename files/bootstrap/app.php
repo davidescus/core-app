@@ -86,6 +86,10 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register('Nathanmac\Utilities\Parser\ParserServiceProvider');
 class_alias('Nathanmac\Utilities\Parser\Facades\Parser', 'Parser');
 
+// cUrl
+$app->register(Ixudra\Curl\CurlServiceProvider::class);
+class_alias('Ixudra\Curl\Facades\Curl', 'Curl');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
