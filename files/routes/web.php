@@ -261,11 +261,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ])
             ->post();
 
-        $response = json_decode($response);
+        $response = json_decode($response, true);
 
         return [
-            'type' => $response->success ? 'success' : 'error',
-            'message' => $response->message,
+            'type' => $response['success'] ? 'success' : 'error',
+            'message' => $response['message'],
         ];
     });
 
