@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             $this->call('SitePredictionTableSeeder');
             $this->call('SitePackageTableSeeder');
             $this->call('SiteResultStatusTableSeeder');
+            $this->call('UserTableSeeder');
         }
 
         if (getenv('APP_ENV') === 'production') {
