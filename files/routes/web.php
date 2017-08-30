@@ -13,6 +13,7 @@
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Ixudra\Curl\Facades\Curl;
 
 $app->get('/xml', function () use ($app) {
 
@@ -147,6 +148,27 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     return $app->version();
 }]);
 
+
+// test route for sites.
+$app->get('/client/get-configuration/{id}', function ($id) use ($app) {
+    return [
+        'sites' => [
+            'index1' => 'index2333343244',
+            'site2' => 'index2333343244',
+        ],
+        'package' => [
+            'pack1' => 'index2333343244',
+            'pack2' => 'index2333343244',
+            'test' =>[
+                'teestt1' => 'index2333343244',
+                'test2' => 'index2333343244',
+            ],
+        ],
+        'email' => 'email@email.com',
+        'date-format' => 'Y-m-d H:i:s',
+    ];
+});
+
 // all routes for administration
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
@@ -219,6 +241,34 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // get all alvaillable tables(for archives)
     // @return array()
     $app->get('/site/available-table/{siteId}', 'Admin\Site@getAvailableTables');
+
+    // front request to send update requestt for client
+    // @param integer $id
+    $app->get('/site/update-client/{id}', function ($id) use ($app) {
+
+        $site = \App\Site::find($id);
+        if (!$site)
+            return [
+                'type' => 'error',
+                'message' => "Site id: $id not exist enymore.",
+            ];
+
+        // TODO hardcode site url here
+        $response = Curl::to('https://www.goforwinners.com/dev/')
+            ->withData([
+                'route' => 'api',
+                'key' => $site->token,
+                'url' => env('APP_HOST') . '/client/get-configuration/' . $id,
+            ])
+            ->post();
+
+        $response = json_decode($response);
+
+        return [
+            'type' => $response->success ? 'success' : 'error',
+            'message' => $response->message,
+        ];
+    });
 
     /*
      * Packages
