@@ -151,21 +151,15 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
 
 // test route for sites.
 $app->get('/client/get-configuration/{id}', function ($id) use ($app) {
+
+    $site = \App\Site::find($id);
+    if (!$site)
+        return false;
+
     return [
-        'sites' => [
-            'index1' => 'index2333343244',
-            'site2' => 'index2333343244',
-        ],
-        'package' => [
-            'pack1' => 'index2333343244',
-            'pack2' => 'index2333343244',
-            'test' =>[
-                'teestt1' => 'index2333343244',
-                'test2' => 'index2333343244',
-            ],
-        ],
-        'email' => 'email@email.com',
-        'date-format' => 'Y-m-d H:i:s',
+        'key'  => $site->token,
+        'name' => $site->name,
+        'url'  => $site->url,
     ];
 });
 
@@ -257,6 +251,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ->withData([
                 'route' => 'api',
                 'key' => $site->token,
+                'method' => 'updateSiteConfiguration',
                 'url' => env('APP_HOST') . '/client/get-configuration/' . $id,
             ])
             ->post();
