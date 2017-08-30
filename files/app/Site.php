@@ -8,6 +8,8 @@ class Site extends Model {
 
     protected $fillable = [
         'name',
+        'isConnect',
+        'token',
     ];
 
 //    protected $hidden = [ ‘password’ ];
