@@ -44,7 +44,8 @@ class Site extends Controller
         }
 
         $site = \App\Site::create([
-            "name" => $name
+            "name" => $name,
+            "token" => md5(microtime() . rand(0, 1000)),
         ]);
 
         return response()->json([
