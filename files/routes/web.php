@@ -253,8 +253,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => "Site id: $id not exist enymore.",
             ];
 
-        // TODO hardcode site url here
-        $response = Curl::to('https://www.goforwinners.com/dev/')
+        $response = Curl::to($site->url)
             ->withData([
                 'route' => 'api',
                 'key' => $site->token,
