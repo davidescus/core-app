@@ -8,6 +8,7 @@ class Site extends Model {
 
     protected $fillable = [
         'name',
+        'url',
         'isConnect',
         'token',
     ];

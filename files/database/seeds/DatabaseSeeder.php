@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
 
         if (getenv('APP_ENV') === 'production') {
             $this->call('PredictionTableSeeder');
+            $this->call('UserTableSeeder');
         }
     }
 }

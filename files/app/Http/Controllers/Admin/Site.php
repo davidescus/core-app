@@ -76,10 +76,9 @@ class Site extends Controller
                 "message" => "Site with name: " . $r->input('name') . " already exists!",
             ]);
 
-        if ($site->name !== $r->input('name')) {
-            $site->name = $r->input('name');
-            $site->save();
-        }
+        $site->name = $r->input('name');
+        $site->url = $r->input('url');
+        $site->save();
 
         return response()->json([
             "type" => "success",

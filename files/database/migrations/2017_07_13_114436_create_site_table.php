@@ -16,6 +16,7 @@ class CreateSiteTable extends Migration
         Schema::create('site', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->string('url');
             $table->integer('isConnect')->unsigned();
             $table->string('token')->unique()->index();
             $table->timestamps();
