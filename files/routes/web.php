@@ -262,6 +262,17 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ->post();
 
         $response = json_decode($response, true);
+        if (!$response)
+            return [
+                'type' => 'error',
+                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
+            ];
+
+        // if success update isConnected
+        if ($response['success']) {
+            $site->isConnect = 1;
+            $site->save();
+        }
 
         return [
             'type' => $response['success'] ? 'success' : 'error',
