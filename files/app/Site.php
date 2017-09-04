@@ -8,7 +8,18 @@ class Site extends Model {
 
     protected $fillable = [
         'name',
-        'url',
+        'email',
+        'smtpHost',
+        'smtpPort',
+        'smtpUser',
+        'smtpPassword',
+        'smtpEncryption',
+        'imapHost',
+        'imapPort',
+        'imapUser',
+        'imapPassword',
+        'imapEncryption',
+        'dateFormat',
         'isConnect',
         'token',
     ];
