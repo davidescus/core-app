@@ -16,7 +16,7 @@ class CreateSiteTable extends Migration
         Schema::create('site', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('url');
             $table->string('smtpHost');
             $table->string('smtpPort');
