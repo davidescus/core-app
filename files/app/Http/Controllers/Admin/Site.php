@@ -45,6 +45,19 @@ class Site extends Controller
 
         $site = \App\Site::create([
             "name" => $name,
+            "email" => $r->input('email'),
+            "url" => $r->input('url'),
+            "dateFormat" => $r->input('dateFormat'),
+            "smtpHost" => $r->input('smtpHost'),
+            "smtpPort" => $r->input('smtpPort'),
+            "smtpUser" => $r->input('smtpUser'),
+            "smtpPassword" => $r->input('smtpPassword'),
+            "smtpEncryption" => $r->input('smtpEncryption'),
+            "imapHost" => $r->input('imapHost'),
+            "imapPort" => $r->input('imapPort'),
+            "imapUser" => $r->input('imapUser'),
+            "imapPassword" => $r->input('imapPassword'),
+            "imapEncryption" => $r->input('imapEncryption'),
             "token" => md5(microtime() . rand(0, 1000)),
         ]);
 
@@ -77,7 +90,19 @@ class Site extends Controller
             ]);
 
         $site->name = $r->input('name');
+        $site->email = $r->input('email');
         $site->url = $r->input('url');
+        $site->dateFormat = $r->input('dateFormat');
+        $site->smtpHost = $r->input('smtpHost');
+        $site->smtpPort = $r->input('smtpPort');
+        $site->smtpUser = $r->input('smtpUser');
+        $site->smtpPassword = $r->input('smtpPassword');
+        $site->imapHost = $r->input('imapHost');
+        $site->imapPort = $r->input('imapPort');
+        $site->imapUser = $r->input('imapUser');
+        $site->imapPassword = $r->input('imapPassword');
+        $site->imapEncryption = $r->input('imapEncryption');
+        $site->email = $r->input('email');
         $site->save();
 
         return response()->json([
