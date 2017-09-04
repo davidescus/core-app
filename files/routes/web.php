@@ -149,7 +149,10 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
 }]);
 
 
-// test route for sites.
+// client (sites) routes
+
+// @param integer $id
+// get general informatin for site
 $app->get('/client/get-configuration/{id}', function ($id) use ($app) {
 
     $site = \App\Site::find($id);
@@ -161,6 +164,29 @@ $app->get('/client/get-configuration/{id}', function ($id) use ($app) {
         'name' => $site->name,
         'url'  => $site->url,
     ];
+});
+
+// @param integer $id
+// get archive-big for site.
+// @return array() indexed by table idintifier.
+$app->get('/client/update-archive-big/{id}', function ($id) use ($app) {
+
+    $site = \App\Site::find($id);
+    if (!$site)
+        return false;
+
+    $events = \App\ArchiveBig::where('siteId', $id)
+        ->where('isPublishInSite', '1')->get()->toArray();
+
+    $data = [];
+    foreach ($events as $e) {
+        $table = $e['tableIdentifier'];
+        $year  = date('Y', strtotime($e['systemDate']));
+        $month = date('m', strtotime($e['systemDate']));
+        $data[$table][$year][$month][] = $e;
+    }
+
+    return $data;
 });
 
 // all routes for administration
@@ -268,6 +294,39 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $site->isConnect = 1;
             $site->save();
         }
+
+        return [
+            'type' => $response['success'] ? 'success' : 'error',
+            'message' => $response['message'],
+        ];
+    });
+
+    // front request to update site archive-big
+    // @param integer $id
+    $app->get('/site/update-archive-big/{id}', function ($id) use ($app) {
+
+        $site = \App\Site::find($id);
+        if (!$site)
+            return [
+                'type' => 'error',
+                'message' => "Site id: $id not exist enymore.",
+            ];
+
+        $response = Curl::to($site->url)
+            ->withData([
+                'route' => 'api',
+                'key' => $site->token,
+                'method' => 'updateArchiveBig',
+                'url' => env('APP_HOST') . '/client/update-archive-big/' . $id,
+            ])
+            ->post();
+
+        $response = json_decode($response, true);
+        if (!$response)
+            return [
+                'type' => 'error',
+                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
+            ];
 
         return [
             'type' => $response['success'] ? 'success' : 'error',
