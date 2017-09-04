@@ -97,6 +97,7 @@ class Site extends Controller
         $site->smtpPort = $r->input('smtpPort');
         $site->smtpUser = $r->input('smtpUser');
         $site->smtpPassword = $r->input('smtpPassword');
+        $site->smtpEncryption = $r->input('smtpEncryption');
         $site->imapHost = $r->input('imapHost');
         $site->imapPort = $r->input('imapPort');
         $site->imapUser = $r->input('imapUser');
