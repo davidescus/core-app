@@ -160,9 +160,17 @@ $app->get('/client/get-configuration/{id}', function ($id) use ($app) {
         return false;
 
     return [
-        'key'  => $site->token,
-        'name' => $site->name,
-        'url'  => $site->url,
+        'key'        => $site->token,
+        'name'       => $site->name,
+        'url'        => $site->url,
+        'dateFormat' => $site->dateFormat,
+        'imap'       => [
+            'host'       => $site->imapHost,
+            'port'       => $site->imapPort,
+            'user'       => $site->imapUser,
+            'password'   => $site->imapPassword,
+            'encryption' => $site->imapEncryption,
+        ],
     ];
 });
 
