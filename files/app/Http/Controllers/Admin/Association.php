@@ -173,7 +173,79 @@ class Association extends Controller
         return $data;
     }
 
-    public function store() {}
+    // create new associations
+    // @param array() $eventsIds
+    // @param string  $table
+    // @param string  $systemDate
+    // @return array()
+    public function store(Request $r)
+    {
+        $eventsIds = $r->input('eventsIds');
+        $table = $r->input('table');
+        $systemDate = $r->input('systemDate');
+
+        if (empty($eventsIds))
+            return response()->json([
+                "type" => "error",
+                "message" => "You must select at least one event"
+            ]);
+
+        // TODO check $systemDate is a vlid date
+
+        $vip = ($table === 'ruv' || $table === 'nuv') ? '1' : '';
+
+        $notFound = 0;
+        $alreadyExists = 0;
+        $success = 0;
+        $returnMessage = '';
+
+        foreach ($eventsIds as $id) {
+
+            if (!\App\Event::find($id)) {
+                $notFound++;
+                continue;
+            }
+
+            $event = \App\Event::find($id)->toArray();
+
+            // Check if already exists in association table
+            if (\App\Association::where([
+                ['eventId', '=', (int)$id],
+                ['type', '=', $table],
+                ['predictionId', '=', $event['predictionId']],
+            ])->count()) {
+                $alreadyExists++;
+                continue;
+            }
+
+            $event['eventId'] = (int)$event['id'];
+            unset($event['id']);
+            unset($event['created_at']);
+            unset($event['updated_at']);
+
+            $event['isNoTip'] = '';
+            $event['isVip'] = $vip;
+            $event['type'] = $table;
+            $event['systemDate'] = $systemDate;
+
+            \App\Association::create($event);
+            $success++;
+        }
+
+        if ($notFound)
+            $returnMessage .= $notFound . " - events not found (maybe was deleted)\r\n";
+
+        if ($alreadyExists)
+            $returnMessage .= $alreadyExists . " - already associated with this table\r\n";
+
+        if ($success)
+            $returnMessage .= $success . " - events was added with success\r\n";
+
+        return response()->json([
+            "type" => "success",
+            "message" => $returnMessage
+        ]);
+    }
 
     // add no tip to a table
     // @param string $table

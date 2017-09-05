@@ -444,74 +444,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string  $table
     // @param string  $systemDate
     // @return array()
-    $app->post("/association", function(Request $request) use ($app) {
-
-        $eventsIds = $request->input('eventsIds');
-        $table = $request->input('table');
-        $systemDate = $request->input('systemDate');
-
-        if (empty($eventsIds))
-            return response()->json([
-                "type" => "error",
-                "message" => "You must select at least one event"
-            ]);
-
-        // TODO check $systemDate is a vlid date
-
-        $vip = ($table === 'ruv' || $table === 'nuv') ? '1' : '';
-
-        $notFound = 0;
-        $alreadyExists = 0;
-        $success = 0;
-        $returnMessage = '';
-
-        foreach ($eventsIds as $id) {
-
-            if (!\App\Event::find($id)) {
-                $notFound++;
-                continue;
-            }
-
-            $event = \App\Event::find($id)->toArray();
-
-            // Check if already exists in association table
-            if (\App\Association::where([
-                ['eventId', '=', (int)$id],
-                ['type', '=', $table],
-                ['predictionId', '=', $event['predictionId']],
-            ])->count()) {
-                $alreadyExists++;
-                continue;
-            }
-
-            $event['eventId'] = (int)$event['id'];
-            unset($event['id']);
-            unset($event['created_at']);
-            unset($event['updated_at']);
-
-            $event['isNoTip'] = '';
-            $event['isVip'] = $vip;
-            $event['type'] = $table;
-            $event['systemDate'] = $systemDate;
-
-            \App\Association::create($event);
-            $success++;
-        }
-
-        if ($notFound)
-            $returnMessage .= $notFound . " - events not found (maybe was deleted)\r\n";
-
-        if ($alreadyExists)
-            $returnMessage .= $alreadyExists . " - already associated with this table\r\n";
-
-        if ($success)
-            $returnMessage .= $success . " - events was added with success\r\n";
-
-        return response()->json([
-            "type" => "success",
-            "message" => $returnMessage
-        ]);
-    });
+    $app->post("/association", 'Admin\Association@store');
 
     // @param int $id
     // delete an association
