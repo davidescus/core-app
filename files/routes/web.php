@@ -117,6 +117,8 @@ $app->get('/xml', function () use ($app) {
 });
 
 // each login will generate a new token
+// @param string $email
+// @param string $password
 // @return array()
 $app->post('/login', function (Request $r) use ($app) {
     $email = $r->input('email');
