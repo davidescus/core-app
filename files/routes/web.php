@@ -157,27 +157,9 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
 $app->group(['prefix' => 'client'], function ($app) {
 
     // @param integer $id
-    // get general informatin for site
-    $app->get('/get-configuration/{id}', function ($id) use ($app) {
-
-        $site = \App\Site::find($id);
-        if (!$site)
-            return false;
-
-        return [
-            'key'        => $site->token,
-            'name'       => $site->name,
-            'url'        => $site->url,
-            'dateFormat' => $site->dateFormat,
-            'imap'       => [
-                'host'       => $site->imapHost,
-                'port'       => $site->imapPort,
-                'user'       => $site->imapUser,
-                'password'   => $site->imapPassword,
-                'encryption' => $site->imapEncryption,
-            ],
-        ];
-    });
+    // get general configuration for site
+    // @return array()
+    $app->get('/get-configuration/{id}', 'Client\Configuration@index');
 
     // @param integer $id
     // get archive-big events for site.
