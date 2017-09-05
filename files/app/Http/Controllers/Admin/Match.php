@@ -7,24 +7,18 @@ use Illuminate\Http\Request;
 
 class Match extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
-    /*
-     * @return array()
-     */
     public function index()
     {
     }
 
-    public function get() {}
+    // get match by id
+    // @param integer $id
+    // @return object
+    public function get($id)
+    {
+        return \App\Match::find($id);
+    }
 
     // get all available matches by search
     // @param string $filter

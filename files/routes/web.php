@@ -418,9 +418,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // get match by id
     // @param integer $id
     // @return object
-    $app->get('/match/{id}', function($id) use ($app) {
-        return \App\Match::find($id);
-    });
+    $app->get('/match/{id}', 'Admin\Match@get');
 
 
     /*
