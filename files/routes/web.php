@@ -400,6 +400,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->get('/event/available', 'Admin\Event@getAvailableEvents');
 
     // add event from match
+    // @param integer $matchId
+    // @param string  $predictionId
+    // @param string  $odd
     $app->post('/event/create-from-match', function(Request $r) use ($app) {
 
         $matchId = $r->input('matchId');
