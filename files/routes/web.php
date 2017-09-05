@@ -436,38 +436,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string $table
     // @param string $systemDate
     // @return array()
-    $app->post("/association/no-tip", function(Request $request) use ($app) {
-
-        $table = $request->input('table');
-        $systemDate = $request->input('systemDate');
-
-        // check if already exists no tip in selected date
-        if (\App\Association::where('type', $table)
-            ->where('isNoTip', '1')
-            ->where('systemDate', $systemDate)->count())
-        {
-            return response()->json([
-                "type" => "error",
-                "message" => "Already exists no tip table in selected date",
-            ]);
-        }
-
-        $a = new \App\Association();
-        $a->type = $table;
-        $a->isNoTip = '1';
-
-        if ($table === 'ruv' || $table === 'nuv')
-            $a->isVip = '1';
-
-        $a->systemDate = $systemDate;
-        $a->save();
-
-        return response()->json([
-            "type" => "success",
-            "message" => "No Tip was added with success!",
-        ]);
-
-    });
+    $app->post("/association/no-tip", 'Admin\Association@addNoTip');
 
 
     // create new association

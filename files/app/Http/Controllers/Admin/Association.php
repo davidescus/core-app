@@ -34,6 +34,42 @@ class Association extends Controller
 
     public function store() {}
 
+    // add no tip to a table
+    // @param string $table
+    // @param string $systemDate
+    // @return array()
+    public function addNoTip(Request $r)
+    {
+        $table = $r->input('table');
+        $systemDate = $r->input('systemDate');
+
+        // check if already exists no tip in selected date
+        if (\App\Association::where('type', $table)
+            ->where('isNoTip', '1')
+            ->where('systemDate', $systemDate)->count())
+        {
+            return response()->json([
+                "type" => "error",
+                "message" => "Already exists no tip table in selected date",
+            ]);
+        }
+
+        $a = new \App\Association();
+        $a->type = $table;
+        $a->isNoTip = '1';
+
+        if ($table === 'ruv' || $table === 'nuv')
+            $a->isVip = '1';
+
+        $a->systemDate = $systemDate;
+        $a->save();
+
+        return response()->json([
+            "type" => "success",
+            "message" => "No Tip was added with success!",
+        ]);
+    }
+
     public function update() {}
 
     public function destroy($id) {
