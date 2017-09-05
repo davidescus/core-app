@@ -439,8 +439,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->post("/association/no-tip", 'Admin\Association@addNoTip');
 
 
-    // create new association
-    // TODO this not work in controller do not know why
+    // create new associations
+    // @param array() $eventsIds
+    // @param string  $table
+    // @param string  $systemDate
+    // @return array()
     $app->post("/association", function(Request $request) use ($app) {
 
         $eventsIds = $request->input('eventsIds');
