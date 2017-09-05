@@ -474,13 +474,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
      * Matches
      ---------------------------------------------------------------------*/
 
-    // Matches
     // get all available matches by search
     // @param string $filter
     // @return array()
     $app->get('/match/filter/{filter}', 'Admin\Match@getMatchesByFilter');
 
     // get match by id
+    // @param integer $id
+    // @return object
     $app->get('/match/{id}', function($id) use ($app) {
         return \App\Match::find($id);
     });
