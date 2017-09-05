@@ -515,7 +515,10 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     //    - Not Delete distributed association
     $app->get("/association/delete/{id}", 'Admin\Association@destroy');
 
-    // get available packages and sites according to associateEvent prediction
+    // get available packages according to table and event prediction
+    // @param string  $table
+    // @param integer $associateEventId
+    // @return array();
     $app->get('/association/package/available/{table}/{associateEventId}', function($table, $associateEventId) use ($app) {
         $data = [];
         $data['event'] = \App\Association::find($associateEventId);
