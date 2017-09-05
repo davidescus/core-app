@@ -244,8 +244,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->get('/site/available-table/{siteId}', 'Admin\Site@getAvailableTables');
 
-    // front request to send update requestt for client
+    // front request to send update request for client
     // @param integer $id
+    // @return array()
     $app->get('/site/update-client/{id}', function ($id) use ($app) {
 
         $site = \App\Site::find($id);
@@ -283,8 +284,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         ];
     });
 
-    // front request to update site archive-big
+    // front request: tell client to update his archive-big
     // @param integer $id
+    // @return array()
     $app->get('/site/update-archive-big/{id}', function ($id) use ($app) {
 
         $site = \App\Site::find($id);
