@@ -445,7 +445,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         {
             return [
                 'type' => 'error',
-                'message' => "This events already exists with same predictions",
+                'message' => "This events already exists with same prediction",
             ];
         }
 
