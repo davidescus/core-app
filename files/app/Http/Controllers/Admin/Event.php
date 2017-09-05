@@ -8,15 +8,6 @@ use Carbon\Carbon;
 
 class Event extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     public function index()
     {
@@ -44,6 +35,8 @@ class Event extends Controller
     public function store() {}
 
     public function update() {}
+
+    public function destroy() {}
 
     // @param integer $id
     // @param string  $result
@@ -78,15 +71,11 @@ class Event extends Controller
         // update distribution
         \App\Distribution::where('eventId', $id)->update($update);
 
-
         return [
             'type' => 'success',
             'message' =>"Prediction and status was succesfful updated.",
         ];
-
     }
-
-    public function destroy() {}
 
     /*
      * @return array()
@@ -125,7 +114,6 @@ class Event extends Controller
         }
 
         return $data;
-
     }
 
     /*
