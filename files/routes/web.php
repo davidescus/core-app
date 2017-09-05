@@ -717,6 +717,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param array $ids (distributionId)
     //  - mark events publish in distribution
     //  - send events in archive
+    // @return array()
     $app->post('/archive/publish', function(Request $request) use ($app) {
         $ids = $request->input('ids');
 
