@@ -403,6 +403,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param integer $matchId
     // @param string  $predictionId
     // @param string  $odd
+    // @return array()
     $app->post('/event/create-from-match', function(Request $r) use ($app) {
 
         $matchId = $r->input('matchId');
