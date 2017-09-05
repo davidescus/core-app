@@ -433,6 +433,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->get('/association/event/{tableIdentifier}/{date}', 'Admin\Association@index');
 
     // add no tip to a table
+    // @param string $table
+    // @param string $systemDate
+    // @return array()
     $app->post("/association/no-tip", function(Request $request) use ($app) {
 
         $table = $request->input('table');
