@@ -120,28 +120,7 @@ $app->get('/xml', function () use ($app) {
 // @param string $email
 // @param string $password
 // @return array()
-$app->post('/login', function (Request $r) use ($app) {
-    $email = $r->input('email');
-    $password = $r->input('password');
-
-    $user = \App\User::where('email', $email)
-        ->where('password', sha1($password))->first();
-
-    if (!$user)
-        return [
-            'success' => 0,
-        ];
-
-    $token = md5(microtime());
-
-    $user->token = $token;
-    $user->save();
-
-    return [
-        'success' =>1,
-        'token'   => $token,
-    ];
-});
+$app->post('/login', 'Admin\Login@index');
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     $user = Auth::user();
