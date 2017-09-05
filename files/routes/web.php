@@ -713,7 +713,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         return \App\ArchiveBig::all();
     });
 
-    // manual publish events in archive
+    // publish events in archive
     // @param array $ids (distributionId)
     //  - mark events publish in distribution
     //  - send events in archive
