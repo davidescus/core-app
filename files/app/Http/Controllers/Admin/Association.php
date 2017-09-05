@@ -40,7 +40,7 @@ class Association extends Controller
 
         $association = \App\Association::find($id);
 
-        // Site not exists retur status not exists
+        // assoociation not exists retur status not exists
         if ($association === null) {
             return response()->json([
                 "type" => "error",
