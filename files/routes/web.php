@@ -404,61 +404,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string  $predictionId
     // @param string  $odd
     // @return array()
-    $app->post('/event/create-from-match', function(Request $r) use ($app) {
-
-        $matchId = $r->input('matchId');
-        $predictionId = $r->input('predictionId');
-        $odd = $r->input('odd');
-
-        if (!$predictionId || trim($predictionId) == '-') {
-            return [
-                'type' => 'error',
-                'message' => "Prediction can not be empty!",
-            ];
-        }
-
-        if (!$odd || trim($odd) == '-') {
-            return [
-                'type' => 'error',
-                'message' => "Odd can not be empty!",
-            ];
-        }
-
-        $match = \App\Match::find($matchId)->toArray();
-
-        // check if event already exists with same prediciton
-        if (\App\Event::where('homeTeamId', $match['homeTeamId'])
-            ->where('awayTeamId', $match['awayTeamId'])
-            ->where('eventDate', $match['eventDate'])
-            ->where('predictionId', $predictionId)
-            ->count())
-        {
-            return [
-                'type' => 'error',
-                'message' => "This events already exists with same prediction",
-            ];
-        }
-
-        if (!$match) {
-            return [
-                'type' => 'error',
-                'message' => "Match with id: $matchId not founded!",
-            ];
-        }
-
-        $match['predictionId'] = $predictionId;
-        $match['odd'] = $odd;
-        $match['source'] = 'feed';
-        $match['provider'] = 'event';
-
-        $event = \App\Event::create($match);
-
-        return [
-            'type' => 'success',
-            'message' => "Event was creeated with success",
-            'data' => $event,
-        ];
-    });
+    $app->post('/event/create-from-match', 'Admin\Event@createFromMatch');
 
     /*
      * Matches
