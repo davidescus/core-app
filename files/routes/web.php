@@ -149,73 +149,83 @@ $app->get('/test', ['middleware' => 'auth', function () use ($app) {
 }]);
 
 
-// client (sites) routes
+    /* -------------------------------------------------------------------
+     * - CLIENT -
+     * all routes group for clients (sites)
+     ---------------------------------------------------------------------*/
 
-// @param integer $id
-// get general informatin for site
-$app->get('/client/get-configuration/{id}', function ($id) use ($app) {
+$app->group(['prefix' => 'client'], function ($app) {
 
-    $site = \App\Site::find($id);
-    if (!$site)
-        return false;
+    // @param integer $id
+    // get general informatin for site
+    $app->get('/get-configuration/{id}', function ($id) use ($app) {
 
-    return [
-        'key'        => $site->token,
-        'name'       => $site->name,
-        'url'        => $site->url,
-        'dateFormat' => $site->dateFormat,
-        'imap'       => [
-            'host'       => $site->imapHost,
-            'port'       => $site->imapPort,
-            'user'       => $site->imapUser,
-            'password'   => $site->imapPassword,
-            'encryption' => $site->imapEncryption,
-        ],
-    ];
+        $site = \App\Site::find($id);
+        if (!$site)
+            return false;
+
+        return [
+            'key'        => $site->token,
+            'name'       => $site->name,
+            'url'        => $site->url,
+            'dateFormat' => $site->dateFormat,
+            'imap'       => [
+                'host'       => $site->imapHost,
+                'port'       => $site->imapPort,
+                'user'       => $site->imapUser,
+                'password'   => $site->imapPassword,
+                'encryption' => $site->imapEncryption,
+            ],
+        ];
+    });
+
+    // @param integer $id
+    // get archive-big for site.
+    // @return array() indexed by table idintifier.
+    $app->get('/update-archive-big/{id}', function ($id) use ($app) {
+
+        $site = \App\Site::find($id);
+        if (!$site)
+            return false;
+
+        // results name and class
+        $results = [];
+        foreach (\App\SiteResultStatus::where('siteId', $id)->get()->toArray() as $k => $v)
+           $results[$v['statusId']] = $v;
+
+        // prediction
+        $predictions = [];
+        foreach (\App\SitePrediction::where('siteId', $id)->get()->toArray() as $k => $v)
+           $predictions[$v['predictionIdentifier']] = $v;
+
+        $events = \App\ArchiveBig::where('siteId', $id)
+            ->where('isPublishInSite', '1')->get()->toArray();
+
+        $data = [];
+        foreach ($events as $e) {
+
+            // add result statusName and statusClass
+            $e['statusName'] = $results[$e['statusId']]['statusName'];
+            $e['statusClass'] = $results[$e['statusId']]['statusClass'];
+
+            //predictionName
+            $e['predictionName'] = $predictions[$e['predictionId']]['name'];
+
+            $table = $e['tableIdentifier'];
+            $year  = date('Y', strtotime($e['systemDate']));
+            $month = date('m', strtotime($e['systemDate']));
+            $data[$table][$year][$month][] = $e;
+        }
+
+        return $data;
+    });
 });
 
-// @param integer $id
-// get archive-big for site.
-// @return array() indexed by table idintifier.
-$app->get('/client/update-archive-big/{id}', function ($id) use ($app) {
+    /* -------------------------------------------------------------------
+     * - ADMIN -
+     * all routes group
+     ---------------------------------------------------------------------*/
 
-    $site = \App\Site::find($id);
-    if (!$site)
-        return false;
-
-    // results name and class
-    $results = [];
-    foreach (\App\SiteResultStatus::where('siteId', $id)->get()->toArray() as $k => $v)
-       $results[$v['statusId']] = $v;
-
-    // prediction
-    $predictions = [];
-    foreach (\App\SitePrediction::where('siteId', $id)->get()->toArray() as $k => $v)
-       $predictions[$v['predictionIdentifier']] = $v;
-
-    $events = \App\ArchiveBig::where('siteId', $id)
-        ->where('isPublishInSite', '1')->get()->toArray();
-
-    $data = [];
-    foreach ($events as $e) {
-
-        // add result statusName and statusClass
-        $e['statusName'] = $results[$e['statusId']]['statusName'];
-        $e['statusClass'] = $results[$e['statusId']]['statusClass'];
-
-        //predictionName
-        $e['predictionName'] = $predictions[$e['predictionId']]['name'];
-
-        $table = $e['tableIdentifier'];
-        $year  = date('Y', strtotime($e['systemDate']));
-        $month = date('m', strtotime($e['systemDate']));
-        $data[$table][$year][$month][] = $e;
-    }
-
-    return $data;
-});
-
-// all routes for administration
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
@@ -887,7 +897,5 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             "message" => $message
         ];
     });
-
-
 
 });
