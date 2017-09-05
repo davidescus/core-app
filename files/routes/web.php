@@ -116,11 +116,6 @@ $app->get('/xml', function () use ($app) {
     echo 'Process Events: ' . $count . "</br>";
 });
 
-// each login will generate a new token
-// @param string $email
-// @param string $password
-// @return array()
-$app->post('/login', 'Admin\Login@index');
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     $user = Auth::user();
@@ -154,6 +149,16 @@ $app->group(['prefix' => 'client'], function ($app) {
      ---------------------------------------------------------------------*/
 
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
+
+    /*
+     * Login to admin section.
+     ---------------------------------------------------------------------*/
+
+    // each login will generate a new token
+    // @param string $email
+    // @param string $password
+    // @return array()
+    $app->post('/login', 'Admin\Login@index');
 
     /*
      * Archive Big
