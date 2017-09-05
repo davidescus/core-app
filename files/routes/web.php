@@ -148,17 +148,17 @@ $app->group(['prefix' => 'client'], function ($app) {
      * all routes group
      ---------------------------------------------------------------------*/
 
-$app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
-
     /*
      * Login to admin section.
      ---------------------------------------------------------------------*/
 
-    // each login will generate a new token
-    // @param string $email
-    // @param string $password
-    // @return array()
-    $app->post('/login', 'Admin\Login@index');
+// each login will generate a new token
+// @param string $email
+// @param string $password
+// @return array()
+$app->post('/admin/login', 'Admin\Login@index');
+
+$app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
      * Archive Big
