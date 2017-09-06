@@ -143,6 +143,7 @@ $app->group(['prefix' => 'client'], function ($app) {
     $app->get('/update-archive-big/{id}', 'Client\ArchiveBig@index');
 });
 
+
     /* -------------------------------------------------------------------
      * - ADMIN -
      * all routes group
@@ -309,6 +310,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // getall packages for a specific site
+    // with associated predictions
     $app->get('package-site/{id}', 'Admin\Package@getPackagesBySite');
 
     // get specific package by id
