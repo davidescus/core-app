@@ -306,6 +306,16 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
     /*
+     * Customers
+     ---------------------------------------------------------------------*/
+
+    // get all customers from a site filtering email
+    // @param integer $siteId
+    // @param string  $filter
+    // @return array()
+    $app->get('customer/search/{siteId}/{filter}', 'Admin\Customer@getCustomersByFilter');
+
+    /*
      * Packages
      ---------------------------------------------------------------------*/
 
