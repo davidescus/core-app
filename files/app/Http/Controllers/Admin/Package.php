@@ -7,15 +7,6 @@ use Illuminate\Http\Request;
 
 class Package extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     public function index()
     {
@@ -27,6 +18,14 @@ class Package extends Controller
      */
     public function get($id) {
         return \App\Package::find($id);
+    }
+
+    // get ids and names for all pacckage associated with site
+    // @param integer $siteId
+    // @return array()
+    public function getPackagesIdsAndNamesBySite($siteId)
+    {
+        return \App\Package::select('id', 'name')->where('siteId', $siteId)->get()->toArray();
     }
 
     /*

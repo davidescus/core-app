@@ -313,6 +313,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // with associated predictions
     $app->get('package-site/{id}', 'Admin\Package@getPackagesBySite');
 
+    // get ids and names for all pacckage associated with site
+    // @param integer $siteId
+    // @return array()
+    $app->get('package-by-site/ids-and-names/{siteId}', 'Admin\Package@getPackagesIdsAndNamesBySite');
+
     // get specific package by id
     $app->get("/package/{id}", 'Admin\Package@get');
 
