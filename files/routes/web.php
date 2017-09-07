@@ -315,6 +315,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->get('customer/search/{siteId}/{filter}', 'Admin\Customer@getCustomersByFilter');
 
+    // create new customer associated with a site
+    // @param integer $siteId
+    // @param string  $name
+    // @param string  $email
+    // @param string  $activeEmail
+    // @return array()
+    $app->post('customer/create/{siteId}', 'Admin\Customer@store');
+
     /*
      * Packages
      ---------------------------------------------------------------------*/

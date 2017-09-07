@@ -22,7 +22,34 @@ class Customer extends Controller
             ->where('email', 'like', '%' . $filter . '%')->get()->toArray();
     }
 
-    public function store() {}
+    // create new customer associated with a site
+    // @param integer $siteId
+    // @param string  $name
+    // @param string  $email
+    // @param string  $activeEmail
+    // @return array()
+    public function store(Request $r, $siteId) {
+
+        $site = \App\Site::find($siteId);
+        if (!$site)
+            return [
+                'type' => 'error',
+                'message' => "Site id: $siteId not exist anymore."
+            ];
+
+        $customer = \App\Customer::create([
+            'siteId'        => $siteId,
+            'name'          => $r->input('name'),
+            'email'         => $r->input('email'),
+            'activeEmail'   => $r->input('activeEmail'),
+        ]);
+
+        return [
+            'type'    => 'success',
+            'message' => "Customer was created with success.",
+            'data'    => $customer,
+        ];
+    }
 
     public function update() {}
 
