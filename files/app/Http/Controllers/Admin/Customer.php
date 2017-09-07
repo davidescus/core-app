@@ -31,6 +31,21 @@ class Customer extends Controller
     public function store(Request $r, $siteId) {
 
         $site = \App\Site::find($siteId);
+
+        $email = $r->input('email');
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            return [
+                'type' => 'error',
+                'message' => "Invalid Email Address."
+            ];
+
+        $activeEmail = $r->input('activeEmail');
+        if (!filter_var($activeEmail, FILTER_VALIDATE_EMAIL))
+            return [
+                'type' => 'error',
+                'message' => "Invalid ActiveEmail Address."
+            ];
+
         if (!$site)
             return [
                 'type' => 'error',
