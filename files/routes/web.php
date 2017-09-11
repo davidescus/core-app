@@ -387,6 +387,23 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->post('/site-result-status/update/{siteId}', 'Admin\SiteResultStatus@storeOrUpdate');
 
     /*
+     * Subscription
+     ---------------------------------------------------------------------*/
+
+    // Subscription
+    // @param integer $packageId
+    // @param string  $name
+    // @param integer $subscription
+    // @param integer $price
+    // @param string  $type days | tips
+    // @param string  $dateStart (only for "days" format Y-m-d)
+    // @param string  $dateEnd   (only for "days" format Y-m-d)
+    // store new subscription automatic detect if is custom or not
+    //  - compare values with original package.
+    // @return array()
+    $app->post('/subscription/create', 'Admin\Subscription@store');
+
+    /*
      * Package Prediction
      ---------------------------------------------------------------------*/
 
