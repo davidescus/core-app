@@ -28,7 +28,10 @@ class ArchiveBig extends Controller
            $predictions[$v['predictionIdentifier']] = $v;
 
         $events = \App\ArchiveBig::where('siteId', $id)
-            ->where('isPublishInSite', '1')->get()->toArray();
+            ->where('isPublishInSite', '1')
+            ->orderBy('systemDate', 'asc')->get()->toArray();
+
+        $vipFlags = [];
 
         $data = [];
         foreach ($events as $e) {
@@ -39,6 +42,14 @@ class ArchiveBig extends Controller
 
             //predictionName
             $e['predictionName'] = $predictions[$e['predictionId']]['name'];
+
+            // vip flag
+            if (!isset($vipFlags[$e['packageId']])) {
+                $package = \App\Package::find($e['packageId']);
+                $vipFlags[$e['packageId']] = $package->vipFlag;
+            }
+            $e['vipFlag'] = $vipFlags[$e['packageId']];
+
 
             $table = $e['tableIdentifier'];
             $year  = date('Y', strtotime($e['systemDate']));
