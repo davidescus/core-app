@@ -54,7 +54,7 @@ class Subscription extends Controller
         $customer = \App\Customer::where('email', $customerEmail)->first();
 
         $data = [
-            'name' => $name;
+            'name' => $name,
             'customerId' => $customer->id,
             'siteId' => $siteId,
             'packageId' => $package->id,
