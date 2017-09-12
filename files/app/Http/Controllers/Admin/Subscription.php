@@ -54,6 +54,7 @@ class Subscription extends Controller
         $customer = \App\Customer::where('email', $customerEmail)->first();
 
         $data = [
+            'name' => $name;
             'customerId' => $customer->id,
             'siteId' => $siteId,
             'packageId' => $package->id,
@@ -69,6 +70,10 @@ class Subscription extends Controller
             unset($data['dateStart']);
             unset($data['dateEnd']);
         }
+
+        // check if subscription is custom
+        if ($package->name != $name || $package->subscription != $subscription || $package->price != $price)
+            $data['isCustom'] = '1';
 
         // if user already have active subscription on same package
         // set status waiting
