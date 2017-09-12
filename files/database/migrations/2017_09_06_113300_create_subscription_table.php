@@ -21,8 +21,8 @@ class CreateSubscriptionTable extends Migration
             $table->integer('isCustom');
             $table->string('type');
             $table->integer('subscription');
-            $table->timestamp('dateStart')->nullable();
-            $table->timestamp('dateEnd')->nullable();
+            $table->string('dateStart')->nullable()->index();
+            $table->string('dateEnd')->nullable()->index();
             $table->integer('tipsLeft');
             $table->integer('tipsBlocked');
             $table->string('status');
