@@ -404,6 +404,10 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->post('/subscription/create', 'Admin\Subscription@store');
 
+    // get all subscriptions
+    // @return array()
+    $app->get('/subscription', 'Admin\Subscription@index');
+
     /*
      * Package Prediction
      ---------------------------------------------------------------------*/

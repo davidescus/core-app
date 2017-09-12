@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 class Subscription extends Controller
 {
 
-    public function index() {}
+    // get all subscriptions
+    // @return array()
+    public function index() {
+        return \App\Subscription::all()->toArray();
+    }
 
     public function get() {}
 
