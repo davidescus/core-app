@@ -27,9 +27,8 @@ class SitePrediction extends Controller
         foreach ($predictions as $key => $prediction) {
             $sitePrediction = \App\SitePrediction::where('predictionIdentifier', $prediction['identifier'])->where('siteId', $siteId)->first();
 
-            if ($sitePrediction) {
-                $predictions[$key]['siteName'] = $sitePrediction['name'];
-            }
+            // set predictioon according to site or default
+            $predictions[$key]['siteName'] =  $sitePrediction ? $sitePrediction['name'] : $predictions[$key]['name'];
         }
 
         // sort predictions by group
