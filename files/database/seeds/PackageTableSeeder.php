@@ -205,7 +205,7 @@ class PackageTableSeeder extends Seeder {
                     'subscription'    => $pack['subscription'],
                     'tipsPerDay'      => $pack['tipsPerDay'],
                     'subject'         => $pack['subject'],
-                    'fromName'        => $pack['formName'],
+                    'fromName'        => $pack['fromName'],
                     'template'        => $pack['template'],
                 ]);
             }
