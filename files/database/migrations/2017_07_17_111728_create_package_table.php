@@ -34,7 +34,7 @@ class CreatePackageTable extends Migration
             $table->string('price');
             $table->string('fromName');
             $table->string('subject');
-            $table->string('template');
+            $table->text('template');
             $table->timestamps();
         });
     }
