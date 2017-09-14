@@ -41,6 +41,7 @@ class PackageTableSeeder extends Seeder {
                     'subscriptionType' => 'tips',
                     'subscription' => 30,
                     'tipsPerDay'      => 4,
+                    'fromName'   => 'From Name',
                     'subject' => 'subject',
                     'template' => '<p><font face="Times New Roman">Welcome {{email}}</font></p><p><font face="Times New Roman">{{date}} &nbsp;{{coountry}}: {{league}}<br>{{homeTeam}} - {{awayTeam}}</font></p><p><font face="Times New Roman">Bet: {{prediction}}</font></p><p><font face="Times New Roman">Have a good day!<br>\'\'\'\' ```` """ ----------- ___ \\\\\\?????////////</font></p>',
                 ],
@@ -104,8 +105,8 @@ class PackageTableSeeder extends Seeder {
                     'subscriptionType' => 'days',
                     'subscription' => 30,
                     'tipsPerDay'      => 2,
-                    'subject' => 'subject',
                     'fromName'   => 'From Name',
+                    'subject' => 'subject',
                     'template' => '<p><font face="Times New Roman">Welcome {{email}}</font></p><p><font face="Times New Roman">{{date}} &nbsp;{{coountry}}: {{league}}<br>{{homeTeam}} - {{awayTeam}}</font></p><p><font face="Times New Roman">Bet: {{prediction}}</font></p><p><font face="Times New Roman">Have a good day!<br>\'\'\'\' ```` """ ----------- ___ \\\\\\?????////////</font></p>',
                 ],
                 'normal_2' => [
