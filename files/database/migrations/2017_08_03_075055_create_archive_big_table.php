@@ -23,6 +23,7 @@ class CreateArchiveBigTable extends Migration
             $table->string('source');
             $table->string('provider');
             $table->string('tableIdentifier')->index();
+            $table->string('tipIdentifier')->index();
             $table->integer('isPublish')->unsigned()->default(0)->index();
             $table->integer('isPublishInSite')->unsigned()->default(0)->index();
             $table->integer('isVisible')->unsigned()->default(1)->index();
