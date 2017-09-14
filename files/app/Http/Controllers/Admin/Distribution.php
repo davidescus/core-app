@@ -154,6 +154,9 @@ class Distribution extends Controller
             // set tableIdentifier
             $association['tableIdentifier'] = $package->tableIdentifier;
 
+            // set tipIdentifier
+            $association['tipIdentifier'] = $package->tipIdentifier;
+
             // set packageId
             $association['packageId'] = $id;
 

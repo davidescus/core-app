@@ -14,6 +14,7 @@ class Distribution extends Model {
         'siteId',
         'packageId',
         'tableIdentifier',
+        'tipIdentifier',
         'isPublish',
         'isNoTip',
         'isVip',
