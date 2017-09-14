@@ -36,12 +36,13 @@ class ArchiveBig extends Controller
         $data = [];
         foreach ($events as $e) {
 
-            // add result statusName and statusClass
-            $e['statusName'] = $results[$e['statusId']]['statusName'];
-            $e['statusClass'] = $results[$e['statusId']]['statusClass'];
-
-            //predictionName
-            $e['predictionName'] = $predictions[$e['predictionId']]['name'];
+            // add result statusName and statusClass and predictionName
+            // only when event is tip (NOT noTip)
+            if (!$e['isNoTip']) {
+                $e['statusName'] = $results[$e['statusId']]['statusName'];
+                $e['statusClass'] = $results[$e['statusId']]['statusClass'];
+                $e['predictionName'] = $predictions[$e['predictionId']]['name'];
+            }
 
             // vip flag
             if (!isset($vipFlags[$e['packageId']])) {
