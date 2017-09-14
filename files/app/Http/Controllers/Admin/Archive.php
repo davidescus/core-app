@@ -46,6 +46,10 @@ class Archive extends Controller
                 }
             }
 
+            // for no tip set eventDate = systemDate
+            if ($distribution->isNoTip)
+                $distribution->eventDate = $distribution->systemDate;
+
             // set publish
             $distribution->isPublish = 1;
 
