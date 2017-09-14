@@ -20,6 +20,7 @@ class Archive extends Controller
         $alreadyPublish = 0;
         $inserted = 0;
         $notHaveResultOrStatus = 0;
+        $sameTipNotPublished = 0;
 
         if (!$ids)
             return [
@@ -54,6 +55,16 @@ class Archive extends Controller
             // transform in array
             $distribution = json_decode(json_encode($distribution), true);
 
+            // check if event was already published on another package with same tip
+            if (\App\ArchiveBig::where('eventId', $distribution['eventId'])
+                ->where('tableIdentifier', $distribution['tableIdentifier'])
+                ->where('systemDate', $distribution['systemDate'])
+                ->where('tipIdentifier', $distribution['tipIdentifier'])->count())
+            {
+                $sameTipNotPublished++;
+                continue;
+            }
+
             // remove id and set distributionId
             $distribution['distributionId'] = $distribution['id'];
             unset($distribution['id']);
@@ -71,6 +82,8 @@ class Archive extends Controller
             $message .= "$inserted events was published to archive\r\n";
         if ($notHaveResultOrStatus)
             $message .= "$notHaveResultOrStatus was NOT published becouse they not have result or status\r\n";
+        if ($sameTipNotPublished)
+            $message .= "$sameTipNotPublished was NOT inserted in archive becouse they are already published in other packages with same tip\r\n";
 
         return [
             "type" => "success",
