@@ -32,9 +32,9 @@ class CreatePackageTable extends Migration
             $table->string('oldPrice');
             $table->string('discount');
             $table->string('price');
-            $table->string('email');
             $table->string('fromName');
             $table->string('subject');
+            $table->string('template');
             $table->timestamps();
         });
     }

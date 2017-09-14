@@ -24,9 +24,9 @@ class Package extends Model {
         'oldPrice',
         'discount',
         'price',
-        'email',
         'fromName',
         'subject',
+        'template',
     ];
 
 //    protected $hidden = [ ‘password’ ];
