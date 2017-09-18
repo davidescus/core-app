@@ -571,6 +571,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         $previewInstance = new \App\Http\Controllers\Admin\Email\CreatePreview($packageTemplate, $events, $noTip);
 
         return [
+            'type'     => 'success',
             'template' => $previewInstance->template,
             'ids'      => $ids,
             'isNoTip'  => $noTip,
