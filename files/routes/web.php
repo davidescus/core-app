@@ -565,16 +565,18 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $events[] = $event;
         }
 
-        $packageTemplate = \App\Package::find($uniquePackageId)->template;
+        $package = \App\Package::find($uniquePackageId);
 
         // prepare email template.
-        $previewInstance = new \App\Http\Controllers\Admin\Email\CreatePreview($packageTemplate, $events, $noTip);
+        $previewInstance = new \App\Http\Controllers\Admin\Email\CreatePreview($package->template, $events, $noTip);
 
         return [
-            'type'     => 'success',
-            'template' => $previewInstance->template,
-            'ids'      => $ids,
-            'isNoTip'  => $noTip,
+            'type'        => 'success',
+            'template'    => $previewInstance->template,
+            'ids'         => $ids,
+            'isNoTip'     => $noTip,
+            'packageName' => $package->name,
+            'siteName'    => \App\Site::find($package->siteId)->name,
         ];
     });
 
