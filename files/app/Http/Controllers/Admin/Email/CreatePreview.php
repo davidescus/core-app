@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Admin\Email;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class CreatePreview extends Controller
 {
-    public $template;
-    public $events;
-    private $noTip;
+    public $packageId   = 0;
+    public $siteName    = '';
+    public $packageName = '';
+    public $ids         = [];
+    public $isNoTip     = ''; // empty string for check
+    public $error       = false;
+    public $message     = '';
+
+    private $events = [];
     private $tags = [
         'sections' => [
             // noTip == 0, mean is tip
@@ -28,18 +35,75 @@ class CreatePreview extends Controller
         ],
     ];
 
+
     // create preview content
     // auto select section tip | no Tip
     //   - tip: replace placeholders with evetn info
     // @param string $template
-    // @param obect  $events
-    // @param int    $noTip
+    //   - user when have request from preview and send.
+    // @param array $ids
+    //   - ids of distriibuted events.
     // @return this
-    public function __construct($template, $events, $noTip = 0)
+    public function __construct($ids, $template = null)
     {
-        $this->template = $template;
-        $this->events = $events;
-        $this->noTip = $noTip;
+        if (!$ids)
+            return [
+                'type' => 'error',
+                'message' => 'No events selected',
+            ];
+
+        // check if event make part fron same package
+        foreach ($ids as $id) {
+
+            $event = \App\Distribution::find($id);
+            if (!$event) {
+                $this->error = true;
+                $this->message = "Event with id $id not found. Maybe was deleted.";
+                return $this;
+            }
+
+            // set packageId in first loop
+            if ($this->packageId === 0)
+                $this->packageId = $event->packageId;
+
+            // check if all events make part from same package
+            if ((int)$event->packageId !== $this->packageId) {
+                $this->error = true;
+                $this->message = "Preview and Send can use events form same package, You choose events from many packages.";
+                return $this;
+            }
+
+            // set type tip | noTip on first loop
+            if ($this->isNoTip === '')
+                $this->isNoTip = $event->isNoTip;
+
+            // check if all events have same type tip | noTip
+            if ($this->isNoTip !== (int)$event->isNoTip) {
+                $this->error = true;
+                $this->message = "You can not select TIP and NO TIP at same time.";
+                return $this;
+            }
+
+            // event must have more than 5 minutes to start.
+            if ($event->eventDate < Carbon::now('UTC')->addMinutes(5)) {
+                $this->error = true;
+                $this->message = "Event with id: $id will start in less than 5 minutes. You can not use this event.";
+                return $this;
+            }
+
+            $this->events[] = $event;
+        }
+
+        $package = \App\Package::find($this->packageId);
+        $this->packageName = $package->name;
+        $this->siteName = \App\Site::find($package->siteId)->name;
+
+        if ($template !== null) {
+            $this->template = $template;
+            return $this;
+        }
+
+        $this->template = $package->template;
 
         // remove sectiion tip or noTip based on $this->noTip
         $this->removeSection();
@@ -49,8 +113,6 @@ class CreatePreview extends Controller
 
         // set events in template
         $this->putEventsInTemplate();
-
-        //print_r($this->template);
 
         return $this;
     }
@@ -65,7 +127,7 @@ class CreatePreview extends Controller
         $this->template = $split['header'];
 
         // case NoTip
-        if ($this->noTip == 1) {
+        if ($this->isNoTip == 1) {
             return;
         }
 
@@ -99,10 +161,18 @@ class CreatePreview extends Controller
     //   - no tip == 1 remove tip section
     private function removeSection()
     {
-        $from = $this->tags['sections'][$this->noTip]['from'];
-        $to = $this->tags['sections'][$this->noTip]['to'];
+        $from = $this->tags['sections'][$this->isNoTip]['from'];
+        $to = $this->tags['sections'][$this->isNoTip]['to'];
         $data = $this->splitString($this->template, $from, $to);
         $this->template = $data['header'] . $data['footer'];
+    }
+
+    // this function will remove all sections tags
+    private function removeSectionsTags()
+    {
+        foreach ($this->tags['sections'] as $sections)
+            foreach ($sections as $tag)
+                $this->template = str_replace($tag, '', $this->template);
     }
 
     // this function will split a string in 3 sections
@@ -125,13 +195,4 @@ class CreatePreview extends Controller
 
         return $data;
     }
-
-    // this function will remove all sections tags
-    private function removeSectionsTags()
-    {
-        foreach ($this->tags['sections'] as $sections)
-            foreach ($sections as $tag)
-                $this->template = str_replace($tag, '', $this->template);
-    }
-
 }
