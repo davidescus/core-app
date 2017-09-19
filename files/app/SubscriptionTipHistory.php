@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SubscriptionTipHistory extends Model {
 
-    protected $table = 'subscription';
+    protected $table = 'subscription_tip_history';
 
     protected $fillable = [
         'id',
