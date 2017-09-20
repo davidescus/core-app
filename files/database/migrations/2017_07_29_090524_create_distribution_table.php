@@ -23,6 +23,7 @@ class CreateDistributionTable extends Migration
             $table->integer('packageId')->unsigned()->index();
             $table->string('tableIdentifier');
             $table->string('tipIdentifier');
+            $table->integer('isEmailSend')->unsigned()->index();
             $table->integer('isPublish')->unsigned()->index();
             $table->integer('isNoTip')->unsigned()->index();
             $table->integer('isVip')->unsigned();

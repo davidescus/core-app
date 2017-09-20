@@ -62,6 +62,13 @@ class ValidateGroup extends Controller
                 continue;
             }
 
+            // check if events was already send by email
+            if ((int)$event->isEmailSend === 1) {
+                $this->error = true;
+                $this->message .= "Event with id: $id was already send by email.";
+                continue;
+            }
+
             // do not check when event is start for noTip
             if ($this->isNoTip == 1)
                 continue;

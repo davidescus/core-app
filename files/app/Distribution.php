@@ -15,6 +15,7 @@ class Distribution extends Model {
         'packageId',
         'tableIdentifier',
         'tipIdentifier',
+        'isEmailSend',
         'isPublish',
         'isNoTip',
         'isVip',
