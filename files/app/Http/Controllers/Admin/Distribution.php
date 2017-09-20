@@ -210,6 +210,11 @@ class Distribution extends Controller
                 continue;
             }
 
+            if ($distribution->isEmailSend) {
+                $canNotDelete++;
+                continue;
+            }
+
             $distribution->delete();
             $deleted++;
         }
