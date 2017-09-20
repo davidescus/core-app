@@ -604,6 +604,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         foreach ($ids as $id) {
             $distribution = \App\Distribution::find($id);
             $distribution->mailingDate = gmdate('Y-m-d H:i:s');
+            $distribution->isEmailSend = '1';
             $distribution->update();
         }
 
