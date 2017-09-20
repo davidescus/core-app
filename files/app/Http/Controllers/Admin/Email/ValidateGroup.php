@@ -62,6 +62,10 @@ class ValidateGroup extends Controller
                 continue;
             }
 
+            // do not check when event is start for noTip
+            if ($this->isNoTip == 1)
+                continue;
+
             // event must have more than 5 minutes to start.
             if ($event->eventDate < Carbon::now('UTC')->addMinutes(5)) {
                 $this->error = true;
