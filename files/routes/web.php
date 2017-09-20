@@ -537,6 +537,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
     // Distribution
+    // this is use to have a full preview of template with all events included.
     // @param array $ids
     $app->post('/distribution/preview-and-send/preview-template', function (Request $r) use ($app) {
 
@@ -553,18 +554,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
         // get email template
         $package = \App\Package::find($validate->packageId);
-
-        // replace section in template
-        $templateString = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
-
         $events = \App\Distribution::whereIn('id', $ids)->get();
 
-        return $events;
-
+        // replace section in template
+        $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
 
         return [
             'type'        => 'success',
-            'template'    => $templateString->template,
+            'template'    => $replaceTips->template,
             'packageName' => $package->name,
             'siteName'    => \App\Site::find($package->siteId)->name,
         ];
