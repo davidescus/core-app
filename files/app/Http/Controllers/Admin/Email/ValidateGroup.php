@@ -14,7 +14,7 @@ use Carbon\Carbon;
 class ValidateGroup extends Controller
 {
     public $error     = false;
-    public $messsage  = '';
+    public $message  = '';
     public $packageId = 0;
     public $isNoTip   = '';
 
