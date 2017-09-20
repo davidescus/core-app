@@ -31,16 +31,17 @@ class ReplaceTipsInTemplate extends Controller
     // this function will replace placeholders with events info
     private function replaceTipsInTemplate()
     {
-        $from = $this->tags['events']['from'];
-        $to = $this->tags['events']['to'];
-
-        $split = $this->splitString($this->template, $from, $to);
-        $this->template = $split['header'];
 
         // case NoTip
         if ($this->isNoTip == 1) {
             return;
         }
+
+        $from = $this->tags['events']['from'];
+        $to = $this->tags['events']['to'];
+
+        $split = $this->splitString($this->template, $from, $to);
+        $this->template = $split['header'];
 
         foreach ($this->events as $event) {
 
