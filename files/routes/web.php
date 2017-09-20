@@ -553,7 +553,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ];
 
         // get email template
-        $package = \App\Package::find($validate->packageId);
         $events = \App\Distribution::whereIn('id', $ids)->get();
 
         // replace section in template
@@ -562,8 +561,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         return [
             'type'        => 'success',
             'template'    => $replaceTips->template,
-            'packageName' => $package->name,
-            'siteName'    => \App\Site::find($package->siteId)->name,
         ];
     });
 
@@ -575,18 +572,16 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         $ids = $r->input('ids');
         $template = $r->input('template');
 
-        $preview = new \App\Http\Controllers\Admin\Email\CreatePreview($ids, $template);
-
-        if ($preview->error)
+        // validate events selection
+        $validate = new \App\Http\Controllers\Admin\Email\ValidateGroup($ids);
+        if ($validate->error)
             return [
-                'type'    => 'error',
-                'message' => $preview->message,
+                'type' => 'error',
+                'message' => $validate->message,
             ];
 
-        // trigger procedure to send email
-        $packageId = $preview->packageId;
-
-        $subscriptions = \App\Subscription::where('packageId', $packageId)->get()->toArray();
+        // get subscriptions
+        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get()->toArray();
 
         if (!$subscriptions)
             return [
