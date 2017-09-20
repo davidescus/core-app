@@ -65,7 +65,7 @@ class ValidateGroup extends Controller
             // check if events was already send by email
             if ((int)$event->isEmailSend === 1) {
                 $this->error = true;
-                $this->message .= "Event with id: $id was already send by email.";
+                $this->message .= "Event with id: $id was already send by email. \r\n";
                 continue;
             }
 
