@@ -513,19 +513,60 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->post('/distribution/preview-and-send/preview', function (Request $r) use ($app) {
 
         $ids = $r->input('ids');
-        $preview = new \App\Http\Controllers\Admin\Email\CreatePreview($ids);
 
-        if ($preview->error)
+        // validate events selection
+        $validate = new \App\Http\Controllers\Admin\Email\ValidateGroup($ids);
+        if ($validate->error)
             return [
-                'type'        => 'error',
-                'message'    => $preview->message,
+                'type' => 'error',
+                'message' => $validate->message,
             ];
+
+        // get email template
+        $package = \App\Package::find($validate->packageId);
+
+        // replace section in template
+        $templateString = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
 
         return [
             'type'        => 'success',
-            'template'    => $preview->template,
-            'packageName' => $preview->packageName,
-            'siteName'    => $preview->siteName,
+            'template'    => $templateString->template,
+            'packageName' => $package->name,
+            'siteName'    => \App\Site::find($package->siteId)->name,
+        ];
+    });
+
+    // Distribution
+    // @param array $ids
+    $app->post('/distribution/preview-and-send/preview-template', function (Request $r) use ($app) {
+
+        $ids = $r->input('ids');
+        $template = $r->input('template');
+
+        // validate events selection
+        $validate = new \App\Http\Controllers\Admin\Email\ValidateGroup($ids);
+        if ($validate->error)
+            return [
+                'type' => 'error',
+                'message' => $validate->message,
+            ];
+
+        // get email template
+        $package = \App\Package::find($validate->packageId);
+
+        // replace section in template
+        $templateString = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
+
+        $events = \App\Distribution::whereIn('id', $ids)->get();
+
+        return $events;
+
+
+        return [
+            'type'        => 'success',
+            'template'    => $templateString->template,
+            'packageName' => $package->name,
+            'siteName'    => \App\Site::find($package->siteId)->name,
         ];
     });
 
@@ -556,10 +597,16 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => 'No active subscriptions for this package.',
             ];
 
-        $message = "Start sending emails to: ";
+        $message = "Start sending emails to: \r\n";
         foreach ($subscriptions as $s) {
             $customer = \App\Customer::find($s['customerId']);
             $message .= $customer->name . ' - ' .$customer->email . "\r\n";
+
+            \App\SubscriptionTipHistory::create([
+                'customerId' => $customer->id,
+                'subscriptionId' => $s['id'],
+            ]);
+
         }
 
         foreach ($ids as $id) {
