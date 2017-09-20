@@ -21,7 +21,7 @@ class ReplaceTipsInTemplate extends Controller
     {
         $this->template = $template;
         $this->events   = $events;
-        $this->isNoTip  = $isNopTip;
+        $this->isNoTip  = $isNoTip;
 
         $this->replaceTipsInTemplate();
 
