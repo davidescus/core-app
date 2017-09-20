@@ -22,10 +22,6 @@ class RemoveSection extends Controller
                 'to'     => '{{/section TIP}}',
             ],
         ],
-        'events' => [
-            'from' => '{{events}}',
-            'to'   => '{{/events}}',
-        ],
     ];
 
     // this class will remove section tip or noTip
