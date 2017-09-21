@@ -580,7 +580,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => $validate->message,
             ];
 
-        // get subscriptions
         $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get()->toArray();
 
         if (!$subscriptions)
@@ -589,18 +588,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => 'No active subscriptions for this package.',
             ];
 
-        $message = "Start sending emails to: \r\n";
-        foreach ($subscriptions as $s) {
-            $customer = \App\Customer::find($s['customerId']);
-            $message .= $customer->name . ' - ' .$customer->email . "\r\n";
-
-            \App\SubscriptionTipHistory::create([
-                'customerId' => $customer->id,
-                'subscriptionId' => $s['id'],
-            ]);
-
-        }
-
+        // update tips distribution and set mailingDate and is EmailSend
         foreach ($ids as $id) {
             $distribution = \App\Distribution::find($id);
             $distribution->mailingDate = gmdate('Y-m-d H:i:s');
@@ -608,9 +596,74 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $distribution->update();
         }
 
+        // get email template
+        $events = \App\Distribution::whereIn('id', $ids)->get();
+
+        $emails = [];
+        $message = "Start sending emails to: \r\n";
+        foreach ($subscriptions as $s) {
+
+            $e = $events;
+
+            // Check what tips will send to each user
+            // let sey user have 1 tip and package has 3 events - manage users
+
+            $customer = \App\Customer::find($s['customerId']);
+            $message .= $customer->name . ' - ' .$customer->email . "\r\n";
+
+            // insert all events in subscription_tip_history
+            foreach ($e as $event) {
+                // here will use event id.
+                \App\SubscriptionTipHistory::create([
+                    'customerId' => $customer->id,
+                    'subscriptionId' => $s['id'],
+                    'eventId' => $event['eventId'],
+                    'siteId'  => $s['siteId'],
+                    'isCustom' => $s['isCustom'],
+                    'type' => $s['type'],
+                    'isNoTip' => $event['isNoTip'],
+                    'isVip' => $event['isVip'],
+                    'country' => $event['country'],
+                    'countryCode' => $event['countryCode'],
+                    'league' => $event['league'],
+                    'leagueId' => $event['leagueId'],
+                    'homeTeam' => $event['homeTeam'],
+                    'homeTeamId' => $event['homeTeamId'],
+                    'awayTeam' => $event['awayTeam'],
+                    'awayTamId' => $event['awayTamId'],
+                    'predictionId' => $event['predictionId'],
+                    'predictionName' => $event['predictionName'],
+                    'eventDate' => $event['eventDate'],
+                    'systemDate' => $event['systemDate'],
+                ]);
+            }
+
+            // replace section in template
+            $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
+
+            // store all data to send email
+            $args = [
+                'host'     => '',
+                'user'     => '',
+                'pass'     => '',
+                'port'     => '',
+                'from'     => '',
+                'fromName' => '',
+                'to'       => $customer->activeEmail,
+                'toName'   => $customer->name ? $customer->name : $customer->activeEmail,
+                'subject'  => '',
+                'body'     => $replaceTips->template,
+            ];
+
+            $emails[] = $args;
+
+        }
+
+
         return [
             'type'    => 'success',
             'message' => $message,
+            'emails'  => $emails,
         ];
     });
 
