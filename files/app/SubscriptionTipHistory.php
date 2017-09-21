@@ -10,6 +10,7 @@ class SubscriptionTipHistory extends Model {
         'id',
         'subscriptionId',
         'customerId',
+        'eventId',
         'siteId',
         'pocessSubscription',
         'processType',
