@@ -4,46 +4,65 @@ namespace App\Http\Controllers\Admin\Email;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use PHPMailerAutoload;
-use PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 class SendMail extends Controller
 {
     public function __construct($args)
     {
-        $mail = new PHPMailer;
 
-        // notice the \ you have to use root namespace here
-        try {
-            $mail->isSMTP(); // tell to use smtp
-            $mail->CharSet = “utf-8”; // set charset to utf8
-            $mail->Host = $_SERVER[‘MAIL_HOST_NAME’];
-            $mail->SMTPAuth = false;
-            $mail->SMTPSecure = false;
-            $mail->Port = 25; // most likely something different for you. This is the mailtrap.io port i use for testing.
-            $mail->Username = “”;
-            $mail->Password = “”;
-            $mail->setFrom(“examle@examle.com”, “examle Team”);
-            $mail->Subject = “examle”;
-            $mail->MsgHTML(“This is a test new test”);
-            $mail->addAddress(“kundan.roy@examle.net”, “admin”);
-            $mail->addReplyTo(‘examle@examle.net’, ‘Information’);
-            $mail->SMTPOptions = [
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                ]
-            ];
+        //$args = [
+        //    'host'     => 'smtp.goforwinners.com',
+        //    'user'     => 'contact@goforwinners.com',
+        //    'pass'     => '6MalMQJAv~[T]',
+        //    'port'     => 587,
+        //    'from'     => 'contact@goforwinners.com',
+        //    'fromName' => 'test app goforeinners',
+        //    'to'       => 'rahthman_s@yahoo.com',
+        //    'toName'   => 'davidescus',
+        //    'subject'  => 'Test message',
+        //    'body'     => 'This is the boby of test message',
+        //];
 
-            $mail->send();
-        } catch (phpmailerException $e) {
-            dd($e);
-        } catch (Exception $e) {
-            dd($e);
-        }
+        //$mail = new PHPMailer(true);
 
-        dd(‘success’);}}))
+        //try {
+        //    $mail->SMTPDebug = 3;
+        //    $mail->isSMTP();
+        //    $mail->CharSet = 'utf-8';
+        //    $mail->Host = $args['host'];
+        //    $mail->SMTPAuth = true;
+        //    $mail->SMTPSecure = 'tls';
+        //    $mail->Port = $args['port'];
+        //    $mail->Username = $args['user'];
+        //    $mail->Password = $args['pass'];
+        //    $mail->setFrom($args['from'], $args['fromName']);
+        //    $mail->addAddress($args['to']);
+        //    $mail->addReplyTo($args['from']);
+        //    $mail->Subject = $args['subject'];
+        //    $mail->MsgHTML($args['body']);
+        //    $mail->isHtml(true);
+        //    $mail->SMTPOptions = [
+        //        'ssl' => [
+        //            'verify_peer' => false,
+        //            'verify_peer_name' => false,
+        //            'allow_self_signed' => true
+        //        ]
+        //    ];
+
+        //    if (!$mail->send()) {
+        //        echo "Mailer Error: " . $mail->ErrorInfo . PHP_EOL;
+        //    }
+
+        //} catch (phpmailerException $e) {
+        //    dd($e->errorMessage());
+        //} catch (Exception $e) {
+        //    dd($e->getMessage());
+        //}
+
+        //dd('success');
     }
 }
 
