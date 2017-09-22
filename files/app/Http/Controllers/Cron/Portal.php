@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Cron;
+namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
+use Nathanmac\Utilities\Parser\Facades\Parser;
 
 class Portal extends Controller
 {
@@ -58,10 +59,11 @@ class Portal extends Controller
                 ]);
             }
 
-            if(!file_exists($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png')) {
-                $content = @file_get_contents($match['tournament_country_icon']);
-                file_put_contents($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png', $content);
-            }
+            // do not store local logos.
+            //if(!file_exists($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png')) {
+            //    $content = @file_get_contents($match['tournament_country_icon']);
+            //    file_put_contents($rootDir . '/public/logo/country/' . $m['countryCode'] . '.png', $content);
+            //}
 
             // store league if not exist
             if(!\App\League::find($m['leagueId'])) {
@@ -79,10 +81,11 @@ class Portal extends Controller
                 ]);
             }
 
-            if(!file_exists($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png')) {
-                $content = @file_get_contents($match['home_team_logo']);
-                file_put_contents($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png', $content);
-            }
+            // do not store local logos.
+            //if(!file_exists($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png')) {
+            //    $content = @file_get_contents($match['home_team_logo']);
+            //    file_put_contents($rootDir . '/public/logo/team/' . $m['homeTeamId'] . '.png', $content);
+            //}
 
             // store awayTeam if not exists
             if(!\App\Team::find($m['awayTeamId'])) {
@@ -92,10 +95,11 @@ class Portal extends Controller
                 ]);
             }
 
-            if(!file_exists($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png')) {
-                $content = @file_get_contents($match['away_team_logo']);
-                file_put_contents($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png', $content);
-            }
+            // do not store local logos.
+            //if(!file_exists($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png')) {
+            //    $content = @file_get_contents($match['away_team_logo']);
+            //    file_put_contents($rootDir . '/public/logo/team/' . $m['awayTeamId'] . '.png', $content);
+            //}
 
             // store new match
             \App\Match::create($m);
