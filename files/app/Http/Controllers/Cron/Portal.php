@@ -14,7 +14,7 @@ class Portal extends Controller
         $rootDir =  dirname(__DIR__);
 
         // load xml file
-        $xml = file_get_contents('http://tipstersportal.com/feed/matches.php');
+        $xml = file_get_contents(env('LINK_PORTAL_NEW_EVENTS'));
 
         // parse xml content
         $c = Parser::xml($xml);
