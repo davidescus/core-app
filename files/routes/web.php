@@ -153,78 +153,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     //    - /client/client/get-configuration/$clientId
     // @param integer $id
     // @return array()
-    $app->get('/site/update-client/{id}', function ($id) use ($app) {
-
-        $site = \App\Site::find($id);
-        if (!$site)
-            return [
-                'type' => 'error',
-                'message' => "Site id: $id not exist enymore.",
-            ];
-
-        $response = Curl::to($site->url)
-            ->withData([
-                'route' => 'api',
-                'key' => $site->token,
-                'method' => 'updateSiteConfiguration',
-                'url' => env('APP_HOST') . '/client/get-configuration/' . $id,
-            ])
-            ->post();
-
-        $response = json_decode($response, true);
-        if (!$response)
-            return [
-                'type' => 'error',
-                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
-            ];
-
-        // if success update isConnected
-        if ($response['success']) {
-            $site->isConnect = 1;
-            $site->save();
-        }
-
-        return [
-            'type' => $response['success'] ? 'success' : 'error',
-            'message' => $response['message'],
-        ];
-    });
+    $app->get('/site/update-client/{id}', 'Admin\Client\TriggerAction@updateConfiguration');
 
     // send client (site) request to update his arvhive big
     // route for client is hardcore in controller
     //    - /client/update-archive-big/$clientId
     // @param integer $id
     // @return array()
-    $app->get('/site/update-archive-big/{id}', function ($id) use ($app) {
-
-        $site = \App\Site::find($id);
-        if (!$site)
-            return [
-                'type' => 'error',
-                'message' => "Site id: $id not exist enymore.",
-            ];
-
-        $response = Curl::to($site->url)
-            ->withData([
-                'route' => 'api',
-                'key' => $site->token,
-                'method' => 'updateArchiveBig',
-                'url' => env('APP_HOST') . '/client/update-archive-big/' . $id,
-            ])
-            ->post();
-
-        $response = json_decode($response, true);
-        if (!$response)
-            return [
-                'type' => 'error',
-                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
-            ];
-
-        return [
-            'type' => $response['success'] ? 'success' : 'error',
-            'message' => $response['message'],
-        ];
-    });
+    $app->get('/site/update-archive-big/{id}', 'Admin\Client\TriggerAction@updateArchiveBig');
 
     /*
      * Customers
