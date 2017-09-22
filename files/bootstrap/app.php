@@ -83,7 +83,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 // xml parser
-$app->register('Nathanmac\Utilities\Parser\ParserServiceProvider');
+$app->register(Nathanmac\Utilities\Parser\ParserServiceProvider::class);
 class_alias('Nathanmac\Utilities\Parser\Facades\Parser', 'Parser');
 
 // cUrl
