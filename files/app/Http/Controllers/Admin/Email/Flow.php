@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Email;
 
-use app\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class Flow extends Controller
 {
