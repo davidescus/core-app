@@ -43,7 +43,7 @@ class CreateEmailScheduleTable extends Migration
             $table->string('to');
             $table->string('toName');
             $table->string('subject');
-            $table->string('body');
+            $table->text('body');
             $table->timestamp('mailingDate')->nullable()->index();
             $table->string('status')->index();
             $table->timestamps();
