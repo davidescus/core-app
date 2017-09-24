@@ -20,11 +20,6 @@ class CreateEmailScheduleTable extends Migration
             $table->string('type')->index();
             $table->string('identifierName')->index();
             $table->string('identifierValue')->index();
-            $table->string('host');
-            $table->string('user');
-            $table->string('pass');
-            $table->integer('port');
-            $table->string('encryption');
             $table->string('from');
             $table->string('fromName');
             $table->string('to');
