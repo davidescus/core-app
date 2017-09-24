@@ -15,6 +15,7 @@ class CreateEmailScheduleTable extends Migration
     {
         Schema::create('email_schedule', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('sender')->index();
             $table->string('provider')->index();
             $table->string('type')->index();
             $table->string('identifierName')->index();

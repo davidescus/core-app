@@ -7,6 +7,7 @@ class EmailSchedule extends Model {
     protected $table = 'email_schedule';
 
     protected $fillable = [
+        'sender',
         'provider',
         'type',
         'identifierName',
