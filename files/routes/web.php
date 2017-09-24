@@ -412,7 +412,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         // get email template
         $events = \App\Distribution::whereIn('id', $ids)->get();
 
-        $emails = [];
         $message = "Start sending emails to: \r\n";
         foreach ($subscriptions as $s) {
 
@@ -454,29 +453,35 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // replace section in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
 
+            // get site by packageId;
+            $site = \App\Site::find($validate->packageId);
+
+            // get package
+            $package = \App\Package::find($validate->packageId);
+
             // store all data to send email
             $args = [
-                'host'     => '',
-                'user'     => '',
-                'pass'     => '',
-                'port'     => '',
-                'from'     => '',
-                'fromName' => '',
-                'to'       => $customer->activeEmail,
-                'toName'   => $customer->name ? $customer->name : $customer->activeEmail,
-                'subject'  => '',
-                'body'     => $replaceTips->template,
+                'provider'        => 'site',
+                'sender'          => $site->id,
+                'type'            => 'subscriptionEmail',
+                'identifierName'  => 'subscriptionId',
+                'identifierValue' => $s['id'],
+                'from'            => $site->email,
+                'fromName'        => $package->fromName,
+                'to'              => $customer->activeEmail,
+                'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
+                'subject'         => $package->subject,
+                'body'            => $replaceTips->template,
+                'status'          => 'waiting',
             ];
 
-            $emails[] = $args;
-
+            // insert in email_schedule
+            \App\EmailSchedule::create($args);
         }
-
 
         return [
             'type'    => 'success',
             'message' => $message,
-            'emails'  => $emails,
         ];
     });
 
