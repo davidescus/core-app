@@ -9,7 +9,25 @@ class CreateEmailScheduleTable extends Migration
     /**
      * Run the migrations.
      *
+     * @column provider
+     *      - hwo want to send email (site|system|...)
+     *
+     * @column sender
+     *      - how to identify provider to get connection credential
+     *      - if provider = site => sender = siteId
+     *
+     * @column type
+     *      - ex: subscriptionEmail, adminWarningEmail
+     *
+     * @column identifierName && identifierValue
+     *      - how to connect email with other data in app
+     *      - let say we have an subscriptionEmail
+     *      - will store the associated subscriptionId
+     *
      * @return void
+     *
+     * @provider => from where came the email (site|system|...)
+     * @sender   => ex: if provider is site sender will be the site id
      */
     public function up()
     {
@@ -27,7 +45,7 @@ class CreateEmailScheduleTable extends Migration
             $table->string('subject');
             $table->string('body');
             $table->timestamp('mailingDate')->nullable()->index();
-            $table->string('status');
+            $table->string('status')->index();
             $table->timestamps();
         });
     }
