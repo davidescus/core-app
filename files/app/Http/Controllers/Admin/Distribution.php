@@ -54,8 +54,8 @@ class Distribution extends Controller
 
                 // check for customer with not enough tips only for current date
                 if ($date == gmdate('Y-m-d')) {
-                    $packageInstance = new \App\Http\Controllers\Admin\Subscription();
-                    $customerNotEnoughTips = count($packageInstance->getSubscriptionsIdsWithNotEnoughTips($package->id));
+                    $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+                    $customerNotEnoughTips = count($subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($package->id));
                 }
 
                 $data[$site->id]['packages'][$assocPack['packageId']]['customerNotEnoughTips'] = $customerNotEnoughTips;
