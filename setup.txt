@@ -1,0 +1,7 @@
+
+...
+
+
+
+Add crons:
+docker-compose exec php-fpm php public/index.php
