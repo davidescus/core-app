@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Cron;
 use App\Http\Controllers\Controller;
 use Nathanmac\Utilities\Parser\Facades\Parser;
 
-class Portal extends Controller
+class PortalNewEvents extends Controller
 {
 
     // this will add new events in match table.
-    public function newEvents() {
+    public function __construct() {
 
         $rootDir =  dirname(__DIR__);
 
