@@ -2,13 +2,12 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerRestrictedTip extends Model {
+class SubscriptionRestrictedTip extends Model {
 
-    protected $table = 'customer_restricted_tip';
+    protected $table = 'subscription_restricted_tip';
 
     protected $fillable = [
-        'customerId',
-        'packageId',
+        'subscriptionId',
         'distributionId',
         'systemDate',
     ];
