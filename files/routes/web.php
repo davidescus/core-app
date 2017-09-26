@@ -492,6 +492,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->get('/distribution/subscription-restricted-tips', function () use ($app) {
 
         $data = [];
+        $date = gmdate('Y-m-d');
 
         // get all packages
         $pack = \App\Package::select('id')->get();
@@ -508,6 +509,20 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
             foreach ($subscriptonsIds as $subscriptionId) {
 
+                // get all restricted tips for subscription
+                $restrictedTips = \App\SubscriptionRestrictedTip::where('subscriptionId', $subscriptionId)
+                    ->where('systemDate', $date)->get()->toArray();
+
+                $e = $events;
+                foreach ($e as $k => $v) {
+                    // set default to false
+                    $e[$k]['restricted'] = false;
+                    foreach ($restrictedTips as $r) {
+                        if ($v['id'] == $r['distributionId'])
+                            $e[$k]['restricted'] = true;
+                    }
+                }
+
                 $subscription = \App\Subscription::find($subscriptionId);
 
                 $data[$subscription->siteId]['siteName'] = \App\Site::find($subscription->siteId)->name;
@@ -520,8 +535,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     'customerEmail'    => \App\Customer::find($subscription->customerId)->email,
                     'totalTips'        => $subscription->tipsLeft - $subscription->tipsBlocked,
                     'totalEvents'      => count($events),
-                    'restricted'       => false,
-                    'events'           => $events,
+                    'events'           => $e,
                 ];
             }
         }
