@@ -9,15 +9,17 @@ use PHPMailer\PHPMailer\SMTP;
 
 class SendMail extends Controller
 {
-    public function __construct($args)
+    public function __construct()
     {
 
+       // get emails for table email_schedule
+
         $args = [
-            'host'     => '174.127.79.7',
-            'user'     => 'contact@goforwinners.com',
-            'pass'     => '6MalMQJAv~[T]',
+            'host'     => '',
+            'user'     => '',
+            'pass'     => '',
             'port'     => 587,
-            'from'     => 'contact@goforwinners.com',
+            'from'     => '',
             'fromName' => 'test app goforeinners',
             'to'       => 'rahthman_s@yahoo.com',
             'toName'   => 'davidescus',
