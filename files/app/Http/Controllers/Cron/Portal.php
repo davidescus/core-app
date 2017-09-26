@@ -11,7 +11,7 @@ class PortalNewEvents extends Controller
     // this will add new events in match table.
     public function __construct() {
 
-        $rootDir =  dirname(__DIR__);
+        //$rootDir =  dirname(__DIR__);
 
         // load xml file
         $xml = file_get_contents(env('LINK_PORTAL_NEW_EVENTS'));
