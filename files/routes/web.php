@@ -25,13 +25,14 @@ use PHPMailer\PHPMailer\SMTP;
 
 // test route for sending emails
 $app->get('/send-mail', function () use ($app) {
-    $args = [];
-    $sendMail = new \App\Http\Controllers\Admin\Email\SendMail($args);
+    new \App\Http\Controllers\Cron\SendMail();
 });
 
 // Cron
 // this will add new events in match table.
-$app->get('/xml', 'Cron\Portal@newEvents');
+$app->get('/xml', function () use ($app) {
+    new \App\Http\Controllers\Cron\PortalNewEvents();
+});
 
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
@@ -483,6 +484,57 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             'type'    => 'success',
             'message' => $message,
         ];
+    });
+
+    // Distribution
+    // manage customer restricted tips
+    // this will work only for today
+    $app->get('/distribution/subscription-restricted-tips', function () use ($app) {
+
+        $data = [];
+
+        // get all packages
+        $pack = \App\Package::select('id')->get();
+
+        foreach ($pack as $p) {
+
+            // get package associadet events from distribution
+            $events = \App\Distribution::where('packageId', $p->id)
+                ->where('systemDate', gmdate('Y-m-d'))->get()->toArray();
+
+            // get all subscriptions for package
+            $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+            $subscriptonsIds = $subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($p->id);
+
+            foreach ($subscriptonsIds as $subscriptionId) {
+
+                $subscription = \App\Subscription::find($subscriptionId);
+
+                $data[$subscription->siteId]['siteName'] = \App\Site::find($subscription->siteId)->name;
+
+                $data[$subscription->siteId]['subscriptions'][] = [
+                    'id'               => $subscription->id,
+                    'siteName'         => \App\Site::find($subscription->siteId)->name,
+                    'subscriptionName' => $subscription->name,
+                    'customerId'       => $subscription->customerId,
+                    'customerEmail'    => \App\Customer::find($subscription->customerId)->email,
+                    'totalTips'        => $subscription->tipsLeft - $subscription->tipsBlocked,
+                    'totalEvents'      => count($events),
+                    'restricted'       => false,
+                    'events'           => $events,
+                ];
+            }
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'date' => gmdate('Y-m-d'),
+            'data' => $data,
+        ]);
+    });
+
+    // Distribution
+    $app->post('/distribution/subscription-restricted-tips', function () use ($app) {
     });
 
     // Distribution
