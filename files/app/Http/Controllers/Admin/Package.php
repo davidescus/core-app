@@ -136,40 +136,4 @@ class Package extends Controller
         return $packages;
     }
 
-    // @param $packageId
-    // will return array with subscriptionIds who not have enough tips
-    // in current date
-    // @return array()
-    public function getSubscriptionsIdsWithNotEnoughTips($packageId)
-    {
-        $subscriptions = [];
-
-        $pack = $this->get($packageId);
-
-        // use this only for tips packages
-        if ($pack->subscriptionType !== 'tips')
-            return $subscriptions;
-
-        // get package associated tips number
-        $tipsNumber = \App\Distribution::where('packageId', $pack->id)
-            ->where('systemDate', gmdate('Y-m-d'))->count();
-
-        if ($tipsNumber < 1)
-            return $subscriptions;
-
-        //get only subscription with tipsLeft less or equal then tips number
-        $subs = \App\Subscription::where('status', 'active')
-            ->where('packageId', $pack->id)
-            ->where('tipsLeft', '<=', $tipsNumber)->get();
-
-        // also check tipsBlocked
-        foreach ($subs as $s) {
-            if (($s->tipsLeft - $s->tipsBlocked) < $tipsNumber) {
-                $subscriptions[] = $s->id;
-            }
-        }
-
-        return $subscriptions;
-    }
-
 }
