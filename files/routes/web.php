@@ -534,7 +534,34 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
     // Distribution
-    $app->post('/distribution/subscription-restricted-tips', function () use ($app) {
+    // @param string $systemDate
+    // @param array $associations
+    // 1 - delete all subscription restricted tips for $systemDate
+    // 2 - create subscription restricted tips from $associations
+    // @return array()
+    $app->post('/distribution/subscription-restricted-tips', function (Request $r) use ($app) {
+        $systemDate = $r->input('systemDate');
+        $restrictions = $r->input('restrictions');
+
+        // TODO
+        // check systemDate to be valid
+
+        // delete all restrictions
+        \App\SubscriptionRestrictedTip::where('systemDate', $systemDate)->delete();
+
+        // creeate again restrictions
+        foreach ($restrictions as $restriction) {
+            \App\SubscriptionRestrictedTip::create([
+                'subscriptionId' => $restriction['subscriptionId'],
+                'distributionId' => $restriction['distributionId'],
+                'systemDate'     => $systemDate,
+            ]);
+        }
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Success update Manage Users',
+        ]);
     });
 
     // Distribution
