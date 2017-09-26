@@ -24,25 +24,15 @@ use PHPMailer\PHPMailer\SMTP;
      ---------------------------------------------------------------------*/
 
 // test route for sending emails
-$app->get('/send-mail-test', function () use ($app) {
-    $args = [
-        'host'     => 'smtp.goforwinners.com',
-        'user'     => 'contact@goforwinners.com',
-        'pass'     => '',
-        'port'     => 587,
-        'from'     => 'contact@goforwinners.com',
-        'fromName' => 'test app goforwinners',
-        'to'       => 'shob@awsm.ro',
-        'toName'   => 'shob',
-        'subject'  => 'Test message',
-        'body'     => 'This is the body of test message',
-    ];
-    $sendMail = new \App\Http\Controllers\Admin\Email\SendMail($args);
+$app->get('/send-mail', function () use ($app) {
+    new \App\Http\Controllers\Cron\SendMail();
 });
 
 // Cron
 // this will add new events in match table.
-$app->get('/xml', 'Cron\Portal@newEvents');
+$app->get('/xml', function () use ($app) {
+    new \App\Http\Controllers\Cron\PortalNewEvents();
+});
 
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
@@ -423,7 +413,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         // get email template
         $events = \App\Distribution::whereIn('id', $ids)->get();
 
-        $emails = [];
         $message = "Start sending emails to: \r\n";
         foreach ($subscriptions as $s) {
 
@@ -465,30 +454,128 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // replace section in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
 
+            // get site by packageId;
+            $site = \App\Site::find($validate->packageId);
+
+            // get package
+            $package = \App\Package::find($validate->packageId);
+
             // store all data to send email
             $args = [
-                'host'     => '',
-                'user'     => '',
-                'pass'     => '',
-                'port'     => '',
-                'from'     => '',
-                'fromName' => '',
-                'to'       => $customer->activeEmail,
-                'toName'   => $customer->name ? $customer->name : $customer->activeEmail,
-                'subject'  => '',
-                'body'     => $replaceTips->template,
+                'provider'        => 'site',
+                'sender'          => $site->id,
+                'type'            => 'subscriptionEmail',
+                'identifierName'  => 'subscriptionId',
+                'identifierValue' => $s['id'],
+                'from'            => $site->email,
+                'fromName'        => $package->fromName,
+                'to'              => $customer->activeEmail,
+                'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
+                'subject'         => $package->subject,
+                'body'            => $replaceTips->template,
+                'status'          => 'waiting',
             ];
 
-            $emails[] = $args;
-
+            // insert in email_schedule
+            \App\EmailSchedule::create($args);
         }
-
 
         return [
             'type'    => 'success',
             'message' => $message,
-            'emails'  => $emails,
         ];
+    });
+
+    // Distribution
+    // manage customer restricted tips
+    // this will work only for today
+    $app->get('/distribution/subscription-restricted-tips', function () use ($app) {
+
+        $data = [];
+        $date = gmdate('Y-m-d');
+
+        // get all packages
+        $pack = \App\Package::select('id')->get();
+
+        foreach ($pack as $p) {
+
+            // get package associadet events from distribution
+            $events = \App\Distribution::where('packageId', $p->id)
+                ->where('systemDate', gmdate('Y-m-d'))->get()->toArray();
+
+            // get all subscriptions for package
+            $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+            $subscriptonsIds = $subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($p->id);
+
+            foreach ($subscriptonsIds as $subscriptionId) {
+
+                // get all restricted tips for subscription
+                $restrictedTips = \App\SubscriptionRestrictedTip::where('subscriptionId', $subscriptionId)
+                    ->where('systemDate', $date)->get()->toArray();
+
+                $e = $events;
+                foreach ($e as $k => $v) {
+                    // set default to false
+                    $e[$k]['restricted'] = false;
+                    foreach ($restrictedTips as $r) {
+                        if ($v['id'] == $r['distributionId'])
+                            $e[$k]['restricted'] = true;
+                    }
+                }
+
+                $subscription = \App\Subscription::find($subscriptionId);
+
+                $data[$subscription->siteId]['siteName'] = \App\Site::find($subscription->siteId)->name;
+
+                $data[$subscription->siteId]['subscriptions'][] = [
+                    'id'               => $subscription->id,
+                    'siteName'         => \App\Site::find($subscription->siteId)->name,
+                    'subscriptionName' => $subscription->name,
+                    'customerId'       => $subscription->customerId,
+                    'customerEmail'    => \App\Customer::find($subscription->customerId)->email,
+                    'totalTips'        => $subscription->tipsLeft - $subscription->tipsBlocked,
+                    'totalEvents'      => count($events),
+                    'events'           => $e,
+                ];
+            }
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'date' => gmdate('Y-m-d'),
+            'data' => $data,
+        ]);
+    });
+
+    // Distribution
+    // @param string $systemDate
+    // @param array $associations
+    // 1 - delete all subscription restricted tips for $systemDate
+    // 2 - create subscription restricted tips from $associations
+    // @return array()
+    $app->post('/distribution/subscription-restricted-tips', function (Request $r) use ($app) {
+        $systemDate = $r->input('systemDate');
+        $restrictions = $r->input('restrictions');
+
+        // TODO
+        // check systemDate to be valid
+
+        // delete all restrictions
+        \App\SubscriptionRestrictedTip::where('systemDate', $systemDate)->delete();
+
+        // creeate again restrictions
+        foreach ($restrictions as $restriction) {
+            \App\SubscriptionRestrictedTip::create([
+                'subscriptionId' => $restriction['subscriptionId'],
+                'distributionId' => $restriction['distributionId'],
+                'systemDate'     => $systemDate,
+            ]);
+        }
+
+        return response()->json([
+            'type'    => 'success',
+            'message' => 'Success update Manage Users',
+        ]);
     });
 
     // Distribution

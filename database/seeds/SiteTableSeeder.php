@@ -17,33 +17,38 @@ class SiteTableSeeder extends Seeder {
         // insert automaticaly 5 sites in app
         Site::firstOrCreate([
             'name'       => 'GoForWinners',
-            'url'        => 'https://www.goforwinners.com/dev/',
+            'url'        => 'https://www.goforwinners.com/',
             'isConnect'  => 0,
             'token'      => md5(microtime() . rand(0, 1000)),
+            'dateFormat' => 'Y/m/d',
         ]);
 
         Site::firstOrCreate([
             'name'       => 'PopularSoccerTips',
             'isConnect'  => 0,
             'token'      => md5(microtime() . rand(0, 1000)),
+            'dateFormat' => 'Y/m/d',
         ]);
 
         Site::firstOrCreate([
             'name'       => 'SoccerTipsArena',
             'isConnect'  => 0,
             'token'      => md5(microtime() . rand(0, 1000)),
+            'dateFormat' => 'Y/m/d',
         ]);
 
         Site::firstOrCreate([
             'name'       => 'DailySoccerWins',
             'isConnect'  => 0,
             'token'      => md5(microtime() . rand(0, 1000)),
+            'dateFormat' => 'Y/m/d',
         ]);
 
         Site::firstOrCreate([
             'name'       => 'FreshSoccerBets',
             'isConnect'  => 0,
             'token'      => md5(microtime() . rand(0, 1000)),
+            'dateFormat' => 'Y/m/d',
         ]);
     }
 }

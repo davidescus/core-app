@@ -49,6 +49,16 @@ class Distribution extends Controller
                 $data[$site->id]['packages'][$assocPack['packageId']]['tipsPerDay'] = $package->tipsPerDay;
                 $data[$site->id]['packages'][$assocPack['packageId']]['eventsNumber'] = count($distributedEvents);
                 $data[$site->id]['packages'][$assocPack['packageId']]['events'] = $distributedEvents;
+
+                $customerNotEnoughTips = 0;
+
+                // check for customer with not enough tips only for current date
+                if ($date == gmdate('Y-m-d')) {
+                    $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+                    $customerNotEnoughTips = count($subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($package->id));
+                }
+
+                $data[$site->id]['packages'][$assocPack['packageId']]['customerNotEnoughTips'] = $customerNotEnoughTips;
             }
         }
 
