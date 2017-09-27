@@ -55,7 +55,25 @@ class Distribution extends Controller
                 // check for customer with not enough tips only for current date
                 if ($date == gmdate('Y-m-d')) {
                     $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
-                    $customerNotEnoughTips = count($subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($package->id));
+                    $subscriptionIdsNotEnoughTips = $subscriptionInstance->getSubscriptionsIdsWithNotEnoughTips($package->id);
+
+                    foreach ($subscriptionIdsNotEnoughTips as $subscriptionId) {
+                        $subscription = \App\Subscription::find($subscriptionId);
+
+                        // get total availlable tips
+                        $totalTips = $subscription->tipsLeft - $subscription->tipsBlocked;
+                        $todayTipsNumber = \App\Distribution::where('packageId', $subscription->packageId)
+                            ->where('systemDate', gmdate('Y-m-d'))->count();
+
+                        // get number of restricted tips
+                        $restrictedTips = \App\SubscriptionRestrictedTip::where('subscriptionId', $subscription->id)
+                            ->where('systemDate', gmdate('Y-m-d'))
+                            ->count();
+
+                        // increase number of customers who not have enought tips
+                        if (($todayTipsNumber - $restrictedTips) > $totalTips)
+                            $customerNotEnoughTips++;
+                    }
                 }
 
                 $data[$site->id]['packages'][$assocPack['packageId']]['customerNotEnoughTips'] = $customerNotEnoughTips;
