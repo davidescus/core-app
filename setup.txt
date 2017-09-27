@@ -1,0 +1,23 @@
+NORMAL RUN:
+docker-compose up -d
+
+REBUILD:
+docker-compose stop
+docker-compose build
+docker-compose up -d
+
+RESTART
+docker-composer restart
+
+ADD A CRON:
+crontab -e
+docker-compose exec php-fpm php path/to/cli/job
+
+COMPOSER INSTALL:
+docker-compose exec php-fpm php composer.phar install
+
+COMPOSER UPDATE:
+docker-compose exec php-fpm php composer.phar update
+
+COMPOSER ADD:
+docker-compose exec php-fpm php composer.phar require slim/slim *
