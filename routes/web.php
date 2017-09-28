@@ -410,22 +410,28 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $distribution->update();
         }
 
-        // get email template
-        $events = \App\Distribution::whereIn('id', $ids)->get();
+        // get events
+        $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
 
         $message = "Start sending emails to: \r\n";
         foreach ($subscriptions as $s) {
 
-            $e = $events;
+            // remove restricted events
+            $subscriptionEvents = $events;
+            foreach ($subscriptionEvents as $k => $e) {
+                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s['id'])
+                    ->where('distributionId', $e['id'])->count();
 
-            // Check what tips will send to each user
-            // let sey user have 1 tip and package has 3 events - manage users
+                if ($isRestricted)
+                    unset($subscriptionEvents[$k]);
+            }
 
             $customer = \App\Customer::find($s['customerId']);
             $message .= $customer->name . ' - ' .$customer->email . "\r\n";
 
             // insert all events in subscription_tip_history
-            foreach ($e as $event) {
+            foreach ($subscriptionEvents as $event) {
+
                 // here will use eventId for event table.
                 \App\SubscriptionTipHistory::create([
                     'customerId' => $customer->id,
@@ -443,7 +449,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     'homeTeam' => $event['homeTeam'],
                     'homeTeamId' => $event['homeTeamId'],
                     'awayTeam' => $event['awayTeam'],
-                    'awayTamId' => $event['awayTamId'],
+                    'awayTeamId' => $event['awayTeamId'],
                     'predictionId' => $event['predictionId'],
                     'predictionName' => $event['predictionName'],
                     'eventDate' => $event['eventDate'],
@@ -451,14 +457,18 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 ]);
             }
 
-            // replace section in template
-            $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
-
             // get site by packageId;
             $site = \App\Site::find($validate->packageId);
 
             // get package
             $package = \App\Package::find($validate->packageId);
+
+            // when use send will not edit template, will not have custom template
+            if (! $template)
+                $template = $package->template;
+
+            // replace section in template
+            $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
 
             // store all data to send email
             $args = [
