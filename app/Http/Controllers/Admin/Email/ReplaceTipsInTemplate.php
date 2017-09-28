@@ -56,12 +56,12 @@ class ReplaceTipsInTemplate extends Controller
                 '{{predictionName}}',
             ];
             $replace = [
-                $event->eventDate,
-                $event->country,
-                $event->league,
-                $event->homeTeam,
-                $event->awayTeam,
-                $event->predictionName,
+                $event['eventDate'],
+                $event['country'],
+                $event['league'],
+                $event['homeTeam'],
+                $event['awayTeam'],
+                $event['predictionName'],
             ];
 
             $this->template .= str_replace($find, $replace, $split['body']);
