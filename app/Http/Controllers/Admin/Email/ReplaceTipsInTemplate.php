@@ -9,7 +9,7 @@ class ReplaceTipsInTemplate extends Controller
     public $template;
 
     private $isNoTip;
-    private $events;
+    private $events = [];
     private $tags = [
         'events' => [
             'from' => '{{events}}',
@@ -17,6 +17,8 @@ class ReplaceTipsInTemplate extends Controller
         ],
     ];
 
+    // @param string $template
+    // @param array $events
     public function __construct($template, $events, $isNoTip)
     {
         $this->template = $template;
