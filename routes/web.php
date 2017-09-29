@@ -426,6 +426,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     unset($subscriptionEvents[$k]);
             }
 
+            // if for a subscription there is no event continue.
+            // let say all tips are restricted
+            if (! $subscriptionEvents)
+                continue;
+
             $customer = \App\Customer::find($s['customerId']);
             $message .= $customer->name . ' - ' .$customer->email . "\r\n";
 
