@@ -125,7 +125,17 @@ class Association extends Controller
                     continue;
             }
 
-            // TODO check if table is for real users or for no users
+            // check if package has active subscriptions
+            $hasSubscriptions = \App\Subscription::where('packageId', $package->id)
+                ->where('status', 'active')->count();
+
+            if ($table == "run" || $table == "ruv") {
+                if (! $hasSubscriptions)
+                    continue;
+            } elseif ($table == "nun" || $table == "nuv") {
+                if ($hasSubscriptions)
+                    continue;
+            }
 
             // get site
             $site = \App\Site::find($package->siteId);
