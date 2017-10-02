@@ -394,9 +394,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => $validate->message,
             ];
 
-        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get()->toArray();
+        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get();
 
-        if (!$subscriptions)
+        if (!count($subscriptions))
             return [
                 'type'    => 'success',
                 'message' => 'No active subscriptions for this package.',
@@ -419,7 +419,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // remove restricted events
             $subscriptionEvents = $events;
             foreach ($subscriptionEvents as $k => $e) {
-                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s['id'])
+                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s->id)
                     ->where('distributionId', $e['id'])->count();
 
                 if ($isRestricted)
@@ -431,7 +431,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             if (! $subscriptionEvents)
                 continue;
 
-            $customer = \App\Customer::find($s['customerId']);
+
+            // if subscription type = tips add tips on tipBlocked
+            if ($s->type === 'tips') {
+                $s->tipsBlocked = $s->tipsBlocked + count($subscriptionEvents);
+                $s->update();
+            }
+
+            $customer = \App\Customer::find($s->customerId);
             $message .= $customer->name . ' - ' .$customer->email . "\r\n";
 
             // insert all events in subscription_tip_history
@@ -440,11 +447,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 // here will use eventId for event table.
                 \App\SubscriptionTipHistory::create([
                     'customerId' => $customer->id,
-                    'subscriptionId' => $s['id'],
+                    'subscriptionId' => $s->id,
                     'eventId' => $event['eventId'],
-                    'siteId'  => $s['siteId'],
-                    'isCustom' => $s['isCustom'],
-                    'type' => $s['type'],
+                    'siteId'  => $s->siteId,
+                    'isCustom' => $s->isCustom,
+                    'type' => $s->type,
                     'isNoTip' => $event['isNoTip'],
                     'isVip' => $event['isVip'],
                     'country' => $event['country'],
@@ -481,7 +488,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'sender'          => $site->id,
                 'type'            => 'subscriptionEmail',
                 'identifierName'  => 'subscriptionId',
-                'identifierValue' => $s['id'],
+                'identifierValue' => $s->id,
                 'from'            => $site->email,
                 'fromName'        => $package->fromName,
                 'to'              => $customer->activeEmail,
