@@ -432,9 +432,12 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 continue;
 
 
-            // if subscription type = tips add tips on tipBlocked
+            // if subscription type = tips
+            // will move number of sbscription events from tipsLeft to tipsBlocked
             if ($s->type === 'tips') {
-                $s->tipsBlocked = $s->tipsBlocked + count($subscriptionEvents);
+                $eventsNumber = count($subscriptionEvents);
+                $s->tipsBlocked += $eventsNumber;
+                $s->tipsLeft -= $eventsNumber;
                 $s->update();
             }
 
