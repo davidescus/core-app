@@ -132,6 +132,10 @@ class Event extends Controller
         // update distribution
         \App\Distribution::where('eventId', $eventId)->update($update);
 
+        // process subscriptions
+        $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+        $subscriptionInstance->processSubscriptions($eventId, $statusId);
+
         return [
             'type' => 'success',
             'message' =>"Prediction and status was succesfful updated.",

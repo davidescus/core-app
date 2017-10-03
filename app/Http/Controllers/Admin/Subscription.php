@@ -129,6 +129,131 @@ class Subscription extends Controller
         return $subscriptions;
     }
 
+    // integer $eventId
+    // integer $statusId
+    public function processSubscriptions($eventId, $statusId)
+    {
+
+        // get all subscriptions tips history associated with event
+        $tipsHistory = \App\SubscriptionTipHistory::where('eventId', $eventId)->get();
+        foreach ($tipsHistory as $tip) {
+
+            if ($tip->type === 'tips') {
+
+                $subscription = \App\Subscription::find($tip->subscriptionId);
+
+                // if has already process subscriptions rollback
+                // this will create the original context before the tip process subscription
+                if ($tip->processSubscription) {
+                    $this->rollbackTipsSubscription($subscription, $tip->processType);
+                    $this->unProcessSubscriptionTipHistory($tip);
+                    $this->manageTipsSubscriptionStatus($subscription);
+                }
+
+                // win
+                if ($statusId == 1) {
+                    $this->processSubscriptionTipHistory($tip, '-1');
+
+                    if ($subscription->tipsBlocked > 0) {
+                        $subscription->tipsBlocked--;
+                        $subscription->update();
+                    }
+
+                    $this->manageTipsSubscriptionStatus($subscription);
+                }
+
+                // loss | draw
+                if ($statusId == 2 || $statusId == 3) {
+
+                    // vip
+                    if ($tip->isVip) {
+                        $this->processSubscriptionTipHistory($tip, '0');
+
+                        $subscription->tipsLeft++;
+                        $subscription->tipsBlocked--;
+                        $subscription->update();
+
+                        $this->manageTipsSubscriptionStatus($subscription);
+                    }
+                    else {
+                        $this->processSubscriptionTipHistory($tip, '-1');
+
+                        if ($subscription->tipsBlocked > 0) {
+                            $subscription->tipsBlocked--;
+                            $subscription->update();
+                        }
+
+                        $this->manageTipsSubscriptionStatus($subscription);
+                    }
+                }
+
+                // postp
+                if ($statusId == 4) {
+                    $this->processSubscriptionTipHistory($tip, '0');
+
+                    $subscription->tipsLeft++;
+                    $subscription->tipsBlocked--;
+                    $subscription->update();
+
+                    $this->manageTipsSubscriptionStatus($subscription);
+                }
+            }
+        }
+    }
+
+    // @param obj $subscription \App\Http\controllers\Admin\Subscription
+    // will evaluate and modyfi the subscription status
+    // @return void
+    public function manageTipsSubscriptionStatus($subscription)
+    {
+        $status = 'active';
+        if (($subscription->tipsBlocked + $subscription->tipsLeft) < 1)
+            $status = 'archived';
+
+        if ($status != $subscription->status) {
+            $subscription->status = $status;
+            $subscription->update();
+        }
+    }
+
+    // @param obj \App\SubscriptionTipHistory
+    // will mark processSubscription = 0 and processType = ''
+    // @return void
+    public function unProcessSubscriptionTipHistory($tip)
+    {
+        $tip->processSubscription = 0;
+        $tip->processType = '';
+        $tip->update();
+    }
+
+    // @param obj \App\SubscriptionTipHistory
+    // will mark processSubscription = 1 and processType = $processType
+    // @return void
+    public function processSubscriptionTipHistory($tip, $processType)
+    {
+        $tip->processSubscription = 1;
+        $tip->processType = $processType;
+        $tip->update();
+    }
+
+    // @param obj $subscription
+    // @param string $processType '-1' | '0'
+    // @return void
+    public function rollbackTipsSubscription($subscription, $processType)
+    {
+        // put back one tip in tipsBlocked
+        if ($processType == '-1') {
+            $subscription->tipsBlocked++;
+        }
+
+        // move one tip from tipLeft to blocked for create original context
+        if ($processType == '0') {
+            $subscription->tipsLeft--;
+            $subscription->tipsBlocked++;
+        }
+
+        $subscription->update();
+    }
 
     public function update() {}
 
