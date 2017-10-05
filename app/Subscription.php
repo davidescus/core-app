@@ -13,6 +13,7 @@ class Subscription extends Model {
         'siteId',
         'packageId',
         'isCustom',
+        'isVip',
         'type',
         'subscription',
         'dateStart',

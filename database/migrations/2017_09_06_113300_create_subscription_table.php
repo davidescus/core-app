@@ -20,6 +20,7 @@ class CreateSubscriptionTable extends Migration
             $table->integer('siteId')->unsigned()->index();
             $table->integer('packageId')->unsigned()->index();
             $table->integer('isCustom');
+            $table->integer('isVip')->unsigned();
             $table->string('type');
             $table->integer('subscription');
             $table->string('dateStart')->nullable()->index();
