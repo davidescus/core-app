@@ -114,7 +114,7 @@ class PackageTableSeeder extends Seeder {
                     'identifier' => 'normal_2',
                     'tipIdentifier' => 'tip_2',
                     'tableIdentifier' => 'table_2',
-                    'vipFlag' => '',
+                    'vipFlag' => '--VIP--',
                     'isVip'           => true,
                     'isRecurring'      => true,
                     'subscriptionType' => 'days',
