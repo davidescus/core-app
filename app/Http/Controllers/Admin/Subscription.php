@@ -58,6 +58,7 @@ class Subscription extends Controller
             'customerId' => $customer->id,
             'siteId' => $siteId,
             'packageId' => $package->id,
+            'isVip' => $package->isVip,
             'type' => $type,
             'subscription' => $subscription,
             'dateStart' => $dateStart,
