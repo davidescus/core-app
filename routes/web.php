@@ -472,11 +472,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 ]);
             }
 
-            // get site by packageId;
-            $site = \App\Site::find($validate->packageId);
-
             // get package
             $package = \App\Package::find($validate->packageId);
+
+            // get site by packageId;
+            $site = \App\Site::find($package->siteId);
 
             // when use send will not edit template, will not have custom template
             if (! $template)
