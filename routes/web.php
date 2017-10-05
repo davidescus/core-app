@@ -23,6 +23,11 @@ use PHPMailer\PHPMailer\SMTP;
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
+/ / subscriptioon cron 23.55
+$app->get('/cron/23.55', function () use ($app) {
+    new \App\Http\Controllers\Cron\ProcessDaysSubscription();
+});
+
 // test route for sending emails
 $app->get('/send-mail', function () use ($app) {
     new \App\Http\Controllers\Cron\SendMail();
