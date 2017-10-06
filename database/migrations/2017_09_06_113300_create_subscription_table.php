@@ -15,6 +15,7 @@ class CreateSubscriptionTable extends Migration
     {
         Schema::create('subscription', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('id')->unsigned()->index();
             $table->string('name');
             $table->integer('customerId')->unsigned()->index();
             $table->integer('siteId')->unsigned()->index();
