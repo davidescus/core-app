@@ -23,7 +23,7 @@ use PHPMailer\PHPMailer\SMTP;
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
-/ / subscriptioon cron 23.55
+// subscriptioon cron 23.55
 $app->get('/cron/23.55', function () use ($app) {
     new \App\Http\Controllers\Cron\ProcessDaysSubscription();
 });
