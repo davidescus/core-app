@@ -139,14 +139,14 @@ class Subscription extends Controller
         $tipsHistory = \App\SubscriptionTipHistory::where('eventId', $eventId)->get();
         foreach ($tipsHistory as $tip) {
 
-            if ($tip->type === 'tips') {
+            $subscription = \App\Subscription::find($tip->subscriptionId);
 
-                $subscription = \App\Subscription::find($tip->subscriptionId);
+            if ($tip->type === 'tips') {
 
                 // if has already process subscriptions rollback
                 // this will create the original context before the tip process subscription
                 if ($tip->processSubscription) {
-                    $this->rollbackTipsSubscription($subscription, $tip->processType);
+                    $this->rollbackSubscription($subscription, $tip->processType);
                     $this->unProcessSubscriptionTipHistory($tip);
                     $this->manageTipsSubscriptionStatus($subscription);
                 }
@@ -199,6 +199,120 @@ class Subscription extends Controller
                     $this->manageTipsSubscriptionStatus($subscription);
                 }
             }
+
+            if ($tip->type === 'days') {
+
+                // vip subscriptions do not care about results
+                if ($subscription->isVip)
+                    continue;
+
+                // only events with systemDate less than today
+                if (strtotime($tip->systemDate) >= strtotime(gmdate('Y-m-d')))
+                    continue;
+
+                // get all events associated with subscription in that day
+                $allEventsInDay = \App\SubscriptionTipHistory::where('subscriptionId', $subscription->id)
+                    ->where('systemDate', $tip->systemDate)->get();
+
+                // check events status
+                $haveWinLossDraw = false;
+                $allEventsFinished = true;
+                foreach ($allEventsInDay as $event) {
+
+                    if ((int) $event->statusId === 1 || (int) $event->statusId === 2 || (int) $event->statusId === 3)
+                        $haveWinLossDraw = true;
+
+                    if (trim($event->statusId) === '' && !$event->isNoTip)
+                        $allEventsFinished = false;
+                }
+
+                // if has already process subscriptions rollback
+                // this will create the original context before the tip | tips process subscription
+                if ($tip->processSubscription) {
+
+                    // if subscription is valid or was archived last day
+                    // we still can add one day to current subscription
+                    if (strtotime($subscription->dateEnd) >= (strtotime(gmdate('Y-m-d')) - 60 *60 *24)) {
+
+                        $this->rollbackSubscription($subscription, $tip->processType);
+
+                        // set unProcess all subscriptionTipsHistory for event systemDate
+                        foreach ($allEventsInDay as $event) {
+                            $event->processSubscription = '0';
+                            $event->processType = '';
+                            $event->update();
+                        }
+                        $this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
+                    }
+
+                    // if is changed an event from a subscription hwo was archivided
+                    // before more than 1 day will not give a day to current subscription,
+                    // will create a bonus subscription
+                    else {
+
+                        $this->rollbackSubscription($subscription, $tip->processType);
+
+                        if (!$haveWinLossDraw) {
+                            $bonusSubscription = json_decode(json_encode($subscription), true);
+                            unset($bonusSubscription['id']);
+                            unset($bonusSubscription['created_at']);
+                            unset($bonusSubscription['updated_at']);
+                            $bonusSubscription['parentId'] = $subscription->id;
+                            $bonusSubscription['dateStart'] = gmdate('Y-m-d');
+                            $bonusSubscription['dateEnd'] = gmdate('Y-m-d');
+                            $bonusSubscription['status'] = 'active';
+
+                            $bonus = \App\Subscription::create($bonusSubscription);
+
+                            foreach ($allEventsInDay as $event) {
+                                $event->processSubscription = '1';
+                                $event->processType = '+1bonus:' . $bonus->id;
+                                $event->update();
+                            }
+                            continue;
+                        }
+
+                        // mark process with 0
+                        foreach ($allEventsInDay as $event) {
+                            $event->processSubscription = '1';
+                            $event->processType = '0';
+                            $event->update();
+                        }
+                        continue;
+                    }
+                }
+
+                // process on win loss draw
+                if ($haveWinLossDraw) {
+                    foreach ($allEventsInDay as $event) {
+                        $event->processSubscription = '1';
+                        $event->processType = '0';
+                        $event->update();
+                    }
+
+                    $this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
+                    continue;
+                }
+
+                // there is events and all finished
+                // there is no win, loss, draw
+                // there is no noTip
+                // only postp - add one day
+                if ($allEventsFinished) {
+                    foreach ($allEventsInDay as $event) {
+                        $event->processSubscription = '1';
+                        $event->processType = '+1';
+                        $event->update();
+                    }
+
+                    // add one day to subscription
+                    $subscription->dateEnd = date('Y-m-d', strtotime('+1day', strtotime($subscription->dateEnd)));
+                    $subscription->update();
+
+                    $this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
+                    continue;
+                }
+            }
         }
     }
 
@@ -209,6 +323,22 @@ class Subscription extends Controller
     {
         $status = 'active';
         if (($subscription->tipsBlocked + $subscription->tipsLeft) < 1)
+            $status = 'archived';
+
+        if ($status != $subscription->status) {
+            $subscription->status = $status;
+            $subscription->update();
+        }
+    }
+
+    // @param \App\Subscription $subscription
+    // this will archive a subscription
+    // if dateEnd is smaller than today
+    // @return void
+    private function manageDaysSubscriptionStatus($subscription, $date)
+    {
+        $status = 'active';
+        if (strtotime($subscription->dateEnd) < strtotime(gmdate('Y-m-d')))
             $status = 'archived';
 
         if ($status != $subscription->status) {
@@ -238,19 +368,35 @@ class Subscription extends Controller
     }
 
     // @param obj $subscription
-    // @param string $processType '-1' | '0'
+    // @param string $processType '-1' | '0' '+1'
     // @return void
-    public function rollbackTipsSubscription($subscription, $processType)
+    public function rollbackSubscription($subscription, $processType)
     {
-        // put back one tip in tipsBlocked
-        if ($processType == '-1') {
-            $subscription->tipsBlocked++;
+        if ($subscription->type == 'tips') {
+            // put back one tip in tipsBlocked
+            if ($processType == '-1')
+                $subscription->tipsBlocked++;
+
+            // move one tip from tipLeft to blocked for create original context
+            if ($processType == '0') {
+                $subscription->tipsLeft--;
+                $subscription->tipsBlocked++;
+            }
         }
 
-        // move one tip from tipLeft to blocked for create original context
-        if ($processType == '0') {
-            $subscription->tipsLeft--;
-            $subscription->tipsBlocked++;
+        if ($subscription->type == 'days') {
+
+            // delete bonus subscriptions and associated tips history
+            if (strpos($processType, 'bonus') !== false) {
+                $id = trim(explode(':', $processType)[1]);
+                \App\Subscription::find($id)->delete();
+                \App\SubscriptionTipHistory::where('subscriptionId', $id)->delete();
+                return;
+            }
+
+            if (!$subscription->isVip)
+                if ($processType == '+1')
+                    $subscription->dateEnd = date('Y-m-d', strtotime('-1day', strtotime($subscription->dateEnd)));
         }
 
         $subscription->update();
