@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         if (getenv('APP_ENV') === 'local') {
+            $this->call('AppResultStatusTableSeeder');
             $this->call('PredictionTableSeeder');
             $this->call('SiteTableSeeder');
             $this->call('PackageTableSeeder');
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
         }
 
         if (getenv('APP_ENV') === 'production') {
+            $this->call('AppResultStatusTableSeeder');
             $this->call('PredictionTableSeeder');
             $this->call('UserTableSeeder');
         }
