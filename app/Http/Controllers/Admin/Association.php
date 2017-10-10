@@ -27,7 +27,11 @@ class Association extends Controller
         if ($date === null || $date == 0)
             $date = gmdate('Y-m-d');
 
-        return \App\Association::where('type', $tableIdentifier)->where('systemDate', $date)->get();
+        $associations = \App\Association::where('type', $tableIdentifier)->where('systemDate', $date)->get();
+        foreach ($associations as $association)
+            $association->status;
+
+        return $associations;
     }
 
     public function get() {}
