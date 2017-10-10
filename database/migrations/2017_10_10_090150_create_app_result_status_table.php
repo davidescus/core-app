@@ -27,6 +27,6 @@ class CreateAppResultStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('app_result-status');
+        Schema::dropIfExists('app_result_status');
     }
 }
