@@ -44,6 +44,10 @@ class Distribution extends Controller
                 // get events for package
                 $distributedEvents = \App\Distribution::where('packageId', $package->id)->where('systemdate', $date)->get();
 
+                // add status to distributed events
+                foreach ($distributedEvents as $distributedEvent)
+                    $distributedEvent->status;
+
                 $data[$site->id]['packages'][$assocPack['packageId']]['id'] = $package->id;
                 $data[$site->id]['packages'][$assocPack['packageId']]['name'] = $package->name;
                 $data[$site->id]['packages'][$assocPack['packageId']]['tipsPerDay'] = $package->tipsPerDay;

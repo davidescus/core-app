@@ -37,5 +37,11 @@ class Distribution extends Model {
         'mailingDate',
     ];
 
+    // get the status name of distributed event
+    public function status()
+    {
+        return $this->hasOne('App\AppResultStatus', 'id', 'statusId');
+    }
+
 //    protected $hidden = [ ‘password’ ];
 }
