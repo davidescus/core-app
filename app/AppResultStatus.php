@@ -7,7 +7,7 @@ class AppResultStatus extends Model {
     protected $table = 'app_result_status';
 
     protected $fillable = [
-        'statusName',
+        'name',
     ];
 
 //    protected $hidden = [ ‘password’ ];

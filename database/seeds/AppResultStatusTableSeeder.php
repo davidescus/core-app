@@ -14,16 +14,16 @@ class AppResultStatusTableSeeder extends Seeder {
     public function run()
     {
         AppResultStatus::firstOrCreate([
-            'statusName' => 'Win',
+            'name' => 'Win',
         ]);
         AppResultStatus::firstOrCreate([
-            'statusName' => 'Loss',
+            'name' => 'Loss',
         ]);
         AppResultStatus::firstOrCreate([
-            'statusName' => 'Draw',
+            'name' => 'Draw',
         ]);
         AppResultStatus::firstOrCreate([
-            'statusName' => 'PostP',
+            'name' => 'PostP',
         ]);
     }
 }

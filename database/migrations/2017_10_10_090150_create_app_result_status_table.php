@@ -15,7 +15,7 @@ class CreateAppResultStatusTable extends Migration
     {
         Schema::create('app_result_status', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('statusName')->index();
+            $table->string('name')->index();
             $table->timestamps();
         });
     }
