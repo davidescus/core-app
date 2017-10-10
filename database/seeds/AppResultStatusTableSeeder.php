@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use App\PackagePrediction;
+use App\AppResultStatus;
 
 class AppResultStatusTableSeeder extends Seeder {
 
