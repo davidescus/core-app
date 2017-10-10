@@ -11,7 +11,15 @@ class Subscription extends Controller
     // get all subscriptions
     // @return array()
     public function index() {
-        return \App\Subscription::all()->toArray();
+        $subscriptions = \App\Subscription::all()->toArray();
+
+        foreach ($subscriptions as $k => $v) {
+            $customerName = \App\Customer::find($v['customerId'])->name;
+            $siteName = \App\Site::find($v['siteId'])->name;
+            $subscriptions[$k]['customerName'] = $customerName;
+            $subscriptions[$k]['siteName'] = $siteName;
+        }
+        return $subscriptions;
     }
 
     public function get() {}
