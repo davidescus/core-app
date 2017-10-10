@@ -14,9 +14,9 @@ class Subscription extends Controller
         $subscriptions = \App\Subscription::all()->toArray();
 
         foreach ($subscriptions as $k => $v) {
-            $customerName = \App\Customer::find($v['customerId'])->name;
+            $customerEmail = \App\Customer::find($v['customerId'])->email;
             $siteName = \App\Site::find($v['siteId'])->name;
-            $subscriptions[$k]['customerName'] = $customerName;
+            $subscriptions[$k]['customerEmail'] = $customerEmail;
             $subscriptions[$k]['siteName'] = $siteName;
         }
         return $subscriptions;
