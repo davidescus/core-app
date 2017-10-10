@@ -29,7 +29,11 @@ class Event extends Controller
         foreach ($ids as $id)
             $eventsIds[] = $id->eventId;
 
-        return \App\Event::whereIn('id', $eventsIds)->get()->toArray();
+        $events = \App\Event::whereIn('id', $eventsIds)->get();
+        foreach ($events as $event)
+            $event->status;
+
+        return $events;
     }
 
     public function store() {}
