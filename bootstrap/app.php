@@ -84,11 +84,11 @@ $app->register(App\Providers\AuthServiceProvider::class);
 
 // xml parser
 $app->register(Nathanmac\Utilities\Parser\ParserServiceProvider::class);
-class_alias('Nathanmac\Utilities\Parser\Facades\Parser', 'Parser');
+//class_alias('Nathanmac\Utilities\Parser\Facades\Parser', 'Parser');
 
 // cUrl
 $app->register(Ixudra\Curl\CurlServiceProvider::class);
-class_alias('Ixudra\Curl\Facades\Curl', 'Curl');
+//class_alias('Ixudra\Curl\Facades\Curl', 'Curl');
 
 /*
 |--------------------------------------------------------------------------
