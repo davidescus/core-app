@@ -13,7 +13,6 @@ class WebTest extends TestCase
     public function testShouldReturnAppVersion()
     {
         $this->get('/');
-
         $this->assertEquals(
             $this->app->version(), $this->response->getContent()
         );
