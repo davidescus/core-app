@@ -3,14 +3,14 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class ExampleTest extends TestCase
+class WebTest extends TestCase
 {
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testExample()
+    public function testShouldReturnAppVersion()
     {
         $this->get('/');
 
@@ -19,3 +19,4 @@ class ExampleTest extends TestCase
         );
     }
 }
+
