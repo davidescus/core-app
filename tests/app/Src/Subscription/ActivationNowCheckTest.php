@@ -71,6 +71,28 @@ class ActivationNowCheckTest extends TestCase
         $activation->checkPublishEventsInNoUsers();
         $this->assertTrue($activation->isValid);
     }
+
+    public function testIsValidShouldBeTrueIfIsPublishedOnlyOneEventInRunTable()
+    {
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '1';
+        $ev1->tableIdentifier = 'run';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
+        $activation->checkPublishEventsInNoUsers();
+        $this->assertTrue($activation->isValid);
+    }
+
+    public function testIsValidShouldBeTrueIfIsPublishedOnlyOneEventInRuvTable()
+    {
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '1';
+        $ev1->tableIdentifier = 'run';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
+        $activation->checkPublishEventsInNoUsers();
+        $this->assertTrue($activation->isValid);
+    }
 }
 
 
