@@ -23,6 +23,17 @@ use PHPMailer\PHPMailer\SMTP;
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
+/*/ Will delete this sun is possible
+$app->get('/ActivationCheck', function () use ($app) {
+   return response()->json(new \App\Src\Subscription\ActivationNowCheck());
+});
+*/
+
+// basic route, return app version
+$app->get('/', function () use ($app) {
+   return $app->version();
+});
+
 // subscriptioon cron 23.55
 $app->get('/cron/23.55', function () use ($app) {
     new \App\Http\Controllers\Cron\ProcessDaysSubscription();
@@ -30,7 +41,7 @@ $app->get('/cron/23.55', function () use ($app) {
 
 // test route for sending emails
 $app->get('/send-mail', function () use ($app) {
-    new \App\Http\Controllers\Cron\SendMail();
+    //new \App\Http\Controllers\Cron\SendMail();
 });
 
 // Cron
