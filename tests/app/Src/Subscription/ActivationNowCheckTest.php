@@ -22,42 +22,34 @@ class ActivationNowCheckTest extends TestCase
 
     public function testIsValidShouldBeFalseIfOneEventIsPublish()
     {
-        $one = new \stdClass();
-        $one->isPublish = '1';
-        $two = new \stdClass();
-        $two->isPublish = '0';
-        $activation = new \App\Src\Subscription\ActivationNowCheck([
-            0 => $one,
-            1 => $two
-        ]);
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '1';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
         $activation->checkPublishEvents();
         $this->assertFalse($activation->isValid);
     }
 
     public function testIsValidShouldBeFalseIfMoreEventsIsPublish()
     {
-        $one = new \stdClass();
-        $one->isPublish = '1';
-        $two = new \stdClass();
-        $two->isPublish = '1';
-        $activation = new \App\Src\Subscription\ActivationNowCheck([
-            0 => $one,
-            1 => $two
-        ]);
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '1';
+        $ev2 = new \stdClass();
+        $ev2->isPublish = '1';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
         $activation->checkPublishEvents();
         $this->assertFalse($activation->isValid);
     }
 
     public function testIsValidShouldBeTrueIfNoEventsArePublished()
     {
-        $one = new \stdClass();
-        $one->isPublish = '0';
-        $two = new \stdClass();
-        $two->isPublish = '0';
-        $activation = new \App\Src\Subscription\ActivationNowCheck([
-            0 => $one,
-            1 => $two
-        ]);
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '0';
+        $ev2 = new \stdClass();
+        $ev2->isPublish = '0';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
         $activation->checkPublishEvents();
         $this->assertTrue($activation->isValid);
     }
