@@ -17,7 +17,7 @@ class ActivationNowCheck
         $this->events = $events;
     }
 
-    public function checkPublishEvents()
+    public function checkPublishEventsInNoUsers()
     {
         if (!$this->events) {
             $this->isValid = true;

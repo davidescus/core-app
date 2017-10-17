@@ -16,7 +16,7 @@ class ActivationNowCheckTest extends TestCase
     public function testIsValidShouldBeTrueIfThereInNoEvents()
     {
         $activation = new \App\Src\Subscription\ActivationNowCheck([]);
-        $activation->checkPublishEvents();
+        $activation->checkPublishEventsInNoUsers();
         $this->assertTrue($activation->isValid);
     }
 
@@ -26,7 +26,7 @@ class ActivationNowCheckTest extends TestCase
         $ev1->isPublish = '1';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
-        $activation->checkPublishEvents();
+        $activation->checkPublishEventsInNoUsers();
         $this->assertFalse($activation->isValid);
     }
 
@@ -38,7 +38,7 @@ class ActivationNowCheckTest extends TestCase
         $ev2->isPublish = '1';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
-        $activation->checkPublishEvents();
+        $activation->checkPublishEventsInNoUsers();
         $this->assertFalse($activation->isValid);
     }
 
@@ -50,7 +50,7 @@ class ActivationNowCheckTest extends TestCase
         $ev2->isPublish = '0';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
-        $activation->checkPublishEvents();
+        $activation->checkPublishEventsInNoUsers();
         $this->assertTrue($activation->isValid);
     }
 }
