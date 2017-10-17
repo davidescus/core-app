@@ -7,25 +7,49 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+private $hasError = false;
+private $error = '';
+private $email;
+
 class SendMail extends Controller
 {
     public function __construct()
     {
+        return "test";
 
-       // get emails for table email_schedule
+        $emails = \App\EmailSchedule::where('status', 'waiting')->get();
 
-        $args = [
-            'host'     => '',
-            'user'     => '',
-            'pass'     => '',
-            'port'     => 587,
-            'from'     => '',
-            'fromName' => 'test app goforeinners',
-            'to'       => 'rahthman_s@yahoo.com',
-            'toName'   => 'davidescus',
-            'subject'  => 'Test message',
-            'body'     => 'This is the boby of test message',
-        ];
+        if ($emails) {
+            foreach ($emails as $email) {
+
+                $this->email = $email
+
+                $this->sendEmail();
+
+                if ($this->hasError) {
+                    echo "we have an error here";
+                }
+            }
+        }
+    }
+
+    private function sendEmail()
+    {
+
+        // reset errors.
+        $this->hasError = false;
+
+        if ($this->email->provider == 'site') {
+            $site = \App\Site::find($this->email->sender);
+            $this->host = $site->smtpHost;
+            $this->port = $this->smtpPort;
+            $this->user = $site->smtpUser;
+            $this->password = $site->smtpPassword;
+            $this->encryption = $site->smtpEncription;
+        }
 
         $mail = new PHPMailer(true);
 
@@ -33,17 +57,17 @@ class SendMail extends Controller
             $mail->SMTPDebug = 3;
             $mail->isSMTP();
             $mail->CharSet = 'utf-8';
-            $mail->Host = $args['host'];
+            $mail->Host = $this->host;
             $mail->SMTPAuth = true;
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = $args['port'];
-            $mail->Username = $args['user'];
-            $mail->Password = $args['pass'];
-            $mail->setFrom($args['from'], $args['fromName']);
-            $mail->addAddress($args['to']);
-            $mail->addReplyTo($args['from']);
-            $mail->Subject = $args['subject'];
-            $mail->MsgHTML($args['body']);
+            $mail->SMTPSecure = $this->encryption;
+            $mail->Port = $this->port;
+            $mail->Username = $this->user;
+            $mail->Password = $this->pass;
+            $mail->setFrom($this->email->from, $this->email->fromName);
+            $mail->addAddress($this->email->to);
+            $mail->addReplyTo($this->email->from);
+            $mail->Subject = $this->email->subject;
+            $mail->MsgHTML($this->email->body);
             $mail->isHtml(true);
             $mail->SMTPOptions = [
                 'ssl' => [
