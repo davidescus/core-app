@@ -37,6 +37,7 @@ class Subscription extends Controller
     //  - compare values with original package.
     // @return array()
     public function store(Request $r) {
+
         $packageId = $r->input('packageId');
         $name = $r->input('name');
         $subscription = $r->input('subscription');
@@ -45,6 +46,7 @@ class Subscription extends Controller
         $dateStart = $r->input('dateStart');
         $dateEnd = $r->input('dateEnd');
         $customerEmail = $r->input('customerEmail');
+        $status = 'waiting';
 
         // check if package exist
         $package = \App\Package::find($packageId);
@@ -57,6 +59,32 @@ class Subscription extends Controller
         // get siteId
         $sitePackage = \App\SitePackage::where('packageId', $packageId)->first();
         $siteId = $sitePackage->siteId;
+
+        // get all package group with same tip
+        $packageGroup = \App\Package::select('id')->where('tipIdentifier', $package->tipIdentifier)
+            ->where('siteId', $siteId)
+            ->get();
+
+        $packagesIds = [];
+        foreach ($packageGroup as $p)
+            $packagesIds[] = $p->id;
+
+        $todayDistributedEvents = \App\Distribution::whereIn('packageId', $packagesIds)
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->get();
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck($todayDistributedEvents);
+        $activation->checkPublishEventsInNoUsers();
+        if ($activation->isValid) {
+
+            // delete events from distribution if exists today
+            \App\Distribution::whereIn('packageId', $packagesIds)
+                ->where('systemDate', gmdate('Y-m-d'))
+                ->whereIn('tableIdentifier', ['run', 'ruv'])
+                ->delete();
+
+            $status = 'active';
+        }
 
         // get customer
         $customer = \App\Customer::where('email', $customerEmail)->first();
@@ -71,7 +99,7 @@ class Subscription extends Controller
             'subscription' => $subscription,
             'dateStart' => $dateStart,
             'dateEnd' => $dateEnd,
-            'status' => 'active',
+            'status' => $status,
         ];
 
         if ($type === 'tips') {
