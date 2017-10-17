@@ -2,6 +2,11 @@
 
 namespace App\Src\Subscription;
 
+/*
+ * Check if there is events already published in archive
+ * and return false if there is, true if there is'not
+ */
+
 class ActivationNowCheck
 {
     private $events;
