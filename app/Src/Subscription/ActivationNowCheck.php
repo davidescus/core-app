@@ -26,6 +26,10 @@ class ActivationNowCheck
         }
 
         foreach ($this->events as $event) {
+
+            if ($event->tableIdentifier == 'run' || $event->tableIdentifier == 'ruv')
+                continue;
+
             if ($event->isPublish == 1) {
                 $this->isValid = false;
                 return;

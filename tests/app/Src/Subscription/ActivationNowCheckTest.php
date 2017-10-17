@@ -20,34 +20,52 @@ class ActivationNowCheckTest extends TestCase
         $this->assertTrue($activation->isValid);
     }
 
-    public function testIsValidShouldBeFalseIfOneEventIsPublish()
+    // 1 event published in nun
+    public function testIsValidShouldBeFalseIfOneEventIsPublishOnNunTable()
     {
         $ev1 = new \stdClass();
         $ev1->isPublish = '1';
+        $ev1->tableIdentifier = 'nun';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
         $activation->checkPublishEventsInNoUsers();
         $this->assertFalse($activation->isValid);
     }
 
-    public function testIsValidShouldBeFalseIfMoreEventsIsPublish()
+    // 1 event published in nuv
+    public function testIsValidShouldBeFalseIfOneEventIsPublishOnNuvTable()
     {
         $ev1 = new \stdClass();
         $ev1->isPublish = '1';
+        $ev1->tableIdentifier = 'nuv';
+
+        $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1]);
+        $activation->checkPublishEventsInNoUsers();
+        $this->assertFalse($activation->isValid);
+    }
+
+    public function testIsValidShouldBeFalseIfMoreEventsIsPublishOnNuvTable()
+    {
+        $ev1 = new \stdClass();
+        $ev1->isPublish = '1';
+        $ev1->tableIdentifier = 'nuv';
         $ev2 = new \stdClass();
         $ev2->isPublish = '1';
+        $ev2->tableIdentifier = 'nuv';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
         $activation->checkPublishEventsInNoUsers();
         $this->assertFalse($activation->isValid);
     }
 
-    public function testIsValidShouldBeTrueIfNoEventsArePublished()
+    public function testIsValidShouldBeTrueIfNoEventsArePublishedOnNunTable()
     {
         $ev1 = new \stdClass();
         $ev1->isPublish = '0';
+        $ev1->tableIdentifier = 'nun';
         $ev2 = new \stdClass();
         $ev2->isPublish = '0';
+        $ev2->tableIdentifier = 'nun';
 
         $activation = new \App\Src\Subscription\ActivationNowCheck([$ev1, $ev2]);
         $activation->checkPublishEventsInNoUsers();
