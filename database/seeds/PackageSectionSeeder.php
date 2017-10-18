@@ -20,7 +20,7 @@ class PackageSectionSeeder extends Seeder {
             $existsRecords = \App\PackageSection::where('packageId', $p->id)
                 ->where('systemDate', '<=', gmdate('Y-m-d'))->count();
 
-            if (! $existsRecord) {
+            if (! $existsRecords) {
                 \App\PackageSection::create([
                     'packageId'        => $p->id,
                     'section'          => 'nu',
