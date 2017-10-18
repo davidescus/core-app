@@ -36,7 +36,33 @@ class Package extends Controller
 
         // Todo: check inputs for validity
 
-        $pack = \App\Package::create($r->all());
+        $data = $r->all();
+
+        $pack = \App\Package::create($data);
+
+        //default section for package = nu
+        $section = 'nu';
+
+        // check if site has another package with same tip
+        $packageSameTip = \App\Package::where('siteId', $data['siteId'])
+            ->where('tipIdentifier', $data['tipIdentifier'])
+            ->first();
+
+        if ($packageSameTip) {
+            $packageSection = \App\PackageSection::where('packageId', $packageSameTip->id)
+                ->where('systemDate', gmdate('Y-m-d'))
+                ->first();
+
+            if ($packageSection)
+                $section = $packageSection->section;
+        }
+
+        \App\PackageSection::create([
+            'packageId'  => $pack->id,
+            'section'    => $section,
+            'systemDate' => gmdate('Y-m-d'),
+        ]);
+
         return response()->json([
             "type" => "success",
             "message" => "New package: " . $r->input('name') . " was added with success!",
