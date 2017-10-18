@@ -85,6 +85,12 @@ class Subscription extends Controller
 
             $status = 'active';
 
+            // delete packages from NoUsers
+            \App\PackageSection::whereIn('packageId', $packagesIds)
+                ->where('systemDate', gmdate('Y-m-d'))
+                ->where('section', 'nu')
+                ->delete();
+
             // move packages to real users
             foreach ($packagesIds as $packageId) {
                 $isInRealUsers = \App\PackageSection::where('packageId', $packageId)
