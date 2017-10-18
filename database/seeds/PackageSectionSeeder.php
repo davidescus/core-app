@@ -17,7 +17,7 @@ class PackageSectionSeeder extends Seeder {
         foreach ($packages as $p) {
 
             // check if exists records in packageSection
-            $existRecords = \App\PackageSection::where('packageId', $p->id)
+            $existsRecords = \App\PackageSection::where('packageId', $p->id)
                 ->where('systemDate', '<=', gmdate('Y-m-d'))->count();
 
             if (! $existsRecord) {
