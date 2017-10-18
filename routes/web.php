@@ -376,7 +376,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string  $table
     // @param integer $associateEventId
     // @return array();
-    $app->get('/association/package/available/{table}/{associateEventId}', 'Admin\Association@getAvailablePackages');
+    $app->get('/association/package/available/{table}/{associateEventId}/{date}', 'Admin\Association@getAvailablePackages');
 
     /*
      * Distribution
