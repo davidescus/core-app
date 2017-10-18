@@ -80,10 +80,26 @@ class Subscription extends Controller
             // delete events from distribution if exists today
             \App\Distribution::whereIn('packageId', $packagesIds)
                 ->where('systemDate', gmdate('Y-m-d'))
-                ->whereIn('tableIdentifier', ['run', 'ruv'])
+                ->whereIn('tableIdentifier', ['nun', 'nuv'])
                 ->delete();
 
             $status = 'active';
+
+            // move packages to real users
+            foreach ($packagesIds as $packageId) {
+                $isInRealUsers = \App\PackageSection::where('packageId', $packageId)
+                    ->where('section', 'ru')
+                    ->where('systemDate', gmdate('Y-m-d'))
+                    ->count();
+
+                if (! $isInRealUsers) {
+                    \App\PackageSection::create([
+                        'packageId'  => $packageId,
+                        'section'    => 'ru',
+                        'systemDate' => gmdate('Y-m-d'),
+                    ]);
+                }
+            }
         }
 
         // get customer
