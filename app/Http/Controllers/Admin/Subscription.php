@@ -380,7 +380,7 @@ class Subscription extends Controller
     public function manageTipsSubscriptionStatus($subscription)
     {
         $status = 'active';
-        if (($subscription->tipsBlocked + $subscription->tipsLeft) < 1)
+        if ($subscription->tipsLeft < 1)
             $status = 'archived';
 
         if ($status != $subscription->status) {
