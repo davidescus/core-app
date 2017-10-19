@@ -426,7 +426,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $distribution->update();
         }
 
-        // get events
+        // get events from database.
         $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
 
         $message = "Start sending emails to: \r\n";
@@ -447,14 +447,18 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             if (! $subscriptionEvents)
                 continue;
 
-
             // if subscription type = tips
             // will move number of sbscription events from tipsLeft to tipsBlocked
-            if ($s->type === 'tips') {
+            // Do not do this for noTip
+            if ($s->type === 'tips' && !$validate->isNoTip) {
                 $eventsNumber = count($subscriptionEvents);
                 $s->tipsBlocked += $eventsNumber;
                 $s->tipsLeft -= $eventsNumber;
                 $s->update();
+
+                // archive subscription if it don't have tips
+                $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+                $subscriptionInstance->manageTipsSubscriptionStatus($s);
             }
 
             $customer = \App\Customer::find($s->customerId);
