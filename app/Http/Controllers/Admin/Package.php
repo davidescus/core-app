@@ -162,4 +162,67 @@ class Package extends Controller
         return $packages;
     }
 
+    // This will move packages grouped by tip
+    // real users -> no users || no users -> real users
+    // ONLY if:
+    //     - no package distributed tips was published in archive
+    //     - no package distributed tips was send by email.
+    // @param integer $packageId
+    // @return void
+    public function evaluateAndChangeSection($packageId)
+    {
+
+        // get all packages ids with same tip on same site
+        $package = \App\Package::find($packageId);
+        $packagesGroup = \App\Package::where('siteId', $package->siteId)
+            ->where('tipIdentifier', $package->tipIdentifier)
+            ->get();
+
+        $packagesIds = [];
+        foreach ($packagesGroup as $p)
+            $packagesIds[] = $p->id;
+
+        // get all distributed events for all packags
+        $distributedEvents = \App\Distribution::whereIn('packageId', $packagesIds)
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->get();
+
+        // get all active subsciptions for package group
+        $activeSubscriptions = \App\Subscription::where('status', 'active')
+            ->whereIn('packageId', $packagesIds)
+            ->get();
+
+        // get current section for pacakge
+        $currentSection = \App\PackageSection::where('packageId', $packageId)
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->first()->section;
+
+        // check if need to move package in other section
+        $sectionInstance = new \App\Src\Package\ChangeSection(
+            $distributedEvents,
+            $activeSubscriptions,
+            $currentSection
+        );
+        $sectionInstance->evaluateSection();
+
+        // do nothing if we do not need to change section
+        if ($sectionInstance->getSection() == $currentSection)
+            return;
+
+        /** packages must be moved **/
+
+        // delete already distributed Events
+        \App\Distribution::whereIn('packageId', $packagesIds)
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->delete();
+
+        // update package section for today
+        \App\PackageSection::whereIn('packageId', $packagesIds)
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->update([
+                'section' => $sectionInstance->getSection()
+            ]);
+
+        return;
+    }
 }
