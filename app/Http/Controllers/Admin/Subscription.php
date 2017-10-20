@@ -443,15 +443,26 @@ class Subscription extends Controller
     // @return array()
     public function destroy($id)
     {
-        if (! $id)
+        $subscription = \App\Subscription::find($id);
+        if (! $subscription)
             return [
                 'type' => 'error',
                 'message' => 'Invalid identifier for subscription.',
             ];
 
-        \App\SubscriptionTipHistory::where('subscriptionId', $id)->delete();
-        \App\SubscriptionRestrictedTip::where('subscriptionId', $id)->delete();
+        \App\SubscriptionTipHistory::where('subscriptionId', $subscription->id)->delete();
+        \App\SubscriptionRestrictedTip::where('subscriptionId', $subscription->id)->delete();
+
+        // get package
+        $package = \App\Package::find($subscription->packageId);
+
+        // delete subscription
         \App\Subscription::where('id', $id)->delete();
+
+        // move package (packages group in no users if is possible)
+        $packageInstance = new \App\Http\Controllers\Admin\Package();
+        $packageInstance->evaluateAndChangeSection($package->id);
+
 
         return [
             'type' => 'success',
