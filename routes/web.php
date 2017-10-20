@@ -31,7 +31,10 @@ $app->get('/ActivationCheck', function () use ($app) {
 
 // basic route, return app version
 $app->get('/', function () use ($app) {
-   return $app->version();
+
+    $packageInstance = new \App\Http\Controllers\Admin\Package();
+    return $packageInstance->evaluateAndChangeSection(1);
+    return $app->version();
 });
 
 // subscriptioon cron 23.55
@@ -277,6 +280,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     //  - compare values with original package.
     // @return array()
     $app->post('/subscription/create', 'Admin\Subscription@store');
+
+    // delete a subscription
+    // @param integer $id
+    // @return array()
+    $app->get('/subscription/delete/{id}', 'Admin\Subscription@destroy');
 
     // get all subscriptions
     // @return array()
