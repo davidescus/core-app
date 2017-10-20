@@ -443,13 +443,19 @@ class Subscription extends Controller
     // @return array()
     public function destroy($id)
     {
+        if (! $id)
+            return [
+                'type' => 'error',
+                'mesasge' => 'Invalid identifier for subscription.',
+            ];
+
         \App\SubscriptionTipHistory::where('subscriptionId', $id)->delete();
         \App\SubscriptionRestrictedTip::where('subscriptionId', $id)->delete();
         \App\Subscription::where('id', $id)->delete();
 
         return [
             'type' => 'success',
-            'mesasge' => 'Subscription was deleted with success!';
+            'mesasge' => 'Subscription was deleted with success!',
         ];
     }
 
