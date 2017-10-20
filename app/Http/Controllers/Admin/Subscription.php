@@ -446,7 +446,7 @@ class Subscription extends Controller
         if (! $id)
             return [
                 'type' => 'error',
-                'mesasge' => 'Invalid identifier for subscription.',
+                'message' => 'Invalid identifier for subscription.',
             ];
 
         \App\SubscriptionTipHistory::where('subscriptionId', $id)->delete();
@@ -455,7 +455,7 @@ class Subscription extends Controller
 
         return [
             'type' => 'success',
-            'mesasge' => 'Subscription was deleted with success!',
+            'message' => 'Subscription was deleted with success!',
         ];
     }
 
