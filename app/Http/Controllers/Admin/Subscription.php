@@ -440,6 +440,7 @@ class Subscription extends Controller
 
     // delete an existing subscription
     // @param integer $id
+    // @return array()
     public function destroy($id)
     {
         \App\SubscriptionTipHistory::where('subscriptionId', $id)->delete();
