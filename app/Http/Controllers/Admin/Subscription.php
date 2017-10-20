@@ -46,7 +46,7 @@ class Subscription extends Controller
         $dateStart = $r->input('dateStart');
         $dateEnd = $r->input('dateEnd');
         $customerEmail = $r->input('customerEmail');
-        $status = 'waiting';
+        $status = 'active';
 
         // check if package exist
         $package = \App\Package::find($packageId);
@@ -73,40 +73,11 @@ class Subscription extends Controller
             ->where('systemDate', gmdate('Y-m-d'))
             ->get();
 
-        $activation = new \App\Src\Subscription\ActivationNowCheck($todayDistributedEvents);
-        $activation->checkPublishEventsInNoUsers();
-        if ($activation->isValid) {
-
-            // delete events from distribution if exists today
-            \App\Distribution::whereIn('packageId', $packagesIds)
-                ->where('systemDate', gmdate('Y-m-d'))
-                ->whereIn('tableIdentifier', ['nun', 'nuv'])
-                ->delete();
-
-            $status = 'active';
-
-            // delete packages from NoUsers
-            \App\PackageSection::whereIn('packageId', $packagesIds)
-                ->where('systemDate', gmdate('Y-m-d'))
-                ->where('section', 'nu')
-                ->delete();
-
-            // move packages to real users
-            foreach ($packagesIds as $packageId) {
-                $isInRealUsers = \App\PackageSection::where('packageId', $packageId)
-                    ->where('section', 'ru')
-                    ->where('systemDate', gmdate('Y-m-d'))
-                    ->count();
-
-                if (! $isInRealUsers) {
-                    \App\PackageSection::create([
-                        'packageId'  => $packageId,
-                        'section'    => 'ru',
-                        'systemDate' => gmdate('Y-m-d'),
-                    ]);
-                }
-            }
-        }
+        //$activation = new \App\Src\Subscription\ActivationNowCheck($todayDistributedEvents);
+        //$activation->checkPublishEventsInNoUsers();
+        //if ($activation->isValid) {
+        //    $status = 'active';
+        //}
 
         // get customer
         $customer = \App\Customer::where('email', $customerEmail)->first();
@@ -145,6 +116,11 @@ class Subscription extends Controller
 
         // create subscription
         $subscription = \App\Subscription::create($data);
+
+        // move package (packages group in real users if is possible)
+        $packageInstance = new \App\Http\Controllers\Admin\Package();
+        $packageInstance->evaluateAndChangeSection($packageId);
+
         return [
             'type' => 'success',
             'message' => 'Subscription was created with success!',
