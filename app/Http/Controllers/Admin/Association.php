@@ -139,6 +139,7 @@ class Association extends Controller
                 ->count();
 
             $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
+            $data['sites'][$keys[$site->name]]['tipIdentifier'] = $p->tipIdentifier;
             $data['sites'][$keys[$site->name]]['packages'][] = [
                 'id' => $p->id,
                 'name' => $p->name,
