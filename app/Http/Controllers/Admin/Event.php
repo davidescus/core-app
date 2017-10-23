@@ -141,7 +141,7 @@ class Event extends Controller
 
         // process subscriptions
         $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
-        $subscriptionInstance->processSubscriptions($eventId, $statusId);
+        $subscriptionInstance->processSubscriptions($eventId);
 
         return [
             'type' => 'success',
