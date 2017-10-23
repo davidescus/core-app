@@ -168,7 +168,6 @@ class Subscription extends Controller
     // integer $statusId
     public function processSubscriptions($eventId, $statusId)
     {
-
         // get all subscriptions tips history associated with event
         $tipsHistory = \App\SubscriptionTipHistory::where('eventId', $eventId)->get();
         foreach ($tipsHistory as $tip) {
@@ -347,6 +346,10 @@ class Subscription extends Controller
                     continue;
                 }
             }
+
+            // Evaluate packages and change section if need
+            $packageInstance = new \App\Http\Controllers\Admin\Package();
+            $packageInstance->evaluateAndChangeSection($subscription->packageId);
         }
     }
 
