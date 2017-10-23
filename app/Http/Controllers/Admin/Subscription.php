@@ -60,25 +60,6 @@ class Subscription extends Controller
         $sitePackage = \App\SitePackage::where('packageId', $packageId)->first();
         $siteId = $sitePackage->siteId;
 
-        // get all package group with same tip
-        $packageGroup = \App\Package::select('id')->where('tipIdentifier', $package->tipIdentifier)
-            ->where('siteId', $siteId)
-            ->get();
-
-        $packagesIds = [];
-        foreach ($packageGroup as $p)
-            $packagesIds[] = $p->id;
-
-        $todayDistributedEvents = \App\Distribution::whereIn('packageId', $packagesIds)
-            ->where('systemDate', gmdate('Y-m-d'))
-            ->get();
-
-        //$activation = new \App\Src\Subscription\ActivationNowCheck($todayDistributedEvents);
-        //$activation->checkPublishEventsInNoUsers();
-        //if ($activation->isValid) {
-        //    $status = 'active';
-        //}
-
         // get customer
         $customer = \App\Customer::where('email', $customerEmail)->first();
 
@@ -258,108 +239,49 @@ class Subscription extends Controller
                         $allEventsFinished = false;
                 }
 
-                // if not all events finished will continue
-                if (! $allEventsFinished)
-                    continue;
-
                 // if has already process subscriptions rollback
                 // this will create the original context before the tip | tips process subscription
                 if ($tip->processSubscription) {
 
                     // if tip (group of tips) process subscription roll back
                     $this->rollbackSubscription($subscription, $tip->processType);
-
                     // set not process subscription to all events
-                    foreach ($allEventsInDay as $event) {
-                        $event->processSubscription = '0';
-                        $event->processType = '';
-                        $event->update();
-                    }
-
-                    /*/ if subscription is valid or was archived last day
-                    // we still can add one day to current subscription
-                    if (strtotime($subscription->dateEnd) >= (strtotime(gmdate('Y-m-d')) - 60 *60 *24)) {
-
-                        $this->rollbackSubscription($subscription, $tip->processType);
-
-                        // set unProcess all subscriptionTipsHistory for event systemDate
-                        foreach ($allEventsInDay as $event) {
-                            $event->processSubscription = '0';
-                            $event->processType = '';
-                            $event->update();
-                        }
-                        $this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
-                    }
-
-                    // if is changed an event from a subscription hwo was archivided
-                    // before more than 1 day will not give a day to current subscription,
-                    // will create a bonus subscription
-                    else {
-
-                        $this->rollbackSubscription($subscription, $tip->processType);
-
-                        if (!$haveWinLossDraw) {
-                            $bonusSubscription = json_decode(json_encode($subscription), true);
-                            unset($bonusSubscription['id']);
-                            unset($bonusSubscription['created_at']);
-                            unset($bonusSubscription['updated_at']);
-                            $bonusSubscription['parentId'] = $subscription->id;
-                            $bonusSubscription['dateStart'] = gmdate('Y-m-d');
-                            $bonusSubscription['dateEnd'] = gmdate('Y-m-d');
-                            $bonusSubscription['status'] = 'active';
-
-                            $bonus = \App\Subscription::create($bonusSubscription);
-
-                            foreach ($allEventsInDay as $event) {
-                                $event->processSubscription = '1';
-                                $event->processType = '+1bonus:' . $bonus->id;
-                                $event->update();
-                            }
-                            continue;
-                        }
-
-                        // mark process with 0
-                        foreach ($allEventsInDay as $event) {
-                            $event->processSubscription = '1';
-                            $event->processType = '0';
-                            $event->update();
-                        }
-                        continue;
-                    }*/
+                    $this->unProcessSubscriptionTipHistory($allEventsInDay);
                 }
 
-                // process on win loss draw
+                // mark subscription tips hystory process on win loss draw
                 if ($haveWinLossDraw) {
-
-                    // set subscription process
-                    foreach ($allEventsInDay as $event) {
-                        $event->processSubscription = '1';
-                        $event->processType = '0';
-                        $event->update();
-                    }
-
-                    //$this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
+                    $this->processSubscriptionTipHistory($allEventsInDay, '0');
                     continue;
                 }
+
+                if (! $allEventsFinished)
+                    continue;
 
                 // there is events and all finished
                 // there is no win, loss, draw
                 // there is no noTip
-                // only postp - add one day
-                if ($allEventsFinished) {
-                    foreach ($allEventsInDay as $event) {
-                        $event->processSubscription = '1';
-                        $event->processType = '+1';
-                        $event->update();
-                    }
+                // only postp - create one day bonus subscription
+                $s = new \App\Subscription();
+                $s->parentId = $subscription->id;
+                $s->name = $subscription->name;
+                $s->subscription = '1';
+                $s->type = $subscription->type;
+                $s->customerId = $subscription->customerId;
+                $s->status = 'waiting';
 
-                    // add one day to subscription
-                    $subscription->dateEnd = date('Y-m-d', strtotime('+1day', strtotime($subscription->dateEnd)));
-                    $subscription->update();
-
-                    $this->manageDaysSubscriptionStatus($subscription, $tip->systemDate);
-                    continue;
+                // if user not have any more subscription on package activate this
+                if (! \App\Subscription::where('customerId', $subscription->customerId)
+                    ->where('packageId', $subscription->packageId)
+                    ->where('status', 'active')->count())
+                {
+                    $s->status = 'active';
+                    $s->dateStart = gmdate('Y-m-d');
+                    $s->dateEnd = gmdate('Y-m-d');
                 }
+
+                $s->save();
+                $this->processSubscriptionTipHistory($allEventsInDay, $s->id);
             }
 
             // Evaluate packages and change section if need
@@ -399,24 +321,42 @@ class Subscription extends Controller
         }
     }
 
-    // @param obj \App\SubscriptionTipHistory
+    // @param obj \App\SubscriptionTipHistory | array of objects
     // will mark processSubscription = 0 and processType = ''
     // @return void
-    public function unProcessSubscriptionTipHistory($tip)
+    public function unProcessSubscriptionTipHistory($event)
     {
-        $tip->processSubscription = 0;
-        $tip->processType = '';
-        $tip->update();
+        if (method_exists($event, 'update')) {
+            $event->processSubscription = 0;
+            $event->processType = '';
+            $event->update();
+            return;
+        }
+
+        foreach ($event as $tip) {
+            $tip->processSubscription = 0;
+            $tip->processType = '';
+            $tip->update();
+        }
     }
 
-    // @param obj \App\SubscriptionTipHistory
+    // @param obj \App\SubscriptionTipHistory | array of objects
     // will mark processSubscription = 1 and processType = $processType
     // @return void
-    public function processSubscriptionTipHistory($tip, $processType)
+    public function processSubscriptionTipHistory($event, $processType)
     {
-        $tip->processSubscription = 1;
-        $tip->processType = $processType;
-        $tip->update();
+        if (method_exists($event, 'update')) {
+            $event->processSubscription = 1;
+            $event->processType = $processType;
+            $event->update();
+            return;
+        }
+
+        foreach ($event as $tip) {
+            $tip->processSubscription = 1;
+            $tip->processType = $processType;
+            $tip->update();
+        }
     }
 
     // @param obj $subscription
