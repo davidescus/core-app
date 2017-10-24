@@ -14,10 +14,30 @@ class Subscription extends Controller
         $subscriptions = \App\Subscription::all()->toArray();
 
         foreach ($subscriptions as $k => $v) {
+
+            // continue if is child
+            if ($v['parentId']) {
+                unset($subscriptions[$k]);
+                continue;
+            }
+
             $customerEmail = \App\Customer::find($v['customerId'])->email;
             $siteName = \App\Site::find($v['siteId'])->name;
             $subscriptions[$k]['customerEmail'] = $customerEmail;
             $subscriptions[$k]['siteName'] = $siteName;
+
+            // get childs subscriptions
+            $c = \App\Subscription::where('parentId', $v['id'])->get()->toArray();
+            $cn = count($c);
+
+            if ($cn) {
+                foreach ($c as $s) {
+                    $s['customerEmail'] = \App\Customer::find($s['customerId'])->email;
+                    $s['siteName'] = \App\Site::find($s['siteId'])->name;
+                    $subscriptions[$k]['childrens'][] = $s;
+                }
+                continue;
+            }
         }
         return $subscriptions;
     }
