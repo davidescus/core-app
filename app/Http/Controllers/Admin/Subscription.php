@@ -268,6 +268,10 @@ class Subscription extends Controller
                 $s->subscription = '1';
                 $s->type = $subscription->type;
                 $s->customerId = $subscription->customerId;
+                $s->siteId = $subscription->siteId;
+                $s->packageId = $subscription->packageId;
+                $s->isCustom = $subscription->isCustom;
+                $s->isVip = $subscription->isVip;
                 $s->status = 'waiting';
 
                 // if user not have any more subscription on package activate this
@@ -384,7 +388,7 @@ class Subscription extends Controller
             if ($processType != '0') {
                 $bonusSubscriptionId = $processType;
                 // delete bouns subscription
-                \App\Subscription::find($bonusSubscriptionId)->delete();
+                \App\Subscription::where('id', $bonusSubscriptionId)->delete();
                 \App\SubscriptionTipHistory::where('subscriptionId', $bonusSubscriptionId)->delete();
                 return;
             }
