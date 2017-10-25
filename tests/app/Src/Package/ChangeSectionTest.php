@@ -82,4 +82,36 @@ class ChangeSectionTest extends TestCase
         $this->assertEquals($instance->getSection(), $expectedSection);
     }
 
+    public function testShoulReturnNoUsersWhensectionIsNullAndNotHaveEvents()
+    {
+        $currentSection = null;
+        $expectedSection = 'nu';
+
+        $instance = new \App\Src\Package\ChangeSection([], [], $currentSection);
+        $instance->evaluateSection();
+        $this->assertEquals($instance->getSection(), $expectedSection);
+    }
+
+    public function testShoulReturnRealUsersWhenSectionIsNullAndThereIsSubscriptions()
+    {
+        $s = new \App\Subscription();
+        $s->status = 'active';
+
+        $currentSection = null;
+        $expectedSection = 'ru';
+
+        $instance = new \App\Src\Package\ChangeSection([], [$s], $currentSection);
+        $instance->evaluateSection();
+        $this->assertEquals($instance->getSection(), $expectedSection);
+    }
+
+    public function testShoulReturnNoUsersWhenSectionIsNullAndNoSubscriptions()
+    {
+        $currentSection = null;
+        $expectedSection = 'nu';
+
+        $instance = new \App\Src\Package\ChangeSection([], [], $currentSection);
+        $instance->evaluateSection();
+        $this->assertEquals($instance->getSection(), $expectedSection);
+    }
 }

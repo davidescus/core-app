@@ -18,6 +18,17 @@ class ChangeSection
 
     public function evaluateSection()
     {
+        if ($this->currentSection == null) {
+            foreach ($this->subscriptions as $subscription) {
+                if ($subscription->status == 'active') {
+                    $this->destination = 'ru';
+                    return;
+                }
+            }
+            $this->destination = 'nu';
+            return;
+        }
+
         foreach ($this->events as $event) {
             if ($event->isPublish == '1' || $event->isEmailSend) {
                 $this->destination = $this->currentSection;
