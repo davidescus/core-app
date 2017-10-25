@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Cron;
 use App\Http\Controllers\Controller;
 
 // this will process all days subscriptions
-// at end of day (23.59)
+//this will run at 00:01
 class ProcessDaysSubscription extends Controller
 {
 
     public function __construct()
     {
-        $currentDate = gmdate('Y-m-d');
+        // get gmdate -1 day
+        $date = gmdate('Y-m-d', strtotime('-1day'));
 
         // get all active subscriptions type days
         $subscriptions = \App\Subscription::where('status', 'active')
@@ -19,17 +20,17 @@ class ProcessDaysSubscription extends Controller
 
         foreach ($subscriptions as $subscription) {
 
-            // get number of subscriptionTipHistory events on systemDate === today GMT
-            $countEvents = \App\SubscriptionTipHistory::where('systemDate', $currentDate)
+            // for each subscription get events from yesterday
+            $countEvents = \App\SubscriptionTipHistory::where('systemDate', $date)
                 ->where('subscriptionId', $subscription->id)->count();
 
             // add noTip event if user not receive any event today
             if (! $countEvents)
-                $this->addNoTipToSubscriptionTipHistory($subscription, $currentDate);
+                $this->addNoTipToSubscriptionTipHistory($subscription, $date);
 
 
             // get suubscriptionTipHistory events systemDate === today GMT
-            $events = \App\SubscriptionTipHistory::where('systemDate', $currentDate)
+            $events = \App\SubscriptionTipHistory::where('systemDate', $date)
                 ->where('subscriptionId', $subscription->id)->get();
 
             // if events already processSubscription continue
@@ -44,7 +45,7 @@ class ProcessDaysSubscription extends Controller
                     $event->processType = '0';
                     $event->update();
                 }
-                $this->archiveSubscription($subscription, $currentDate);
+                $this->archiveSubscription($subscription, $date);
                 continue;
             }
 
@@ -64,20 +65,6 @@ class ProcessDaysSubscription extends Controller
                     $allEventsFinished = false;
             }
 
-            // process on noTip
-            if ($haveNoTip) {
-                foreach ($events as $event) {
-                    $event->processSubscription = '1';
-                    $event->processType = '+1';
-                    $event->update();
-                }
-
-                // add one day to subscription
-                $subscription->dateEnd = date('Y-m-d', strtotime('+1day', strtotime($subscription->dateEnd)));
-                $subscription->update();
-                continue;
-            }
-
             // process on win loss draw
             if ($haveWinLossDraw) {
                 foreach ($events as $event) {
@@ -86,26 +73,74 @@ class ProcessDaysSubscription extends Controller
                     $event->update();
                 }
 
-                $this->archiveSubscription($subscription, $currentDate);
+                $this->archiveSubscription($subscription, $date);
                 continue;
             }
 
             // there is events and all finished
             // there is no win, loss, draw
-            // there is no noTip
-            // only postp - add one day
+            // only postp  or noTip - add one day
             if ($allEventsFinished) {
-                foreach ($events as $event) {
-                    $event->processSubscription = '1';
-                    $event->processType = '+1';
-                    $event->update();
+
+                $s = new \App\Subscription();
+                $s->parentId = $subscription->id;
+                $s->name = $subscription->name;
+                $s->subscription = '1';
+                $s->type = $subscription->type;
+                $s->customerId = $subscription->customerId;
+                $s->siteId = $subscription->siteId;
+                $s->packageId = $subscription->packageId;
+                $s->isCustom = $subscription->isCustom;
+                $s->isVip = $subscription->isVip;
+                $s->status = 'waiting';
+
+                // if user not have any more subscription on package activate this
+                if (! \App\Subscription::where('customerId', $subscription->customerId)
+                    ->where('packageId', $subscription->packageId)
+                    ->where('status', 'active')->count())
+                {
+                    $s->status = 'active';
+                    $s->dateStart = gmdate('Y-m-d');
+                    $s->dateEnd = gmdate('Y-m-d');
                 }
 
-                // add one day to subscription
-                $subscription->dateEnd = date('Y-m-d', strtotime('+1day', strtotime($subscription->dateEnd)));
-                $subscription->update();
+                $s->save();
+
+                foreach ($events as $event) {
+                    $event->processSubscription = '1';
+                    $event->processType = $s->id;
+                    $event->update();
+                }
+            }
+            $this->archiveSubscription($subscription, $date);
+        }
+
+        // activate new subscriptions
+        $waitingSubscriptions = \App\Subscription::where('status', 'waiting')
+            ->where('type', 'days')
+            ->get();
+
+        foreach ($waitingSubscriptions as $ws) {
+            // if user already have active subscription on same package
+            // set status waiting
+            if (\App\Subscription::where('customerId', $ws->customerId)
+                ->where('packageId', $ws->packageId)
+                ->where('status', 'active')->count())
+            {
                 continue;
             }
+
+            $ws->status = 'active';
+            $ws->dateStart = gmdate('Y-m-d');
+            $ws->dateEnd = gmdate('Y-m-d', strtotime('+ ' . $ws->subscription . ' day'));
+            $ws->update();
+        }
+
+        $packages = \App\Package::all();
+        foreach ($packages as $package) {
+            // Evaluate packages and change section if need
+            $packageInstance = new \App\Http\Controllers\Admin\Package();
+            $packageInstance->evaluateAndChangeSection($package->id);
         }
     }
 
