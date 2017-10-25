@@ -193,9 +193,10 @@ class Package extends Controller
             ->get();
 
         // get current section for pacakge
-        $currentSection = \App\PackageSection::where('packageId', $packageId)
+        $sectionModel = \App\PackageSection::where('packageId', $packageId)
             ->where('systemDate', gmdate('Y-m-d'))
-            ->first()->section;
+            ->first();
+        $currentSection = $sectionModel ? $sectionModel->section : null;
 
         // check if need to move package in other section
         $sectionInstance = new \App\Src\Package\ChangeSection(
@@ -205,9 +206,10 @@ class Package extends Controller
         );
         $sectionInstance->evaluateSection();
 
-        // do nothing if we do not need to change section
-        if ($sectionInstance->getSection() == $currentSection)
-            return;
+        // do nothing if  there is set section and we do not need to change section
+        if ($currentSection != null)
+            if ($sectionInstance->getSection() == $currentSection)
+                return;
 
         /** packages must be moved **/
 
@@ -217,11 +219,26 @@ class Package extends Controller
             ->delete();
 
         // update package section for today
-        \App\PackageSection::whereIn('packageId', $packagesIds)
-            ->where('systemDate', gmdate('Y-m-d'))
-            ->update([
-                'section' => $sectionInstance->getSection()
+        foreach ($packagesIds as $id) {
+            $exists = \App\PackageSection::where('packageId', $id)
+                ->where('systemDate', gmdate('Y-m-d'))->count();
+
+            if ($exists) {
+                \App\PackageSection::where('packageId', $id)
+                    ->where('systemDate', gmdate('Y-m-d'))
+                    ->update([
+                        'section' => $sectionInstance->getSection()
+                    ]);
+                continue;
+            }
+
+            // not exist, so will create
+            \App\PackageSection::create([
+                'packageId' => $id,
+                'section' => $sectionInstance->getSection(),
+                'systemDate' => gmdate('Y-m-d'),
             ]);
+        }
 
         return;
     }
