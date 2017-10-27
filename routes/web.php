@@ -418,7 +418,8 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => $validate->message,
             ];
 
-        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get();
+        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)
+            ->where('status', 'active')->get();
 
         if (!count($subscriptions))
             return [
