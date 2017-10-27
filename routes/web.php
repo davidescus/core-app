@@ -342,7 +342,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // get all available matches by search
     // @param string $filter
     // @return array()
-    $app->get('/match/filter/{filter}', 'Admin\Match@getMatchesByFilter');
+    $app->get('/match/filter/{table}/{filter}', 'Admin\Match@getMatchesByFilter');
 
     // get match by id
     // @param integer $id
