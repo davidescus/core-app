@@ -133,7 +133,6 @@ class Distribution extends Controller
             // delete distribution
             if (!in_array($item->packageId, $packagesIds)) {
 
-
                 if (isset($group[$item->siteId][$item->tipIdentifier])) {
                     $message .= "Can not delete association with package $item->packageId, was already published or email send. Or nother package with same tip publish this event.\r\n";
                     continue;
