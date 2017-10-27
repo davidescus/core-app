@@ -96,7 +96,7 @@ class Package extends Controller
     /*
      * @return array()
      */
-    public function destroy() {
+    public function destroy($id) {
         $pack = \App\Package::find($id);
 
         // Package not exists retur status not exists
