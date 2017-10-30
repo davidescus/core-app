@@ -32,7 +32,7 @@ class Login extends Controller
 
         return [
             'success' =>1,
-            'token'   => $token,
+            'token'   => $user->token,
         ];
     }
 
