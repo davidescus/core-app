@@ -58,7 +58,7 @@ class Site extends Controller
             "imapUser" => $r->input('imapUser'),
             "imapPassword" => $r->input('imapPassword'),
             "imapEncryption" => $r->input('imapEncryption'),
-            "token" => md5(microtime() . rand(0, 1000)),
+            "token" => bin2hex(random_bytes(16)),
         ]);
 
         return response()->json([
