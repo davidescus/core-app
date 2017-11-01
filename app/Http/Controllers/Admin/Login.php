@@ -25,14 +25,14 @@ class Login extends Controller
                 'success' => 0,
             ];
 
-        //$token = bin2hex(random_bytes(16));
+        $token = bin2hex(random_bytes(16));
 
-        //$user->token = $token;
-        //$user->save();
+        $user->token = $token;
+        $user->save();
 
         return [
             'success' =>1,
-            'token'   => $user->token,
+            'token'   => $token,
         ];
     }
 
