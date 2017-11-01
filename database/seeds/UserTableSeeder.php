@@ -14,11 +14,21 @@ class UserTableSeeder extends Seeder {
     public function run()
     {
 
-        // insert automaticaly 5 sites in app
+        // Add admins to aplication.
         User::firstOrCreate([
-            'name'       => 'Dev Davidescus',
-            'email'  => 'test@test.com',
-            'password'       => sha1('admin'),
+            'name'       => 'David D',
+            'email'      => 'david@app.com',
+            'password'   => sha1('admin'),
+        ]);
+        User::firstOrCreate([
+            'name'       => 'Florin H',
+            'email'      => 'florin@app.com',
+            'password'   => sha1('admin'),
+        ]);
+        User::firstOrCreate([
+            'name'       => 'Cristi B',
+            'email'      => 'cristi@app.com',
+            'password'   => sha1('admin'),
         ]);
     }
 }
