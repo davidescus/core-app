@@ -18,6 +18,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
+use Illuminate\Support\Facades\Artisan;
+
     /* -------------------------------------------------------------------
      * - TESTING -
      * This to test will not remain here.
@@ -29,29 +31,29 @@ $app->get('/ActivationCheck', function () use ($app) {
 });
 */
 
-// basic route, return app version
-$app->get('/', function () use ($app) {
+// reset entire aplication
+$app->get('/reset', function () use ($app) {
+    Artisan::call('migrate:refresh');
+    Artisan::call('db:seed');
 
-    $packageInstance = new \App\Http\Controllers\Admin\Package();
-    return $packageInstance->evaluateAndChangeSection(1);
-    return $app->version();
+    return "Application was reset!";
+});
+
+// import events
+$app->get('/import-events', function () use ($app) {
+    new \App\Http\Controllers\Cron\PortalNewEvents();
 });
 
 // subscriptioon cron 23.55
-$app->get('/cron/23.55', function () use ($app) {
-    new \App\Http\Controllers\Cron\ProcessDaysSubscription();
-});
+//$app->get('/cron/23.55', function () use ($app) {
+//    new \App\Http\Controllers\Cron\ProcessDaysSubscription();
+//});
 
 // test route for sending emails
-$app->get('/send-mail', function () use ($app) {
+//$app->get('/send-mail', function () use ($app) {
     //new \App\Http\Controllers\Cron\SendMail();
-});
+//});
 
-// Cron
-// this will add new events in match table.
-$app->get('/xml', function () use ($app) {
-    new \App\Http\Controllers\Cron\PortalNewEvents();
-});
 
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
