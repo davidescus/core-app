@@ -35,8 +35,13 @@ class Match extends Controller
 
         if ($table == 'run' || $table == 'ruv') {
             foreach ($events as $k => $v) {
+
                 // unset events starts less than 20 minutes
-                if ($v->eventDate < Carbon::now('UTC')->addMinutes(20))
+                if ($v->eventDate < Carbon::now('GMT')->addMinutes(20))
+                    unset($events[$k]);
+
+                // unset events starts less than 20 minutes
+                if ($v->eventDate > Carbon::now('GMT')->addDays(3))
                     unset($events[$k]);
             }
             return $events;
