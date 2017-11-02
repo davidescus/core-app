@@ -73,7 +73,8 @@ class Archive extends Controller
             $distribution['distributionId'] = $distribution['id'];
             unset($distribution['id']);
 
-            // TODO also send event in ArchiveHome
+            // TODO here we need to change order after insert event in archive.
+            \App\ArchiveHome::create($distribution);
 
             \App\ArchiveBig::create($distribution);
             $inserted++;
