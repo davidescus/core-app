@@ -50,9 +50,9 @@ $app->get('/import-events', function () use ($app) {
 //});
 
 // test route for sending emails
-//$app->get('/send-mail', function () use ($app) {
-    //new \App\Http\Controllers\Cron\SendMail();
-//});
+$app->get('/send-mail', function () use ($app) {
+    new \App\Http\Controllers\Cron\SendMail();
+});
 
 
 
