@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class ArchiveTable extends Model {
+class ArchiveHomeConf extends Model {
 
-    protected $table = 'archive_table';
+    protected $table = 'archive_home_conf';
 
     protected $fillable = [
         'siteId',

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateArchiveTable extends Migration
+class CreateArchiveHomeConfTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateArchiveTable extends Migration
      */
     public function up()
     {
-        Schema::create('archive_table', function (Blueprint $table) {
+        //
+        Schema::create('archive_home_conf', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('siteId')->unsigned()->index();
             $table->string('tableIdentifier')->index();
-            $table->string('dateStart');
             $table->integer('eventsNumber');
+            $table->string('dateStart');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateArchiveTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('archive_table');
+        Schema::dropIfExists('archive_home_conf');
     }
 }
