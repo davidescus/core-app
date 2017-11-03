@@ -63,6 +63,19 @@ class Package extends Controller
             'systemDate' => gmdate('Y-m-d'),
         ]);
 
+        // insert home config table identifier if not exists
+        $archiveHomeConf =  \App\ArchiveHomeConf::where('siteId', $pack->siteId)
+            ->where('tableIdentifier', $pack->tableIdentifier)
+            ->count();
+        if (! $archiveHomeConf) {
+            \App\ArchiveHomeConf::create([
+                'siteId'          => $pack->siteId,
+                'tableIdentifier' => $pack->tableIdentifier,
+                'eventsNumber'    => 100,
+                'dateStart'       => '2017-01-01',
+            ]);
+        }
+
         return response()->json([
             "type" => "success",
             "message" => "New package: " . $r->input('name') . " was added with success!",
