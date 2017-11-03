@@ -36,7 +36,7 @@ class ArchiveHome extends Controller
         // get archive home config
         $data['conf'] = \App\ArchiveHomeConf::where('siteId', $siteId)
             ->where('tableIdentifier', $tableIdentifier)
-            ->get();
+            ->first();
 
         return $data;
     }
