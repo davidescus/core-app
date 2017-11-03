@@ -23,12 +23,22 @@ class ArchiveHome extends Controller
      */
     public function index(Request $r)
     {
+        $data = [];
+
         $siteId = $r->input('siteId');
         $tableIdentifier = $r->input('tableIdentifier');
 
-        return \App\ArchiveHome::where('siteId', $siteId)
+        // get events
+        $data['events'] = \App\ArchiveHome::where('siteId', $siteId)
             ->where('tableIdentifier', $tableIdentifier)
             ->get()->toArray();
+
+        // get archive home config
+        $data['conf'] = \App\ArchiveHomeConf::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->get();
+
+        return $data;
     }
 
     // @param integer $id
