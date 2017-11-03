@@ -101,6 +101,16 @@ $app->post('/admin/login', 'Admin\Login@index');
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
+     * Archive Home
+     ---------------------------------------------------------------------*/
+
+    // Archive Home
+    // @param integer $siteId
+    // @param string $table
+    // @return array()
+    $app->get('/archive-home/table-events', 'Admin\ArchiveHome@index');
+
+    /*
      * Archive Big
      ---------------------------------------------------------------------*/
 

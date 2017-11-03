@@ -21,8 +21,14 @@ class ArchiveHome extends Controller
     /*
      * @return array()
      */
-    public function index()
+    public function index(Request $r)
     {
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+
+        return \App\ArchiveHome::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->get()->toArray();
     }
 
     // @param integer $id
