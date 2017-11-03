@@ -172,4 +172,26 @@ class Site extends Controller
         return \App\Package::select('tableIdentifier')->distinct()->where('siteId', $siteId)->get();
     }
 
+    // create records in archive_home_conf if not exists.
+    // @param integer $id
+    // @return void
+    public function setArchiveHomeConf($id) {
+        $packages = \App\Package::where('siteId', $id)
+            ->get();
+        foreach ($packages as $p) {
+            $confExists = \App\ArchiveHomeConf::where('siteId', $p->siteId)
+                ->where('tableIdentifier', $p->tableIdentifier)
+                ->count();
+
+            if (! $confExists) {
+                \App\ArchiveHomeConf::create([
+                    'siteId'          => $p->siteId,
+                    'tableIdentifier' => $p->tableIdentifier,
+                    'eventsNumber'    => 100,
+                    'dateStart'       => '2017-01-01',
+                ]);
+            }
+        }
+    }
+
 }

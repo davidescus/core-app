@@ -63,18 +63,9 @@ class Package extends Controller
             'systemDate' => gmdate('Y-m-d'),
         ]);
 
-        // insert home config table identifier if not exists
-        $archiveHomeConf =  \App\ArchiveHomeConf::where('siteId', $pack->siteId)
-            ->where('tableIdentifier', $pack->tableIdentifier)
-            ->count();
-        if (! $archiveHomeConf) {
-            \App\ArchiveHomeConf::create([
-                'siteId'          => $pack->siteId,
-                'tableIdentifier' => $pack->tableIdentifier,
-                'eventsNumber'    => 100,
-                'dateStart'       => '2017-01-01',
-            ]);
-        }
+        // update home archive site configuration
+        $siteController = new \App\Http\Controllers\Admin\Site();
+        $siteController->setArchiveHomeConf($pack->siteId);
 
         return response()->json([
             "type" => "success",
@@ -100,6 +91,11 @@ class Package extends Controller
 
         // Todo: check inputs for validity
         $pack->update($r->input('data'));
+
+        // update home archive site configuration
+        $siteController = new \App\Http\Controllers\Admin\Site();
+        $siteController->setArchiveHomeConf($pack->siteId);
+
         return response()->json([
             "type" => "success",
             "message" => "Package information " . $r->input('data')['name'] . " was updated with success!"
