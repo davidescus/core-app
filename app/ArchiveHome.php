@@ -18,7 +18,6 @@ class ArchiveHome extends Model {
         'tableIdentifier',
         'tipIdentifier',
         'isPublish',
-        'isPublishInSite',
         'isVisible',
         'isNoTip',
         'isVip',

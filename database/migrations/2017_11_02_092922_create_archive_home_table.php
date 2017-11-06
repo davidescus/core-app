@@ -26,7 +26,6 @@ class CreateArchiveHomeTable extends Migration
             $table->string('tableIdentifier')->index();
             $table->string('tipIdentifier')->index();
             $table->integer('isPublish')->unsigned()->default(0)->index();
-            $table->integer('isPublishInSite')->unsigned()->default(0)->index();
             $table->integer('isVisible')->unsigned()->default(1)->index();
             $table->integer('isNoTip')->unsigned()->default(0);
             $table->integer('isVip')->unsigned()->default(0);
