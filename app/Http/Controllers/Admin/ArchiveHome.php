@@ -31,6 +31,7 @@ class ArchiveHome extends Controller
         // get events
         $data['events'] = \App\ArchiveHome::where('siteId', $siteId)
             ->where('tableIdentifier', $tableIdentifier)
+            ->orderBy('order', 'asc')
             ->get()->toArray();
 
         // get archive home config
