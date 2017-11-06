@@ -69,6 +69,21 @@ class ArchiveHome extends Controller
         ];
     }
 
+    // @ param integer $siteId
+    // @ param string $tableIdentifier
+    // This will increment order for each event
+    // @return void
+    public function incrementOrder($siteId, $tableIdentifier) {
+        $events = \App\ArchiveHome::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->get();
+
+        foreach ($events as $event) {
+            $event->order++;
+            $event->update();
+        }
+    }
+
     public function store() {}
 
     public function update() {}

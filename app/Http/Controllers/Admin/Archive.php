@@ -73,7 +73,9 @@ class Archive extends Controller
             $distribution['distributionId'] = $distribution['id'];
             unset($distribution['id']);
 
-            // TODO here we need to change order after insert event in archive.
+            // Insert event in archive_home
+            $archiveHome = new \App\Http\Controllers\Admin\ArchiveHome();
+            $archiveHome->incrementOrder($distribution['siteId'], $distribution['tableIdentifier']);
             \App\ArchiveHome::create($distribution);
 
             \App\ArchiveBig::create($distribution);
