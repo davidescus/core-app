@@ -103,6 +103,56 @@ class ArchiveHome extends Controller
         }
     }
 
+    public function saveConfiguration(Request $r) {
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+        $eventsNumber = $r->input('eventsNumber');
+        $dateStart = $r->input('dateStart');
+
+        $row = \App\ArchiveHomeConf::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->update([
+                'eventsNumber' => $eventsNumber,
+                'dateStart'    => $dateStart,
+            ]);
+
+        // delete events with dateStart less than
+        \App\ArchiveHome::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->where('systemDate', '<', $dateStart)
+            ->delete();
+
+        // delete in addition events than events number
+        $this->deleteInAdditionEvents($siteId, $tableIdentifier);
+
+        return [
+            'type' => 'success',
+            'message' =>"Configuration was saved.",
+        ];
+    }
+
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // This will delete in addition events than events mumber
+    // @return void
+    public function deleteInAdditionEvents($siteId, $tableIdentifier) {
+
+        // get max events number
+        $maxEventsNumber = \App\ArchiveHomeConf::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->first()->eventsNumber;
+
+        $events = \App\ArchiveHome::orderBy('order', 'asc')
+            ->where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->skip($maxEventsNumber)
+            ->take(1000)
+            ->get();
+
+        foreach ($events as $e)
+            $e->delete();
+    }
+
     public function store() {}
 
     public function update() {}

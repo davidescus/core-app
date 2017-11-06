@@ -75,9 +75,14 @@ class Archive extends Controller
 
             // Insert event in archive_home
             $archiveHome = new \App\Http\Controllers\Admin\ArchiveHome();
+            // increment order
             $archiveHome->incrementOrder($distribution['siteId'], $distribution['tableIdentifier']);
+            // insert event in archive home
             \App\ArchiveHome::create($distribution);
+            // delete in adition evetns
+            $archiveHome->deleteInAdditionEvents($distribution['siteId'], $distribution['tableIdentifier']);
 
+            // insert event in archive big
             \App\ArchiveBig::create($distribution);
             $inserted++;
         }
