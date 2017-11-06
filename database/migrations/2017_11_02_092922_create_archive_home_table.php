@@ -16,6 +16,7 @@ class CreateArchiveHomeTable extends Migration
         Schema::create('archive_home', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('distributionId')->unsigned()->index();
+            $table->integer('order')->unsigned()->index();
             $table->integer('associationId')->uunsigned()->index();
             $table->integer('eventId')->unsigned()->index();
             $table->integer('siteId')->unsigned()->index();

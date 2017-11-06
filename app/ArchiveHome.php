@@ -8,6 +8,7 @@ class ArchiveHome extends Model {
 
     protected $fillable = [
         'distributionId',
+        'order',
         'associationId',
         'eventId',
         'siteId',
