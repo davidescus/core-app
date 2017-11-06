@@ -122,6 +122,12 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array
     $app->post('/archive-home/save-configuration', 'Admin\ArchiveHome@saveConfiguration');
 
+    // Archive Home
+    // @param $id,
+    // toogle show/hide an event from archivHome
+    // @return array()
+    $app->get('/archive-home/show-hide/{id}', 'Admin\ArchiveHome@toogleShowHide');
+
     /*
      * Archive Big
      ---------------------------------------------------------------------*/
