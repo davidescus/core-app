@@ -31,17 +31,10 @@ $app->get('/ActivationCheck', function () use ($app) {
 });
 */
 
-// test to test
-//$app->get('/test-archive', function () use ($app) {
-//    $archive = new \App\Http\Controllers\Admin\ArchiveHome();
-//    $archive->moveOrderForward(1, 'table_9');
-//});
-
 // reset entire aplication
 $app->get('/reset', function () use ($app) {
     Artisan::call('migrate:refresh');
     Artisan::call('db:seed');
-
     return "Application was reset!";
 });
 
@@ -59,8 +52,6 @@ $app->get('/import-events', function () use ($app) {
 $app->get('/send-mail', function () use ($app) {
     new \App\Http\Controllers\Cron\SendMail();
 });
-
-
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     $user = Auth::user();
@@ -87,7 +78,6 @@ $app->group(['prefix' => 'client'], function ($app) {
     // @return array() indexed by table idintifier.
     $app->get('/update-archive-big/{id}', 'Client\ArchiveBig@index');
 });
-
 
     /* -------------------------------------------------------------------
      * - ADMIN -
@@ -121,6 +111,16 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // This will save modified order for events in archive big
     // @return void
     $app->post('/archive-home/set-order', 'Admin\ArchiveHome@setOrder');
+
+    // Archive Home Configuration
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // @param integer $eventsNumber
+    // @param integer $dateStart
+    // This will save configuration (archive home) for each table in each site
+    // After save will delete exceded events number
+    // @return array
+    $app->post('/archive-home/save-configuration', 'Admin\ArchiveHome@saveConfiguration');
 
     /*
      * Archive Big
