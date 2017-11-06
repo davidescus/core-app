@@ -31,6 +31,12 @@ $app->get('/ActivationCheck', function () use ($app) {
 });
 */
 
+// test to test
+//$app->get('/test-archive', function () use ($app) {
+//    $archive = new \App\Http\Controllers\Admin\ArchiveHome();
+//    $archive->moveOrderForward(1, 'table_9');
+//});
+
 // reset entire aplication
 $app->get('/reset', function () use ($app) {
     Artisan::call('migrate:refresh');
@@ -109,6 +115,12 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string $table
     // @return array()
     $app->get('/archive-home/table-events', 'Admin\ArchiveHome@index');
+
+    // Archive Home
+    // @param array $order
+    // This will save modified order for events in archive big
+    // @return void
+    $app->post('/archive-home/set-order', 'Admin\ArchiveHome@setOrder');
 
     /*
      * Archive Big

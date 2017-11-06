@@ -70,6 +70,24 @@ class ArchiveHome extends Controller
         ];
     }
 
+    // @param array $order
+    // This will save modified order for events in archive big
+    // @return void
+    public function setOrder(Request $r) {
+        $order = $r->input('order');
+
+        foreach ($order as $item) {
+            $event = \App\ArchiveHome::find($item['id']);
+            $event->order = $item['order'];
+            $event->update();
+        }
+
+        return [
+            'type' => 'success',
+            'message' =>"Orser was successful changed.",
+        ];
+    }
+
     // @ param integer $siteId
     // @ param string $tableIdentifier
     // This will increment order for each event
