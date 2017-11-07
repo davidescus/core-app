@@ -212,6 +212,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->get('/site/update-archive-big/{id}', 'Admin\Client\TriggerAction@updateArchiveBig');
 
+    // send client (site) request to update his arvhive home
+    // route for client is hardcore in controller
+    //    - /client/update-archive-home/$clientId
+    // @param integer $id
+    // @return array()
+    $app->get('/site/update-archive-home/{id}', 'Admin\Client\TriggerAction@updateArchiveHome');
+
     /*
      * Customers
      ---------------------------------------------------------------------*/
