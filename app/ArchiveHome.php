@@ -17,7 +17,6 @@ class ArchiveHome extends Model {
         'provider',
         'tableIdentifier',
         'tipIdentifier',
-        'isPublish',
         'isVisible',
         'isNoTip',
         'isVip',
@@ -36,6 +35,7 @@ class ArchiveHome extends Model {
         'statusId',
         'eventDate',
         'mailingDate',
+        'publishDate',
         'systemDate',
     ];
 

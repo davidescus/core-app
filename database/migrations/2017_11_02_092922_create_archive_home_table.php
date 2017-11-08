@@ -25,7 +25,6 @@ class CreateArchiveHomeTable extends Migration
             $table->string('provider');
             $table->string('tableIdentifier')->index();
             $table->string('tipIdentifier')->index();
-            $table->integer('isPublish')->unsigned()->default(0)->index();
             $table->integer('isVisible')->unsigned()->default(1)->index();
             $table->integer('isNoTip')->unsigned()->default(0);
             $table->integer('isVip')->unsigned()->default(0);
@@ -44,6 +43,7 @@ class CreateArchiveHomeTable extends Migration
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
+            $table->timestamp('publiishDate')->nullable();
             $table->string('systemDate')->nullable()->index();
             $table->timestamps();
         });
