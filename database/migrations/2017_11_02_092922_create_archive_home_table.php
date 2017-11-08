@@ -43,7 +43,7 @@ class CreateArchiveHomeTable extends Migration
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
-            $table->timestamp('publiishDate')->nullable();
+            $table->timestamp('publishDate')->nullable();
             $table->string('systemDate')->nullable()->index();
             $table->timestamps();
         });
