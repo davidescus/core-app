@@ -77,6 +77,11 @@ $app->group(['prefix' => 'client'], function ($app) {
     // get archive-big events for site.
     // @return array() indexed by table idintifier.
     $app->get('/update-archive-big/{id}', 'Client\ArchiveBig@index');
+
+    // @param integer $id
+    // get archive-home events for site.
+    // @return array() indexed by table idintifier.
+    $app->get('/update-archive-home/{id}', 'Client\ArchiveHome@index');
 });
 
     /* -------------------------------------------------------------------
