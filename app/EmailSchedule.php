@@ -20,6 +20,7 @@ class EmailSchedule extends Model {
         'body',
         'mailingDate',
         'status',
+        'info',
     ];
 
 //    protected $hidden = [ ‘password’ ];
