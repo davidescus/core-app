@@ -37,5 +37,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function() {
             new \App\Http\Controllers\Cron\PortalNewEvents();
         })->everyFiveMinutes();
+
+        // send for email_schedule each minute
+        $schedule->call(function() {
+            new \App\Http\Controllers\Cron\SendMail();
+        })->everyMinute();
     }
 }
