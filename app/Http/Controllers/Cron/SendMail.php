@@ -10,23 +10,39 @@ use PHPMailer\PHPMailer\SMTP;
 class SendMail extends Controller
 {
 
-    private $hasError = false;
-    private $error = '';
+    private $host;
+    private $port;
+    private $user;
+    private $password;
+    private $encryption;
+
+    private $errMessage = '';
     private $email;
 
     public function __construct()
     {
         $emails = \App\EmailSchedule::where('status', 'waiting')->get();
         if ($emails) {
+
+            // update emails status, if we have many servers running, for not send an email many times from many servers
+            foreach ($emails as $email) {
+                $email->status = 'send';
+                $email->info   = 'Sended with success';
+                $email->update();
+            }
+
             foreach ($emails as $email) {
 
                 $this->email = $email;
 
                 $this->sendEmail();
 
-                if ($this->hasError) {
-                    echo "we have an error here";
+                if ($this->errMessage != '') {
+                    $email->status = 'error';
+                    $email->info   = $this->errMessage;
                 }
+
+                $email->update();
             }
         }
     }
@@ -35,7 +51,7 @@ class SendMail extends Controller
     {
 
         // reset errors.
-        $this->hasError = false;
+        $this->errMessage = '';
 
         if ($this->email->provider == 'site') {
             $site = \App\Site::find($this->email->sender);
@@ -49,65 +65,39 @@ class SendMail extends Controller
 
         $mail = new PHPMailer(true);
 
-        //try {
-        //    //$mail->SMTPDebug = 3;
-        //    //$mail->isSMTP();
-        //    //$mail->CharSet = 'utf-8';
-        //    //$mail->Host = $this->host;
-        //    //$mail->SMTPAuth = true;
-        //    //$mail->SMTPSecure = 'STARTTLS';
-        //    //$mail->Port = $this->port;
-        //    //$mail->Username = $this->user;
-        //    //$mail->Password = $this->password;
-        //    //$mail->setFrom($site->email, $this->email->fromName);
-        //    //$mail->addAddress($this->email->to);
-        //    //$mail->addReplyTo($site->email);
-        //    //$mail->Subject = $this->email->subject;
-        //    //$mail->MsgHTML($this->email->body);
-        //    //$mail->isHtml(true);
-        //    //$mail->SMTPOptions = [
-        //    //    'ssl' => [
-        //    //        'verify_peer' => false,
-        //    //        'verify_peer_name' => false,
-        //    //        'allow_self_signed' => true
-        //    //    ]
-        //    //];
+        try {
+            //$mail->SMTPDebug = 3;
+            $mail->isSMTP();
+            $mail->CharSet = 'utf-8';
+            $mail->Host = $this->host;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = $this->encryption;
+            $mail->Port = $this->port;
+            $mail->Username = $this->user;
+            $mail->Password = $this->password;
+            $mail->setFrom($site->email, $this->email->fromName);
+            $mail->addAddress($this->email->to);
+            $mail->addReplyTo($site->email);
+            $mail->Subject = $this->email->subject;
+            $mail->MsgHTML($this->email->body);
+            $mail->isHtml(true);
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                ]
+            ];
 
-        //    $mail->SMTPDebug = 3;
-        //    $mail->isSMTP();
-        //    $mail->CharSet = 'utf-8';
-        //    $mail->Host = 'mail.ahwinners.com';
-        //    $mail->SMTPAuth = true;
-        //    //$mail->SMTPSecure = 'ssl';
-        //    $mail->Port = 587;
-        //    $mail->Username = 'info@ahwinners.com';
-        //    $mail->Password = 'dITlEoZ5(M0u';
-        //    $mail->setFrom('info@ahwinners.com', 'contact email');
-        //    $mail->addAddress('rahthman.s@gmail.com');
-        //    $mail->addReplyTo('info@ahwinners.com');
-        //    $mail->Subject = 'subject';
-        //    $mail->MsgHTML('This is the email body');
-        //    $mail->isHtml(true);
-        //    $mail->SMTPOptions = [
-        //        'ssl' => [
-        //            'verify_peer' => false,
-        //            'verify_peer_name' => false,
-        //            'allow_self_signed' => true
-        //        ]
-        //    ];
+            if (!$mail->send()) {
+                $this->errMessage .= "Mailer Error: " . $mail->ErrorInfo . PHP_EOL;
+            }
 
-        //    if (!$mail->send()) {
-        //        echo "Mailer Error: " . $mail->ErrorInfo . PHP_EOL;
-        //    }
-
-        //} catch (phpmailerException $e) {
-        //    dd($e->errorMessage());
-        //} catch (Exception $e) {
-        //    dd($e->getMessage());
-        //}
-
-
-        dd('success');
+        } catch (phpmailerException $e) {
+            $this->errMessage .= $e->errorMessage() . PHP_EOL;
+        } catch (Exception $e) {
+            $this->errMessage .= $e->getMessage() . PHP_EOL;
+        }
     }
 }
 
