@@ -422,7 +422,37 @@ class Subscription extends Controller
         $subscription->update();
     }
 
-    public function update() {}
+    public function update(Request $r, $id)
+    {
+        $s = \App\Subscription::find($id);
+        if (! $s)
+            return [
+                'type' => 'error',
+                'message' => 'Invalid identifier for subscription.',
+            ];
+
+        if ($s->status != 'active')
+            return [
+                'type' => 'error',
+                'message' => 'You can edit only active subscriptions.',
+            ];
+
+        // TODO check iv value is valid
+        $value = $r->input('value');
+
+        if ($s->type == 'tips')
+            $s->tipsLeft = $value;
+
+        if ($s->type == 'days')
+            $s->dateEnd = $value;
+
+        $s->update();
+
+        return [
+            'type' => 'success',
+            'message' => 'Subscription was edited with success.',
+        ];
+    }
 
     // delete an existing subscription
     // @param integer $id

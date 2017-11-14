@@ -335,6 +335,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->get('/subscription', 'Admin\Subscription@index');
 
+    // Subscription
+    // @param int $id
+    // @param string $value
+    // update subscrription tipsLeft for tips, dateEnd for days
+    // @return array()
+    $app->post('/subscription/edit/{id}', 'Admin\Subscription@update');
+
     /*
      * Package Prediction
      ---------------------------------------------------------------------*/
