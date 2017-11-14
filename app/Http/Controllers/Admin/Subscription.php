@@ -42,7 +42,13 @@ class Subscription extends Controller
         return $subscriptions;
     }
 
-    public function get() {}
+    // @param int $id
+    // get specific subscription by id
+    // @return array()
+    public function get($id)
+    {
+        return \App\Subscription::find($id);
+    }
 
     // Subscription
     // @param integer $packageId

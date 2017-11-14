@@ -43,15 +43,10 @@ $app->get('/import-events', function () use ($app) {
     new \App\Http\Controllers\Cron\PortalNewEvents();
 });
 
-// subscriptioon cron 23.55
-//$app->get('/cron/23.55', function () use ($app) {
-//    new \App\Http\Controllers\Cron\ProcessDaysSubscription();
-//});
-
 // test route for sending emails
-$app->get('/send-mail', function () use ($app) {
-    new \App\Http\Controllers\Cron\SendMail();
-});
+/* $app->get('/send-mail', function () use ($app) { */
+/*     new \App\Http\Controllers\Cron\SendMail(); */
+/* }); */
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     $user = Auth::user();
@@ -323,11 +318,19 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->post('/subscription/create', 'Admin\Subscription@store');
 
-    // delete a subscription
+    // Subscription
     // @param integer $id
+    // delete a subscription
     // @return array()
     $app->get('/subscription/delete/{id}', 'Admin\Subscription@destroy');
 
+    // Subscription
+    // @param int $id
+    // get specific subscription by id
+    // @return array()
+    $app->get('/subscription/{id}', 'Admin\Subscription@get');
+
+    // Subscription
     // get all subscriptions
     // @return array()
     $app->get('/subscription', 'Admin\Subscription@index');
