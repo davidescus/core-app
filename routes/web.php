@@ -560,8 +560,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $site = \App\Site::find($package->siteId);
 
             // when use send will not edit template, will not have custom template
-            if (! $template)
-                $template = $package->template;
+            // here we must remove section
+            if (! $template) {
+                $replaceSection = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
+                $template = $replaceSection->template;
+            }
 
             // replace section in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
