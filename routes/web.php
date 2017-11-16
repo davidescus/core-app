@@ -566,8 +566,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 $template = $replaceSection->template;
             }
 
-            // replace section in template
+            // replace tips in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
+
+            // replace customer information in template
+            $replaceCustomerInfoTemplate = new \App\Http\Controllers\Admin\Email\ReplaceCustomerInfoInTemplate(
+                $replaceTips->template,
+                $customer
+            );
 
             // store all data to send email
             $args = [
@@ -581,7 +587,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'to'              => $customer->activeEmail,
                 'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
                 'subject'         => $package->subject,
-                'body'            => $replaceTips->template,
+                'body'            => $replaceCustomerInfoTemplate->template,
                 'status'          => 'waiting',
             ];
 
