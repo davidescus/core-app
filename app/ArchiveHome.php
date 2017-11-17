@@ -33,6 +33,7 @@ class ArchiveHome extends Model {
         'predictionName',
         'result',
         'statusId',
+        'stringEventDate',
         'eventDate',
         'mailingDate',
         'publishDate',

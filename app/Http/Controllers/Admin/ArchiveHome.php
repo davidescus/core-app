@@ -155,7 +155,56 @@ class ArchiveHome extends Controller
 
     public function store() {}
 
-    public function update() {}
+    // @param $id - event id,
+    // @param $siteId,
+    // @param $country,
+    // @param $league,
+    // @param $stringEventDate,
+    // @param $homeTeam,
+    // @param $awayTeam,
+    // @param $predictionId,
+    // @param $statusId,
+    // update event in archive home
+    // @return array()
+    public function update(Request $r, $id)
+    {
+        $siteId = $r->input('siteId');
+        $country = $r->input('country');
+        $league = $r->input('league');
+        $stringEventDate = $r->input('stringEventDate');
+        $homeTeam = $r->input('homeTeam');
+        $awayTeam = $r->input('awayTeam');
+        $predictionId = $r->input('predictionId');
+        $statusId = $r->input('statusId');
+
+        $event = \App\ArchiveHome::find($id);
+        if (!$event)
+            return [
+                'type' => 'error',
+                'message' => "This event not exist anymore!",
+            ];
+
+        // get prediction according to site.
+        $sitePrediction = \App\SitePrediction::where([
+            ['siteId', '=', $siteId],
+            ['predictionIdentifier', '=', $predictionId],
+        ])->first();
+
+        $event->country = $country;
+        $event->league = $league;
+        $event->stringEventDate = $stringEventDate;
+        $event->homeTeam = $homeTeam;
+        $event->awayTeam = $awayTeam;
+        $event->predictionName = $sitePrediction->name;
+        $event->predictionId = $predictionId;
+        $event->statusId = $statusId;
+        $event->save();
+
+        return [
+            'type' => 'success',
+            'message' =>"Archive event was succesfful updated.",
+        ];
+    }
 
     public function destroy() {}
 

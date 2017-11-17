@@ -41,6 +41,7 @@ class CreateArchiveHomeTable extends Migration
             $table->string('predictionName');
             $table->string('result');
             $table->string('statusId', 2);
+            $table->string('stringEventDate');
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
             $table->timestamp('publishDate')->nullable();

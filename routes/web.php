@@ -101,6 +101,25 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
      ---------------------------------------------------------------------*/
 
     // Archive Home
+    // @param integer $id
+    // @return event || null
+    $app->get('/archive-home/event/{id}', 'Admin\ArchiveHome@get');
+
+    // Archive Home
+    // @param $id - event id,
+    // @param $siteId,
+    // @param $country,
+    // @param $league,
+    // @param $stringEventDate,
+    // @param $homeTeam,
+    // @param $awayTeam,
+    // @param $predictionId,
+    // @param $statusId,
+    // update event in archive home
+    // @return array()
+    $app->post('/archive-home/update/{id}', 'Admin\ArchiveHome@update');
+
+    // Archive Home
     // @param integer $siteId
     // @param string $table
     // @return array()
