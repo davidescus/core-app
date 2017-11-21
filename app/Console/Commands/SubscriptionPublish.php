@@ -36,7 +36,6 @@ class SubscriptionPublish extends CronCommand
         $cron = $this->startCron();
 
         $this->loadData();
-        $this->info('Hello');
         $this->stopCron($cron);
     }
 
