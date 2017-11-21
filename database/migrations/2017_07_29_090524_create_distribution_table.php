@@ -43,6 +43,8 @@ class CreateDistributionTable extends Migration
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable()->index();
             $table->string('systemDate')->nullable()->index();
+            $table->integer('publishTime')->unsigned();
+            $table->integer('isPublished')->unsigned();
             $table->timestamps();
         });
     }

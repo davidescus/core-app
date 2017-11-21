@@ -1,67 +1,219 @@
 <?php namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Cron;
+use App\Distribution;
+use App\Site;
+use Ixudra\Curl\Facades\Curl;
 
-class DistributionPublish extends Command {
+class DistributionPublish extends CronCommand {
     protected $name = 'distribution:publish';
     protected $description = 'Checks, schedules and publishes distribution events';
+    /** @var array $distribution */
+    protected $distribution = [];
+    /** @var array $systemDate */
+    protected $systemDate = [];
+    /** @var int $minute */
+    protected $minute;
+    /** @var int $hour */
+    protected $hour;
+    /** @var int $timestamp */
+    protected $timestamp;
 
     public function fire()
     {
-        $systemDate = [
+        $this->timestamp = time();
+        $this->systemDate = [
             'today' => gmdate('Y-m-d'),
             'yesterday' => gmdate('Y-m-d', time() - (24 * 60 * 60))
         ];
 
+        $this->minute = intval(gmdate('i'));
+        $this->hour = intval(gmdate('G'));
+
         $cron = $this->startCron();
 
-        $publishedEvents = [];
-        if ($publishedEvents) {
-            //select rest of events and publish em
-        } else {
-            $minute = intval(gmdate('i'));
-            $hour = intval(gmdate('G'));
-            if ($hour >= 19) {
-                // if all events done + winrate ok;
-            } else if ($hour === 9 && $minute <= 30) {
-                // today - 1;
+        $events = $this->loadData();
+        if (!$events) {
+            $this->stopCron($cron, []);
+            return true;
+        }
+        $info = [
+            'sent' => 0,
+            'errors' => []
+        ];
+        foreach($events as $siteId => $values) {
+            $site = Site::find($siteId);
+            if (!$site) {
+                $info['errors'][] = "Couldn't find site with id $siteId";
+                continue;
+            }
+            foreach($values as $systemDate => $info) {
+                if ($info['allEventsPublished'])
+                    continue;
+
+                // process any events that have a publish time lower than actual time
+                // OR has already events published in the respective day
+
+                foreach($info['events'] as $event) {
+                    if (!$info['hasPublishedEvents'] && ($event->publishTime < $this->timestamp))
+                        continue;
+
+                    if (!$event->isPublished && $event->result && $event->status) {
+                        if (!$this->publish($site, $event))
+                            $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                        else
+                            $info['sent']++;
+                    }
+                }
+
+                if (!$info['hasPublishedEvents']) {
+                    if ($info['hasPendingEvents'])
+                        continue;
+
+                    if ($systemDate === $this->systemDate['yesterday']) {
+                        // process events that weren't finished yesterday
+
+                        if ($info['winRate'] >= 50) {
+                            foreach($info['events'] as $event) {
+                                if ($event->isPublished)
+                                    continue;
+
+                                if (!$this->publish($site, $event))
+                                    $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                                else
+                                    $info['sent']++;
+                            }
+                        } else {
+                           if ($info['publishTime'] && $info['publishTime'] >= $this->timestamp) {
+                               foreach($info['events'] as $event) {
+                                   if ($event->isPublished)
+                                       continue;
+
+                                   if (!$this->publish($site, $event))
+                                       $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                                   else
+                                       $info['sent']++;
+                               }
+                           } else {
+                               if (!$info['publishTime'])
+                                   $info['publishTime'] = strtotime('today 09:00:00') + mt_rand(0, 30 * 60);
+
+                               foreach ($info['events'] as $event) {
+                                   if ($event->isPublished)
+                                       continue;
+
+                                   if (!$event->publishTime) {
+                                       $event->publishTime = $info['publishTime'];
+                                       $event->save();
+                                   }
+                               }
+                           }
+                        }
+                    } else {
+                        // process events that for today
+                        if ($this->hour < 19 || $info['hasPendingEvents'])
+                            continue;
+
+                        if (!$info['publishTime']) {
+                            if ($info['winRate'] >= 50)
+                                $info['publishTime'] = strtotime('today 19:00:00') + mt_rand(0, 4 * 60 * 60);
+                            else
+                                $info['publishTime'] = strtotime('tomorrow 09:00:00') + mt_rand(0, 30 * 60);
+
+                        }
+                        foreach ($info['events'] as $event) {
+                            if ($event->isPublished)
+                                continue;
+
+                            if (!$event->publishTime) {
+                                $event->publishTime = $info['publishTime'];
+                                $event->save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $this->info(json_encode($info));
+        $this->stopCron($cron, $info);
+    }
+
+    protected function loadData()
+    {
+        $data = [];
+        foreach (Distribution::whereIn('systemDate', array_values($this->systemDate))->get() as $value) {
+            if (!isset($data[$value->siteId]))
+                $data[$value->siteId] = [];
+            if (!isset($data[$value->siteId][$value->systemDate]))
+                $data[$value->siteId][$value->systemDate] = [
+                    'allEventsPublished' => false,
+                    'hasPublishedEvents' => false,
+                    'hasPendingEvents' => false,
+                    'publishTime' => 0,
+                    'events' => [],
+                    'winRate' => 0,
+                    'tmp' => [
+                        'all' => 0,
+                        'good' => 0,
+                        'published' => 0
+                    ]
+                ];
+
+            if ($value->isPublished) {
+                $data[$value->siteId][$value->systemDate]['hasPublishedEvents'] = true;
+                $data[$value->siteId][$value->systemDate]['tmp']['published']++;
+            }
+
+            if
+            (
+                !$data[$value->siteId][$value->systemDate]['hasPendingEvents'] &&
+                (!$value->result || !$value->status)
+            )
+                $data[$value->siteId][$value->systemDate]['hasPendingEvents'] = true;
+            if
+            (
+                !$data[$value->siteId][$value->systemDate]['publishTime'] ||
+                $data[$value->siteId][$value->systemDate]['publishTime'] < $value->publishTime
+            )
+                $data[$value->siteId][$value->systemDate]['publishTime'] = $value->publishTime;
+
+            if ($value->statusId === 1)
+                $data[$value->siteId][$value->systemDate]['tmp']['good']++;
+
+            $data[$value->siteId][$value->systemDate]['tmp']['all']++;
+            $data[$value->siteId][$value->systemDate]['events'][] = $value;
+        }
+
+        foreach ($data as $siteId => $dates) {
+            foreach ($dates as $date => $value) {
+                $data[$siteId][$date]['winRate'] = round(100 * ($value['tmp']['good'] / $value['tmp']['all']), 2);
+                $data[$siteId][$date]['allEventsPublished'] =  $value['tmp']['all'] === $value['tmp']['published'];
+                unset($data[$siteId][$date]['tmp']);
             }
         }
 
-        // CODE LOGIC
-        sleep(5);
-        $this->info(implode(PHP_EOL, $systemDate));
-
-        $this->stopCron($cron, ['1' => '2']);
+        return $data;
     }
 
-    private function startCron() : Cron
+    protected function publish(Site $site, Distribution $event) : bool
     {
-        $cron = Cron::where('type', $this->name)->orderBy('id', 'desc')->first();
+        $response = Curl::to($site->url)
+            ->withData([
+                'route' => 'api',
+                'key' => $site->token,
+                'method' => '????',
+                'url' => env('APP_HOST') . '/client/get-configuration/' . $site->id,
+                'body' => $event->toArray(),
+            ])
+            ->post();
 
-        if ($cron && !$cron->date_end) {
-            //if last cron has been running for more than 30m, probably dead
-            if (($cron->date_start + 30 * 60) < time()) {
-                $this->error(sprintf('CRON %s (ID %s) is probably dead', $cron->type, $cron->id));
-            } else {
-                $this->info(sprintf('Previous cron (ID %s) is still running', $cron->id));
-            }
-            exit;
+        $response = json_decode($response, true);
+        if (!$response)
+            return null;
+        else {
+            $event->publishTime = $this->timestamp;
+            $event->isPublished = 1;
+            $event->save();
         }
-
-        $cron = new Cron;
-        $cron->type = $this->name;
-        $cron->date_start = time();
-        $cron->date_end = 0;
-        $cron->save();
-        return $cron;
-    }
-
-    private function stopCron(Cron $cron, $info = [])
-    {
-        $cron->info = json_encode($info);
-        $cron->date_end = time();
-        $cron->save();
+        return true;
     }
 }
