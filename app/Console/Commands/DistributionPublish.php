@@ -212,7 +212,8 @@ class DistributionPublish extends CronCommand
         if (!$response)
             return null;
         else {
-            $event->publishTime = $this->timestamp;
+            if (!$event->publishTime)
+                $event->publishTime = $this->timestamp;
             $event->isPublished = 1;
             $event->save();
         }
