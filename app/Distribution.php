@@ -35,6 +35,8 @@ class Distribution extends Model {
         'eventDate',
         'systemDate',
         'mailingDate',
+        'publishTime',
+        'isPublished'
     ];
 
     // get the status name of distributed event
