@@ -29,5 +29,11 @@ class Association extends Model {
         'systemDate',
     ];
 
+    // get the status name associated with event
+    public function status()
+    {
+        return $this->hasOne('App\AppResultStatus', 'id', 'statusId');
+    }
+
 //    protected $hidden = [ ‘password’ ];
 }

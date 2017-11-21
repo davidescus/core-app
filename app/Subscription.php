@@ -8,11 +8,13 @@ class Subscription extends Model {
 
     protected $fillable = [
         'id',
+        'parentId',
         'name',
         'customerId',
         'siteId',
         'packageId',
         'isCustom',
+        'isVip',
         'type',
         'subscription',
         'dateStart',

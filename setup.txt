@@ -12,6 +12,11 @@ docker-composer restart
 ADD A CRON:
 crontab -e
 docker-compose exec php-fpm php path/to/cli/job
+---- david ----
+START CRON SERVICE - only at install
+docker-compose exec php-fpm service cron start
+MANAGE CRONTABLE
+docker-compose exec php-fpm crontab -e
 
 COMPOSER INSTALL:
 docker-compose exec php-fpm php composer.phar install

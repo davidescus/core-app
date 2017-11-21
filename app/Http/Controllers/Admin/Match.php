@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class Match extends Controller
 {
@@ -22,14 +23,42 @@ class Match extends Controller
 
     // get all available matches by search
     // @param string $filter
+    // @param string $table
     // @return array()
-    public function getMatchesByFilter($filter)
+    public function getMatchesByFilter($table, $filter)
     {
-        return \App\Match::where('country', 'like', '%' . $filter . '%')
+        $events = \App\Match::where('country', 'like', '%' . $filter . '%')
             ->orWhere('league', 'like', '%' . $filter . '%')
             ->orWhere('homeTeam', 'like', '%' . $filter . '%')
             ->orWhere('awayTeam', 'like', '%' . $filter . '%')
-            ->get();
+            ->orderBy('eventDate', 'asc')->get();
+
+        if ($table == 'run' || $table == 'ruv') {
+            foreach ($events as $k => $v) {
+
+                // unset events starts less than 20 minutes
+                if ($v->eventDate < Carbon::now('GMT')->addMinutes(20))
+                    unset($events[$k]);
+
+                // unset events starts less than 20 minutes
+                if ($v->eventDate > Carbon::now('GMT')->addDays(3))
+                    unset($events[$k]);
+            }
+            return $events;
+        }
+
+        // prepare events for nun || nuv
+        foreach ($events as $k => $v) {
+
+            // unset events finished less than 105 minutes
+            if ($v->eventDate > Carbon::now('UTC')->modify('-105 minutes'))
+                unset($events[$k]);
+
+            // unset events with no result and status
+            if (! $v->result)
+                unset($events[$k]);
+        }
+        return $events;
     }
 
     public function store() {}

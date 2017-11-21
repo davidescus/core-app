@@ -27,7 +27,11 @@ class Association extends Controller
         if ($date === null || $date == 0)
             $date = gmdate('Y-m-d');
 
-        return \App\Association::where('type', $tableIdentifier)->where('systemDate', $date)->get();
+        $associations = \App\Association::where('type', $tableIdentifier)->where('systemDate', $date)->get();
+        foreach ($associations as $association)
+            $association->status;
+
+        return $associations;
     }
 
     public function get() {}
@@ -35,10 +39,12 @@ class Association extends Controller
     // get available packages according to table and event prediction
     // @param string  $table
     // @param integer $associateEventId
+    // @param string | null $date
     // @return array();
-    public function getAvailablePackages($table, $associateEventId)
+    public function getAvailablePackages($table, $associateEventId, $date = null)
     {
         $data = [];
+        $date = ($date === null) ? gmdate('Y-m-d') : $date;
         $data['event'] = \App\Association::find($associateEventId);
 
         if (!$data['event'])
@@ -47,88 +53,74 @@ class Association extends Controller
                 "message" => "Event id: $associateEventId not exist anymore!"
             ]);
 
-        // if event is noTip will get packages according to table, and users
-        // and without any tip associated yet.
-        if ($data['event']->isNoTip) {
+        // first get packagesIds acording to section
+        $section = ($table === 'run' || $table === 'ruv') ? 'ru': 'nu';
+        $packageSection = \App\PackageSection::select('packageId')
+            ->where('section', $section)
+            ->where('systemDate', $date)
+            ->get();
 
-            $where = [];
-            if ($table == "ruv" || $table == "nuv")
-                $where[] = ['isVip', '=', '1'];
-            elseif ($table == "run" || $table == "nun")
-                $where[] = ['isVip', '!=', '1'];
+        $packagesIds = [];
+        foreach ($packageSection as $p)
+            $packagesIds[] = $p->packageId;
 
-            $keys = [];
-            $increments = 0;
-            $packages = \App\Package::where($where)->get()->toArray();
-            foreach ($packages as $p) {
 
-                // if package has already associate tip continue;
-                if (\App\Distribution::where('packageId', $p['id'])
-                    ->where('systemDate', $data['event']->systemDate)
-                    ->where('isNoTip', '0')->count())
-                {
-                    continue;
-                }
+        // only vip or normal package according to table
+        foreach ($packagesIds as $k => $id) {
 
-                // get site
-                $sitePackage = \App\SitePackage::where('packageId', $p['id'])->first();
-                $site = \App\Site::find($sitePackage->siteId);
-
-                // create array
-                if (!array_key_exists($site->name, $keys)) {
-                    $keys[$site->name] = $increments;
-                    $increments++;
-                }
-
-                // check if event alredy exists in tips distribution
-                $distributionExists = \App\Distribution::where([
-                    ['associationId', '=', $data['event']->id],
-                    ['packageId', '=', $p['id']]
-                ])->count();
-
-                // get event systemDate
-                $eventSystemDate = date('Y-m-d', strtotime($data['event']->systemDate));
-                // get number of associated events with package on event systemDate
-                $eventsExistsOnSystemDate = \App\Distribution::where([
-                    ['packageId', '=', $p['id']],
-                    ['systemDate', '=', $eventSystemDate]
-                ])->count();
-
-                $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
-                $data['sites'][$keys[$site->name]]['packages'][] = [
-                    'id' => $p['id'],
-                    'name' => $p['name'],
-                    'tipsPerDay' => $p['tipsPerDay'],
-                    'eventIsAssociated' => $distributionExists,
-                    'packageAssociatedEventsNumber' => $eventsExistsOnSystemDate,
-                ];
+            // table is vip exclude normal packages
+            if ($table == "ruv" || $table == "nuv") {
+                if (\App\Package::where('id', $id)->where('isVip', '0')->count())
+                    unset($packagesIds[$k]);
+                continue;
             }
 
-            return $data;
+            // table is normal exclude vip packages
+            if (\App\Package::where('id', $id)->where('isVip', '1')->count())
+                unset($packagesIds[$k]);
         }
 
-        // get all packages associated with this prediction
-        $packagesIds = \App\PackagePrediction::select('packageId')->where('predictionIdentifier', $data['event']->predictionId)->get();
+        // sort by event type tip or noTip
+        foreach ($packagesIds as $k => $id) {
+
+            // event is no tip -> exclude packages who have tip events
+            if ($data['event']->isNoTip) {
+                $hasEvents = \App\Distribution::where('packageId', $id)
+                    ->where('systemDate', $date)
+                    ->where('isNoTip', '0')->count();
+
+                if ($hasEvents)
+                    unset($packagesIds[$k]);
+                continue;
+            }
+
+            // there is event unset packages hwo has noTip
+            $hasNoTip = \App\Distribution::where('packageId', $id)
+                ->where('systemDate', $date)
+                ->where('isNoTip', '1')->count();
+
+            if ($hasNoTip) {
+                unset($packagesIds[$k]);
+                continue;
+            }
+
+            // there is event unset packages not according to betType
+            $packageAcceptPrediction = \App\PackagePrediction::where('packageId', $id)
+                ->where('predictionIdentifier', $data['event']->predictionId)
+                ->count();
+
+            if (! $packageAcceptPrediction)
+                unset($packagesIds[$k]);
+        }
+
+        // Now $packagesIds contain only available pacakages
 
         $keys = [];
         $increments = 0;
-        foreach ($packagesIds as $p) {
-            // get package
-            $package = \App\Package::find($p->packageId);
+        $packages = \App\Package::whereIn('id', $packagesIds)->get();
+        foreach ($packages as $p) {
 
-            // check if table is vip or not
-            if ($table == "ruv" || $table == "nuv") {
-                if (!$package->isVip)
-                    continue;
-            } elseif ($table == "run" || $table == "nun") {
-                if ($package->isVip)
-                    continue;
-            }
-
-            // TODO check if table is for real users or for no users
-
-            // get site
-            $site = \App\Site::find($package->siteId);
+            $site = \App\Site::find($p->siteId);
 
             // create array
             if (!array_key_exists($site->name, $keys)) {
@@ -137,39 +129,25 @@ class Association extends Controller
             }
 
             // check if event alredy exists in tips distribution
-            $distributionExists = \App\Distribution::where([
-                ['associationId', '=', $data['event']->id],
-                ['packageId', '=', $package->id]
-            ])->count();
-
-            // get event systemDate
-            $eventSystemDate = date('Y-m-d', strtotime($data['event']->systemDate));
-
-            // if package already have noTip continue;
-            if (\App\Distribution::where([
-                ['packageId', '=', $package->id],
-                ['systemDate', '=', $eventSystemDate],
-                ['isNoTip', '=', '1']])->count())
-            {
-                continue;
-            }
+            $distributionExists = \App\Distribution::where('associationId', $data['event']->id)
+                ->where('packageId', $p->id)
+                ->count();
 
             // get number of associated events with package on event systemDate
-            $eventsExistsOnSystemDate = \App\Distribution::where([
-                ['packageId', '=', $package->id],
-                ['systemDate', '=', $eventSystemDate]
-            ])->count();
+            $eventsExistsOnSystemDate = \App\Distribution::where('packageId', $p->id)
+                ->where('systemDate', $date)
+                ->count();
 
             $data['sites'][$keys[$site->name]]['siteName'] = $site->name;
+            $data['sites'][$keys[$site->name]]['tipIdentifier'] = $p->tipIdentifier;
             $data['sites'][$keys[$site->name]]['packages'][] = [
-                'id' => $package->id,
-                'name' => $package->name,
-                'tipsPerDay' => $package->tipsPerDay,
+                'id' => $p->id,
+                'name' => $p->name,
+                'tipsPerDay' => $p->tipsPerDay,
                 'eventIsAssociated' => $distributionExists,
                 'packageAssociatedEventsNumber' => $eventsExistsOnSystemDate,
             ];
         }
-
         return $data;
     }
 

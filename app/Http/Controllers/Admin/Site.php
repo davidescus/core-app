@@ -58,7 +58,7 @@ class Site extends Controller
             "imapUser" => $r->input('imapUser'),
             "imapPassword" => $r->input('imapPassword'),
             "imapEncryption" => $r->input('imapEncryption'),
-            "token" => md5(microtime() . rand(0, 1000)),
+            "token" => bin2hex(random_bytes(16)),
         ]);
 
         return response()->json([
@@ -170,6 +170,28 @@ class Site extends Controller
         // will get this relation for packages model
         // each package has siteId
         return \App\Package::select('tableIdentifier')->distinct()->where('siteId', $siteId)->get();
+    }
+
+    // create records in archive_home_conf if not exists.
+    // @param integer $id
+    // @return void
+    public function setArchiveHomeConf($id) {
+        $packages = \App\Package::where('siteId', $id)
+            ->get();
+        foreach ($packages as $p) {
+            $confExists = \App\ArchiveHomeConf::where('siteId', $p->siteId)
+                ->where('tableIdentifier', $p->tableIdentifier)
+                ->count();
+
+            if (! $confExists) {
+                \App\ArchiveHomeConf::create([
+                    'siteId'          => $p->siteId,
+                    'tableIdentifier' => $p->tableIdentifier,
+                    'eventsNumber'    => 100,
+                    'dateStart'       => '2017-01-01',
+                ]);
+            }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cron\Email;
+namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -9,41 +9,77 @@ use PHPMailer\PHPMailer\SMTP;
 
 class SendMail extends Controller
 {
+
+    private $host;
+    private $port;
+    private $user;
+    private $password;
+    private $encryption;
+
+    private $errMessage = '';
+    private $email;
+
     public function __construct()
     {
+        $emails = \App\EmailSchedule::where('status', 'waiting')->get();
+        if ($emails) {
 
-       // get emails for table email_schedule
+            // update emails status, if we have many servers running, for not send an email many times from many servers
+            foreach ($emails as $email) {
+                $email->status = 'send';
+                $email->info   = 'Sended with success';
+                $email->update();
+            }
 
-        $args = [
-            'host'     => '',
-            'user'     => '',
-            'pass'     => '',
-            'port'     => 587,
-            'from'     => '',
-            'fromName' => 'test app goforeinners',
-            'to'       => 'rahthman_s@yahoo.com',
-            'toName'   => 'davidescus',
-            'subject'  => 'Test message',
-            'body'     => 'This is the boby of test message',
-        ];
+            foreach ($emails as $email) {
+
+                $this->email = $email;
+
+                $this->sendEmail();
+
+                if ($this->errMessage != '') {
+                    $email->status = 'error';
+                    $email->info   = $this->errMessage;
+                }
+
+                $email->update();
+            }
+        }
+    }
+
+    private function sendEmail()
+    {
+
+        // reset errors.
+        $this->errMessage = '';
+
+        if ($this->email->provider == 'site') {
+            $site = \App\Site::find($this->email->sender);
+
+            $this->host = $site->smtpHost;
+            $this->port = $site->smtpPort;
+            $this->user = $site->smtpUser;
+            $this->password = $site->smtpPassword;
+            $this->encryption = $site->smtpEncription;
+        }
 
         $mail = new PHPMailer(true);
 
         try {
-            $mail->SMTPDebug = 3;
+            //$mail->SMTPDebug = 3;
             $mail->isSMTP();
             $mail->CharSet = 'utf-8';
-            $mail->Host = $args['host'];
+            $mail->Host = $this->host;
             $mail->SMTPAuth = true;
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = $args['port'];
-            $mail->Username = $args['user'];
-            $mail->Password = $args['pass'];
-            $mail->setFrom($args['from'], $args['fromName']);
-            $mail->addAddress($args['to']);
-            $mail->addReplyTo($args['from']);
-            $mail->Subject = $args['subject'];
-            $mail->MsgHTML($args['body']);
+            $mail->SMTPSecure = $this->encryption;
+            $mail->Port = $this->port;
+            $mail->Username = $this->user;
+            $mail->Password = $this->password;
+            $mail->setFrom($site->email, $this->email->fromName);
+            $mail->addAddress($this->email->to);
+            $mail->addReplyTo($site->email);
+            $mail->Subject = $this->email->subject;
+            $mail->MsgHTML($this->email->body);
             $mail->isHtml(true);
             $mail->SMTPOptions = [
                 'ssl' => [
@@ -54,16 +90,14 @@ class SendMail extends Controller
             ];
 
             if (!$mail->send()) {
-                echo "Mailer Error: " . $mail->ErrorInfo . PHP_EOL;
+                $this->errMessage .= "Mailer Error: " . $mail->ErrorInfo . PHP_EOL;
             }
 
         } catch (phpmailerException $e) {
-            dd($e->errorMessage());
+            $this->errMessage .= $e->errorMessage() . PHP_EOL;
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $this->errMessage .= $e->getMessage() . PHP_EOL;
         }
-
-        dd('success');
     }
 }
 

@@ -44,6 +44,10 @@ class Distribution extends Controller
                 // get events for package
                 $distributedEvents = \App\Distribution::where('packageId', $package->id)->where('systemdate', $date)->get();
 
+                // add status to distributed events
+                foreach ($distributedEvents as $distributedEvent)
+                    $distributedEvent->status;
+
                 $data[$site->id]['packages'][$assocPack['packageId']]['id'] = $package->id;
                 $data[$site->id]['packages'][$assocPack['packageId']]['name'] = $package->name;
                 $data[$site->id]['packages'][$assocPack['packageId']]['tipsPerDay'] = $package->tipsPerDay;
@@ -116,12 +120,21 @@ class Distribution extends Controller
         $deleted = 0;
         $distributionExists = [];
         $message = '';
-        foreach (\App\Distribution::where('associationId', $association['id'])->get() as $item) {
+        $distributedEvents = \App\Distribution::where('associationId', $association['id'])->get();
+
+        // group packages by site and tipIdentifier
+        $group = [];
+        foreach ($distributedEvents as $item) {
+            if ($item->isPublish || $item->isEmailSend)
+                $group[$item->siteId][$item->tipIdentifier] = true;
+        }
+
+        foreach ($distributedEvents as $item) {
             // delete distribution
             if (!in_array($item->packageId, $packagesIds)) {
 
-                if ($item->isPublish) {
-                    $message .= "Can not delete association with package $item->packageId, was already published\r\n";
+                if (isset($group[$item->siteId][$item->tipIdentifier])) {
+                    $message .= "Can not delete association with package $item->packageId, was already published or email send. Or nother package with same tip publish this event.\r\n";
                     continue;
                 }
                 $item->delete();

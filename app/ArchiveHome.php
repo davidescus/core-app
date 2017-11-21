@@ -2,21 +2,22 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Distribution extends Model {
+class ArchiveHome extends Model {
 
-    protected $table = 'distribution';
+    protected $table = 'archive_home';
 
     protected $fillable = [
+        'distributionId',
+        'order',
         'associationId',
         'eventId',
-        'source',
-        'provider',
         'siteId',
         'packageId',
+        'source',
+        'provider',
         'tableIdentifier',
         'tipIdentifier',
-        'isEmailSend',
-        'isPublish',
+        'isVisible',
         'isNoTip',
         'isVip',
         'country',
@@ -32,16 +33,13 @@ class Distribution extends Model {
         'predictionName',
         'result',
         'statusId',
+        'stringEventDate',
         'eventDate',
-        'systemDate',
         'mailingDate',
+        'publishDate',
+        'systemDate',
     ];
-
-    // get the status name of distributed event
-    public function status()
-    {
-        return $this->hasOne('App\AppResultStatus', 'id', 'statusId');
-    }
 
 //    protected $hidden = [ ‘password’ ];
 }
+

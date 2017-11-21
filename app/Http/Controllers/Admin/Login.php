@@ -25,7 +25,7 @@ class Login extends Controller
                 'success' => 0,
             ];
 
-        $token = md5(microtime());
+        $token = bin2hex(random_bytes(16));
 
         $user->token = $token;
         $user->save();

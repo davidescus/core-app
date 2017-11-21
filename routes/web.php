@@ -18,22 +18,35 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
+use Illuminate\Support\Facades\Artisan;
+
     /* -------------------------------------------------------------------
      * - TESTING -
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
-// test route for sending emails
-$app->get('/send-mail', function () use ($app) {
-    new \App\Http\Controllers\Cron\SendMail();
+/*/ Will delete this sun is possible
+$app->get('/ActivationCheck', function () use ($app) {
+   return response()->json(new \App\Src\Subscription\ActivationNowCheck());
+});
+*/
+
+// reset entire aplication
+$app->get('/reset', function () use ($app) {
+    Artisan::call('migrate:refresh');
+    Artisan::call('db:seed');
+    return "Application was reset!";
 });
 
-// Cron
-// this will add new events in match table.
-$app->get('/xml', function () use ($app) {
+// import events
+$app->get('/import-events', function () use ($app) {
     new \App\Http\Controllers\Cron\PortalNewEvents();
 });
 
+// test route for sending emails
+/* $app->get('/send-mail', function () use ($app) { */
+/*     new \App\Http\Controllers\Cron\SendMail(); */
+/* }); */
 
 $app->get('/test', ['middleware' => 'auth', function () use ($app) {
     $user = Auth::user();
@@ -59,8 +72,12 @@ $app->group(['prefix' => 'client'], function ($app) {
     // get archive-big events for site.
     // @return array() indexed by table idintifier.
     $app->get('/update-archive-big/{id}', 'Client\ArchiveBig@index');
-});
 
+    // @param integer $id
+    // get archive-home events for site.
+    // @return array() indexed by table idintifier.
+    $app->get('/update-archive-home/{id}', 'Client\ArchiveHome@index');
+});
 
     /* -------------------------------------------------------------------
      * - ADMIN -
@@ -78,6 +95,57 @@ $app->group(['prefix' => 'client'], function ($app) {
 $app->post('/admin/login', 'Admin\Login@index');
 
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
+
+    /*
+     * Archive Home
+     ---------------------------------------------------------------------*/
+
+    // Archive Home
+    // @param integer $id
+    // @return event || null
+    $app->get('/archive-home/event/{id}', 'Admin\ArchiveHome@get');
+
+    // Archive Home
+    // @param $id - event id,
+    // @param $siteId,
+    // @param $country,
+    // @param $league,
+    // @param $stringEventDate,
+    // @param $homeTeam,
+    // @param $awayTeam,
+    // @param $predictionId,
+    // @param $statusId,
+    // update event in archive home
+    // @return array()
+    $app->post('/archive-home/update/{id}', 'Admin\ArchiveHome@update');
+
+    // Archive Home
+    // @param integer $siteId
+    // @param string $table
+    // @return array()
+    $app->get('/archive-home/table-events', 'Admin\ArchiveHome@index');
+
+    // Archive Home
+    // @param array $order
+    // This will save modified order for events in archive big
+    // @return void
+    $app->post('/archive-home/set-order', 'Admin\ArchiveHome@setOrder');
+
+    // Archive Home Configuration
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // @param integer $eventsNumber
+    // @param integer $dateStart
+    // This will save configuration (archive home) for each table in each site
+    // After save will delete exceded events number
+    // @return array
+    $app->post('/archive-home/save-configuration', 'Admin\ArchiveHome@saveConfiguration');
+
+    // Archive Home
+    // @param $id,
+    // toogle show/hide an event from archivHome
+    // @return array()
+    $app->get('/archive-home/show-hide/{id}', 'Admin\ArchiveHome@toogleShowHide');
 
     /*
      * Archive Big
@@ -162,6 +230,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param integer $id
     // @return array()
     $app->get('/site/update-archive-big/{id}', 'Admin\Client\TriggerAction@updateArchiveBig');
+
+    // send client (site) request to update his arvhive home
+    // route for client is hardcore in controller
+    //    - /client/update-archive-home/$clientId
+    // @param integer $id
+    // @return array()
+    $app->get('/site/update-archive-home/{id}', 'Admin\Client\TriggerAction@updateArchiveHome');
 
     /*
      * Customers
@@ -262,9 +337,29 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->post('/subscription/create', 'Admin\Subscription@store');
 
+    // Subscription
+    // @param integer $id
+    // delete a subscription
+    // @return array()
+    $app->get('/subscription/delete/{id}', 'Admin\Subscription@destroy');
+
+    // Subscription
+    // @param int $id
+    // get specific subscription by id
+    // @return array()
+    $app->get('/subscription/{id}', 'Admin\Subscription@get');
+
+    // Subscription
     // get all subscriptions
     // @return array()
     $app->get('/subscription', 'Admin\Subscription@index');
+
+    // Subscription
+    // @param int $id
+    // @param string $value
+    // update subscrription tipsLeft for tips, dateEnd for days
+    // @return array()
+    $app->post('/subscription/edit/{id}', 'Admin\Subscription@update');
 
     /*
      * Package Prediction
@@ -318,7 +413,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // get all available matches by search
     // @param string $filter
     // @return array()
-    $app->get('/match/filter/{filter}', 'Admin\Match@getMatchesByFilter');
+    $app->get('/match/filter/{table}/{filter}', 'Admin\Match@getMatchesByFilter');
 
     // get match by id
     // @param integer $id
@@ -360,7 +455,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string  $table
     // @param integer $associateEventId
     // @return array();
-    $app->get('/association/package/available/{table}/{associateEventId}', 'Admin\Association@getAvailablePackages');
+    $app->get('/association/package/available/{table}/{associateEventId}/{date}', 'Admin\Association@getAvailablePackages');
 
     /*
      * Distribution
@@ -394,9 +489,10 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => $validate->message,
             ];
 
-        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)->get()->toArray();
+        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)
+            ->where('status', 'active')->get();
 
-        if (!$subscriptions)
+        if (!count($subscriptions))
             return [
                 'type'    => 'success',
                 'message' => 'No active subscriptions for this package.',
@@ -410,7 +506,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $distribution->update();
         }
 
-        // get events
+        // get events from database.
         $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
 
         $message = "Start sending emails to: \r\n";
@@ -419,14 +515,33 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // remove restricted events
             $subscriptionEvents = $events;
             foreach ($subscriptionEvents as $k => $e) {
-                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s['id'])
+                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s->id)
                     ->where('distributionId', $e['id'])->count();
 
                 if ($isRestricted)
                     unset($subscriptionEvents[$k]);
             }
 
-            $customer = \App\Customer::find($s['customerId']);
+            // if for a subscription there is no event continue.
+            // let say all tips are restricted
+            if (! $subscriptionEvents)
+                continue;
+
+            // if subscription type = tips
+            // will move number of sbscription events from tipsLeft to tipsBlocked
+            // Do not do this for noTip
+            if ($s->type === 'tips' && !$validate->isNoTip) {
+                $eventsNumber = count($subscriptionEvents);
+                $s->tipsBlocked += $eventsNumber;
+                $s->tipsLeft -= $eventsNumber;
+                $s->update();
+
+                // archive subscription if it don't have tips
+                $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+                $subscriptionInstance->manageTipsSubscriptionStatus($s);
+            }
+
+            $customer = \App\Customer::find($s->customerId);
             $message .= $customer->name . ' - ' .$customer->email . "\r\n";
 
             // insert all events in subscription_tip_history
@@ -435,11 +550,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 // here will use eventId for event table.
                 \App\SubscriptionTipHistory::create([
                     'customerId' => $customer->id,
-                    'subscriptionId' => $s['id'],
+                    'subscriptionId' => $s->id,
                     'eventId' => $event['eventId'],
-                    'siteId'  => $s['siteId'],
-                    'isCustom' => $s['isCustom'],
-                    'type' => $s['type'],
+                    'siteId'  => $s->siteId,
+                    'isCustom' => $s->isCustom,
+                    'type' => $s->type,
                     'isNoTip' => $event['isNoTip'],
                     'isVip' => $event['isVip'],
                     'country' => $event['country'],
@@ -457,18 +572,27 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 ]);
             }
 
-            // get site by packageId;
-            $site = \App\Site::find($validate->packageId);
-
             // get package
             $package = \App\Package::find($validate->packageId);
 
-            // when use send will not edit template, will not have custom template
-            if (! $template)
-                $template = $package->template;
+            // get site by packageId;
+            $site = \App\Site::find($package->siteId);
 
-            // replace section in template
+            // when use send will not edit template, will not have custom template
+            // here we must remove section
+            if (! $template) {
+                $replaceSection = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
+                $template = $replaceSection->template;
+            }
+
+            // replace tips in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
+
+            // replace customer information in template
+            $replaceCustomerInfoTemplate = new \App\Http\Controllers\Admin\Email\ReplaceCustomerInfoInTemplate(
+                $replaceTips->template,
+                $customer
+            );
 
             // store all data to send email
             $args = [
@@ -476,13 +600,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'sender'          => $site->id,
                 'type'            => 'subscriptionEmail',
                 'identifierName'  => 'subscriptionId',
-                'identifierValue' => $s['id'],
+                'identifierValue' => $s->id,
                 'from'            => $site->email,
                 'fromName'        => $package->fromName,
                 'to'              => $customer->activeEmail,
                 'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
                 'subject'         => $package->subject,
-                'body'            => $replaceTips->template,
+                'body'            => $replaceCustomerInfoTemplate->template,
                 'status'          => 'waiting',
             ];
 

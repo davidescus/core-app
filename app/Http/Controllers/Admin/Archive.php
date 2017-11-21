@@ -73,9 +73,28 @@ class Archive extends Controller
             $distribution['distributionId'] = $distribution['id'];
             unset($distribution['id']);
 
-            // TODO also send event in ArchiveHome
-
+            // ---- Insert event in archive big
             \App\ArchiveBig::create($distribution);
+
+            // ---- Insert event in archive_home
+            $archiveHome = new \App\Http\Controllers\Admin\ArchiveHome();
+
+            // increment order
+            $archiveHome->incrementOrder($distribution['siteId'], $distribution['tableIdentifier']);
+
+            // set isVisible for archive home
+            $distribution['isVisible'] = 1;
+
+            // TODO for moment will use publish date now
+            // alter we have  module for automatic publish will get publish date from table.
+            $distribution['publishDate'] = gmdate('Y-m-d H:i:s');
+
+            // insert event in archive home
+            \App\ArchiveHome::create($distribution);
+
+            // delete in adition evetns
+            $archiveHome->deleteInAdditionEvents($distribution['siteId'], $distribution['tableIdentifier']);
+
             $inserted++;
         }
 

@@ -29,7 +29,11 @@ class Event extends Controller
         foreach ($ids as $id)
             $eventsIds[] = $id->eventId;
 
-        return \App\Event::whereIn('id', $eventsIds)->get()->toArray();
+        $events = \App\Event::whereIn('id', $eventsIds)->get();
+        foreach ($events as $event)
+            $event->status;
+
+        return $events;
     }
 
     public function store() {}
@@ -99,17 +103,17 @@ class Event extends Controller
         ];
     }
 
-    // @param integer $id
+    // @param integer $eventId
     // @param string  $result
     // @param integer $statusId
     // @retun array()
-    public function updateResultAndStatus(Request $r, $id) {
+    public function updateResultAndStatus(Request $r, $eventId) {
         $result = $r->input('result');
         $statusId = $r->input('statusId');
 
         //  TODO check validity of result and status
 
-        $event = \App\Event::find($id);
+        $event = \App\Event::find($eventId);
         if (!$event)
             return [
                 'type' => 'error',
@@ -127,10 +131,17 @@ class Event extends Controller
         ];
 
         // update associations
-        \App\Association::where('eventId', $id)->update($update);
+        \App\Association::where('eventId', $eventId)->update($update);
 
         // update distribution
-        \App\Distribution::where('eventId', $id)->update($update);
+        \App\Distribution::where('eventId', $eventId)->update($update);
+
+        // update subscriptionTipHistory
+        \App\SubscriptionTipHistory::where('eventId', $eventId)->update($update);
+
+        // process subscriptions
+        $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+        $subscriptionInstance->processSubscriptions($eventId);
 
         return [
             'type' => 'success',

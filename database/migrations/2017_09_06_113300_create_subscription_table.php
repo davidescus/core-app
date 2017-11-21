@@ -15,11 +15,13 @@ class CreateSubscriptionTable extends Migration
     {
         Schema::create('subscription', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('parentId')->unsigned()->index();
             $table->string('name');
             $table->integer('customerId')->unsigned()->index();
             $table->integer('siteId')->unsigned()->index();
             $table->integer('packageId')->unsigned()->index();
             $table->integer('isCustom');
+            $table->integer('isVip')->unsigned();
             $table->string('type');
             $table->integer('subscription');
             $table->string('dateStart')->nullable()->index();
