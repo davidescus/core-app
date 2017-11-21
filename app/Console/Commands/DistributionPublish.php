@@ -136,6 +136,7 @@ class DistributionPublish extends CronCommand
         }
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
+        return true;
     }
 
     protected function loadData()
