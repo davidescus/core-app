@@ -4,8 +4,9 @@ use App\Distribution;
 use App\Site;
 use Ixudra\Curl\Facades\Curl;
 
-class DistributionPublish extends CronCommand {
-    protected $name = 'distribution:publish';
+class DistributionPublish extends CronCommand
+{
+    protected $name = 'publish:distribution';
     protected $description = 'Checks, schedules and publishes distribution events';
     /** @var array $distribution */
     protected $distribution = [];
@@ -176,7 +177,7 @@ class DistributionPublish extends CronCommand {
             )
                 $data[$value->siteId][$value->systemDate]['publishTime'] = $value->publishTime;
 
-            if ($value->statusId === 1)
+            if ((int) $value->statusId === 1)
                 $data[$value->siteId][$value->systemDate]['tmp']['good']++;
 
             $data[$value->siteId][$value->systemDate]['tmp']['all']++;
