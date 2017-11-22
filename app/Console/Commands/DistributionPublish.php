@@ -58,11 +58,14 @@ class DistributionPublish extends CronCommand
                     if (!$info['hasPublishedEvents'] && ($event->publishTime < $this->timestamp))
                         continue;
 
-                    if (!$event->isPublished && $event->result && $event->status) {
+                    if (!$event->isPublish && $event->result && $event->status) {
                         if (!$this->publish($site, $event))
                             $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
-                        else
+                        else {
+                            if (!isset($info['sent']))
+                                $info['sent'] = 0;
                             $info['sent']++;
+                        }
                     }
                 }
 
@@ -75,7 +78,7 @@ class DistributionPublish extends CronCommand
 
                         if ($info['winRate'] >= 50) {
                             foreach($info['events'] as $event) {
-                                if ($event->isPublished)
+                                if ($event->isPublish)
                                     continue;
 
                                 if (!$this->publish($site, $event))
@@ -86,7 +89,7 @@ class DistributionPublish extends CronCommand
                         } else {
                            if ($info['publishTime'] && $info['publishTime'] >= $this->timestamp) {
                                foreach($info['events'] as $event) {
-                                   if ($event->isPublished)
+                                   if ($event->isPublish)
                                        continue;
 
                                    if (!$this->publish($site, $event))
@@ -99,7 +102,7 @@ class DistributionPublish extends CronCommand
                                    $info['publishTime'] = strtotime('today 09:00:00') + mt_rand(0, 30 * 60);
 
                                foreach ($info['events'] as $event) {
-                                   if ($event->isPublished)
+                                   if ($event->isPublish)
                                        continue;
 
                                    if (!$event->publishTime) {
@@ -111,18 +114,18 @@ class DistributionPublish extends CronCommand
                         }
                     } else {
                         // process events that for today
-                        if ($this->hour < 19 || $info['hasPendingEvents'])
+                        if ($this->hour < getenv('PUBLISH_EVENTS_ON_WIN_START') || $info['hasPendingEvents'])
                             continue;
 
                         if (!$info['publishTime']) {
                             if ($info['winRate'] >= 50)
-                                $info['publishTime'] = strtotime('today 19:00:00') + mt_rand(0, 4 * 60 * 60);
+                                $info['publishTime'] = strtotime('today ' . getenv('PUBLISH_EVENTS_ON_WIN_START') . ':00:00') + mt_rand(0, 4 * 60 * 60);
                             else
                                 $info['publishTime'] = strtotime('tomorrow 09:00:00') + mt_rand(0, 30 * 60);
 
                         }
                         foreach ($info['events'] as $event) {
-                            if ($event->isPublished)
+                            if ($event->isPublish)
                                 continue;
 
                             if (!$event->publishTime) {
@@ -160,7 +163,7 @@ class DistributionPublish extends CronCommand
                     ]
                 ];
 
-            if ($value->isPublished) {
+            if ($value->isPublish) {
                 $data[$value->siteId][$value->systemDate]['hasPublishedEvents'] = true;
                 $data[$value->siteId][$value->systemDate]['tmp']['published']++;
             }
@@ -198,25 +201,12 @@ class DistributionPublish extends CronCommand
 
     protected function publish(Site $site, Distribution $event) : bool
     {
-        $response = Curl::to($site->url)
-            ->withData([
-                'route' => 'api',
-                'key' => $site->token,
-                'method' => '????',
-                'url' => env('APP_HOST') . '/client/get-configuration/' . $site->id,
-                'body' => $event->toArray(),
-            ])
-            ->post();
+        $archive = new \App\Http\Controllers\Admin\Archive();
+        $result = $archive->publish([$event->id]);
 
-        $response = json_decode($response, true);
-        if (!$response)
-            return null;
-        else {
-            if (!$event->publishTime)
-                $event->publishTime = $this->timestamp;
-            $event->isPublished = 1;
-            $event->save();
-        }
-        return true;
+        if ($result['type'] == 'success')
+            return true;
+
+        return false;
     }
 }

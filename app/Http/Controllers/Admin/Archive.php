@@ -13,10 +13,8 @@ class Archive extends Controller
     //  - mark events publish in distribution
     //  - send events in archive
     // @return array()
-    public function publish(Request $r)
+    public function publish($ids)
     {
-        $ids = $r->input('ids');
-
         $alreadyPublish = 0;
         $inserted = 0;
         $notHaveResultOrStatus = 0;
@@ -50,11 +48,12 @@ class Archive extends Controller
             if ($distribution->isNoTip)
                 $distribution->eventDate = $distribution->systemDate;
 
-            // set publish
             $distribution->isPublish = 1;
+            if (! $distribution->publishTime)
+                $distribution->publishTime = time();
 
             // update in distribution
-            $distribution->update();
+            $distribution->save();
 
             // transform in array
             $distribution = json_decode(json_encode($distribution), true);
@@ -84,10 +83,10 @@ class Archive extends Controller
 
             // set isVisible for archive home
             $distribution['isVisible'] = 1;
-
-            // TODO for moment will use publish date now
-            // alter we have  module for automatic publish will get publish date from table.
             $distribution['publishDate'] = gmdate('Y-m-d H:i:s');
+
+            if ($distribution['publishTime'])
+                $distribution['publishDate'] = gmdate('Y-m-d H:i:s', $distribution['publishTime']);
 
             // insert event in archive home
             \App\ArchiveHome::create($distribution);

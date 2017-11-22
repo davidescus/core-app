@@ -746,6 +746,10 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     //  - mark events publish in distribution
     //  - send events in archive
     // @return array()
-    $app->post('/archive/publish', 'Admin\Archive@publish');
+    $app->post('/archive/publish', function(Request $r) use ($app) {
+        $ids = $r->input('ids');
+        $archive = new \App\Http\Controllers\Admin\Archive();
+        return $archive->publish($ids);
+    });
 
 });
