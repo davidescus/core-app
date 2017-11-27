@@ -468,6 +468,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->post('/distribution/preview-and-send/preview', 'Admin\Email\Flow@createPreviewWithPlaceholders');
 
     // Distribution
+    // @param $timeStart format h:mm || hh:mm
+    // @param $timeEndformat h:mm || hh:mm
+    // will create date schedule, when email will be send.
+    // @return array()
+    $app->post('/distribution/create-email-schedule', 'Admin\Distribution@createEmailSchedule');
+
+    // Distribution
     // this is use to have a full preview of template with all events included.
     // @param array $ids
     // @return array()

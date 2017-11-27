@@ -89,6 +89,64 @@ class Distribution extends Controller
 
     public function get() {}
 
+    // @param $timeStart format h:mm || hh:mm
+    // @param $timeEndformat h:mm || hh:mm
+    // will create date schedule, when email will be send.
+    // @return array()
+    public function createEmailSchedule(Request $r)
+    {
+        $timeStart = $r->input('timeStart');
+        $timeEnd = $r->input('timeEnd');
+
+        if (!$timeStart || ! $timeEnd)
+            return [
+                'type' => 'error',
+                'message' => 'Please choose time to start and end.',
+            ];
+
+        $hStart = explode(':', $timeStart)[0];
+        $hStart = strlen($hStart) == 1 ? '0' . $hStart : $hStart;
+        $mStart = explode(':', $timeStart)[1];
+
+        $hEnd = explode(':', $timeEnd)[0];
+        $hEnd = strlen($hEnd) == 1 ? '0' . $hEnd : $hEnd;
+        $mEnd = explode(':', $timeEnd)[1];
+
+        $timeStart = strtotime(gmdate('Y-m-d') . ' ' . $hStart . ':' . $mStart . ':00');
+        $timeEnd = strtotime(gmdate('Y-m-d') . ' ' . $hEnd . ':' . $mEnd . ':00');
+
+        if ($timeStart  < (time() + (10 * 60)))
+            return [
+                'type' => 'error',
+                'message' => "Start must be greather with 10 min than current GMT time: \n" . gmdate('Y-m-d H:i:s'),
+            ];
+
+        if ($timeStart + (5 * 60) > $timeEnd)
+            return [
+                'type' => 'error',
+                'message' => "End must be greather than start with minimum 5 minutes",
+            ];
+
+        $events = \App\Distribution::where('isEmailSend', '0')
+            ->where('eventDate', '>', gmdate('Y-m-d H:i:s', strtotime('+10min')))
+            ->whereNull('mailingDate')
+            ->get();
+
+        // TODO get sites with common users and implement distance beetwentime for those sites.
+
+        $emailScheduler = new \App\Src\Distribution\EmailSchedule($events, [], $timeStart, $timeEnd);
+        $emailScheduler->createSchedule();
+        $events = $emailScheduler->getEvents();
+
+        foreach ($events as $event)
+            $event->save();
+
+        return [
+            'type' => 'success',
+            'message' => 'Email Scheduler was created with success for: ' . count($events) .' events!',
+        ];
+    }
+
     /*
      * @param string $eventId
      * @param array  $packagesIds
