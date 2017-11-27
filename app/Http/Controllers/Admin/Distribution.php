@@ -166,7 +166,69 @@ class Distribution extends Controller
 
         return [
             'type' => 'success',
-            'message' => 'Was reset schedule for: ' . count($events) .' events!',
+            'message' => 'Was canceled schedule for: ' . count($events) .' events!',
+        ];
+    }
+
+    public function setTimeEmailSchedule(Request $r)
+    {
+        $ids = $r->input('ids');
+        $time = $r->input('time');
+
+        if (!$ids)
+            return [
+                'type' => 'error',
+                'message' => 'No events selected!',
+            ];
+
+        $hTime = explode(':', $time)[0];
+        $hTime = strlen($hTime) == 1 ? '0' . $hTime : $hTime;
+        $mTime = explode(':', $time)[1];
+        $mailingDate = gmdate('Y-m-d') . ' ' . $hTime . ':' . $mTime . ':00';
+
+        if ($mailingDate < gmdate('Y-m-d H:i:s', strtotime('+2min')))
+            return [
+                'type' => 'error',
+                'message' => 'Datethat you selected must be greather with 2 minutes then current GMT date!',
+            ];
+
+        $alreadySend = 0;
+        $notAvailable = 0;
+        $greatherThanEventDate = 0;
+        $modified = 0;
+        $events = \App\Distribution::whereIn('id', $ids)->get();
+        foreach ($events as $e) {
+            if ($e->isEmailSend) {
+                $alreadySend++;
+                continue;
+            }
+            if ($e->eventDate < gmdate('Y-m-d H:i:s', strtotime('+2min'))) {
+                $notAvailable++;
+                continue;
+            }
+            if ($e->eventDate < $mailingDate) {
+                $greatherThanEventDate++;
+                    continue;
+            }
+
+            $e->mailingDate = $mailingDate;
+            $e->save();
+            $modified++;
+        }
+
+        $message = '';
+        if($alreadySend)
+            $message .= "$alreadySend: already send by email. \r\n";
+        if($notAvailable)
+            $message .= "$notAvailable: start in less then 2 minutes.\r\n";
+        if($greatherThanEventDate)
+            $message .= "$greatherThanEventDate: new mailing date is greather than event date.\r\n";
+        if($modified)
+            $message .= "$modified: was modified.\r\n";
+
+        return [
+            'type' => 'success',
+            'message' => $message,
         ];
     }
 

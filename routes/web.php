@@ -481,6 +481,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->get('/distribution/delete-email-schedule', 'Admin\Distribution@deleteEmailSchedule');
 
     // Distribution
+    // Will set date when selects events will be sended by email.
+    // @return array()
+    $app->post('/distribution/set-time-email-schedule', 'Admin\Distribution@setTimeEmailSchedule');
+
+    // Distribution
     // this is use to have a full preview of template with all events included.
     // @param array $ids
     // @return array()
