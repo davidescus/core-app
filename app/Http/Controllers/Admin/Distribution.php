@@ -128,6 +128,7 @@ class Distribution extends Controller
             ];
 
         $events = \App\Distribution::where('isEmailSend', '0')
+            ->where('systemDate', gmdate('Y-m-d H:i:s'))
             ->where('eventDate', '>', gmdate('Y-m-d H:i:s', strtotime('+10min')))
             ->whereNull('mailingDate')
             ->get();
