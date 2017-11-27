@@ -475,6 +475,12 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->post('/distribution/create-email-schedule', 'Admin\Distribution@createEmailSchedule');
 
     // Distribution
+    // will delete date scheduled for events that not sended by email yet.
+    // This wil worl only for today events
+    // @return array()
+    $app->get('/distribution/delete-email-schedule', 'Admin\Distribution@deleteEmailSchedule');
+
+    // Distribution
     // this is use to have a full preview of template with all events included.
     // @param array $ids
     // @return array()

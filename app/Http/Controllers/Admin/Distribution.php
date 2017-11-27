@@ -147,6 +147,28 @@ class Distribution extends Controller
         ];
     }
 
+    // will delete date scheduled for events that not sended by email yet.
+    // This wil worl only for today events
+    // @return array()
+    public function deleteEmailSchedule()
+    {
+        $events = \App\Distribution::where('isEmailSend', '0')
+            ->where('systemDate', gmdate('Y-m-d'))
+            ->whereNotNull('mailingDate')
+            ->where('mailingDate', '>', date('Y-m-d H:i:s', time() + 60))
+            ->get();
+
+        foreach ($events as $e) {
+            $e->mailingDate = null;
+            $e->save();
+        }
+
+        return [
+            'type' => 'success',
+            'message' => 'Was reset schedule for: ' . count($events) .' events!',
+        ];
+    }
+
     /*
      * @param string $eventId
      * @param array  $packagesIds
