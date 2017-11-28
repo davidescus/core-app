@@ -364,6 +364,153 @@ class Distribution extends Controller
 
     public function update() {}
 
+    // @param array $ids
+    // @param string|null|false $template
+    // This will add events to subscriptions, also will move events to email schedule.
+    public function associateEventsWithSubscription($ids, $template = false)
+    {
+        // validate events selection
+        $validate = new \App\Http\Controllers\Admin\Email\ValidateGroup($ids);
+        if ($validate->error)
+            return [
+                'type' => 'error',
+                'message' => $validate->message,
+            ];
+
+        $subscriptions = \App\Subscription::where('packageId', $validate->packageId)
+            ->where('status', 'active')->get();
+
+        if (!count($subscriptions))
+            return [
+                'type'    => 'success',
+                'message' => 'No active subscriptions for packageId: ' . $validate->packageId . "\r\n",
+            ];
+
+        // update tips distribution and set mailingDate and is EmailSend
+        foreach ($ids as $id) {
+            $distribution = \App\Distribution::find($id);
+
+            if (! $distribution->mailingDate)
+                $distribution->mailingDate = gmdate('Y-m-d H:i:s');
+
+            $distribution->isEmailSend = '1';
+            $distribution->update();
+        }
+
+        // get events from database.
+        $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
+
+        $message = "Start sending emails to: \r\n";
+        foreach ($subscriptions as $s) {
+
+            // remove restricted events
+            $subscriptionEvents = $events;
+            foreach ($subscriptionEvents as $k => $e) {
+                $isRestricted = \App\SubscriptionRestrictedTip::where('subscriptionId', $s->id)
+                    ->where('distributionId', $e['id'])->count();
+
+                if ($isRestricted)
+                    unset($subscriptionEvents[$k]);
+            }
+
+            // if for a subscription there is no event continue.
+            // let say all tips are restricted
+            if (! $subscriptionEvents)
+                continue;
+
+            // if subscription type = tips
+            // will move number of sbscription events from tipsLeft to tipsBlocked
+            // Do not do this for noTip
+            if ($s->type === 'tips' && !$validate->isNoTip) {
+                $eventsNumber = count($subscriptionEvents);
+                $s->tipsBlocked += $eventsNumber;
+                $s->tipsLeft -= $eventsNumber;
+                $s->update();
+
+                // archive subscription if it don't have tips
+                $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
+                $subscriptionInstance->manageTipsSubscriptionStatus($s);
+            }
+
+            $customer = \App\Customer::find($s->customerId);
+            $message .= $customer->name . ' - ' .$customer->email . "\r\n";
+
+            // insert all events in subscription_tip_history
+            foreach ($subscriptionEvents as $event) {
+
+                // here will use eventId for event table.
+                \App\SubscriptionTipHistory::create([
+                    'customerId' => $customer->id,
+                    'subscriptionId' => $s->id,
+                    'eventId' => $event['eventId'],
+                    'siteId'  => $s->siteId,
+                    'isCustom' => $s->isCustom,
+                    'type' => $s->type,
+                    'isNoTip' => $event['isNoTip'],
+                    'isVip' => $event['isVip'],
+                    'country' => $event['country'],
+                    'countryCode' => $event['countryCode'],
+                    'league' => $event['league'],
+                    'leagueId' => $event['leagueId'],
+                    'homeTeam' => $event['homeTeam'],
+                    'homeTeamId' => $event['homeTeamId'],
+                    'awayTeam' => $event['awayTeam'],
+                    'awayTeamId' => $event['awayTeamId'],
+                    'predictionId' => $event['predictionId'],
+                    'predictionName' => $event['predictionName'],
+                    'eventDate' => $event['eventDate'],
+                    'systemDate' => $event['systemDate'],
+                ]);
+            }
+
+            // get package
+            $package = \App\Package::find($validate->packageId);
+
+            // get site by packageId;
+            $site = \App\Site::find($package->siteId);
+
+            // when use send will not edit template, will not have custom template
+            // here we must remove section
+            if (! $template) {
+                $replaceSection = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
+                $template = $replaceSection->template;
+            }
+
+            // replace tips in template
+            $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
+
+            // replace customer information in template
+            $replaceCustomerInfoTemplate = new \App\Http\Controllers\Admin\Email\ReplaceCustomerInfoInTemplate(
+                $replaceTips->template,
+                $customer
+            );
+
+            // store all data to send email
+            $args = [
+                'provider'        => 'site',
+                'sender'          => $site->id,
+                'type'            => 'subscriptionEmail',
+                'identifierName'  => 'subscriptionId',
+                'identifierValue' => $s->id,
+                'from'            => $site->email,
+                'fromName'        => $package->fromName,
+                'to'              => $customer->activeEmail,
+                'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
+                'subject'         => $package->subject,
+                'body'            => $replaceCustomerInfoTemplate->template,
+                'status'          => 'waiting',
+            ];
+
+            // insert in email_schedule
+            \App\EmailSchedule::create($args);
+        }
+
+        return [
+            'type'    => 'success',
+            'message' => $message,
+        ];
+    }
+
     /*
      * @param array $ids
      * delete distributed events
