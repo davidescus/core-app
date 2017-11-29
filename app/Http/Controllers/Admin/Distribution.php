@@ -367,6 +367,7 @@ class Distribution extends Controller
     // @param array $ids
     // @param string|null|false $template
     // This will add events to subscriptions, also will move events to email schedule.
+    // return array();
     public function associateEventsWithSubscription($ids, $template = false)
     {
         // validate events selection
