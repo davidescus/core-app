@@ -8,9 +8,7 @@ use Ixudra\Curl\Facades\Curl;
 
 class TriggerAction extends Controller
 {
-    // send client (site) request for update his configuration.
-    // route for client is hardcore in controller
-    //    - /client/client/get-configuration/$clientId
+    // send client (site) data to update his configuration.
     // @param integer $id
     // @return array()
     public function updateConfiguration($id)
@@ -22,12 +20,15 @@ class TriggerAction extends Controller
                 'message' => "Site id: $id not exist enymore.",
             ];
 
+        $siteInstance = new \App\Http\Controllers\Admin\Site();
+        $conf = $siteInstance->getSiteConfiguration($id);
+
         $response = Curl::to($site->url)
             ->withData([
-                'route' => 'api',
-                'key' => $site->token,
+                'route'  => 'api',
+                'key'    => $site->token,
                 'method' => 'updateSiteConfiguration',
-                'url' => env('APP_HOST') . '/client/get-configuration/' . $id,
+                'data'   => $conf,
             ])
             ->post();
 
@@ -50,9 +51,7 @@ class TriggerAction extends Controller
         ];
     }
 
-    // send client (site) request to update his arvhive big
-    // route for client is hardcore in controller
-    //    - /client/update-archive-big/$clientId
+    // send client (site) his archive big for store.
     // @param integer $id
     // @return array()
     public function updateArchiveBig($id)
@@ -64,12 +63,15 @@ class TriggerAction extends Controller
                 'message' => "Site id: $id not exist enymore.",
             ];
 
+        $archiveBigInstance = new \App\Http\Controllers\Admin\ArchiveBig();
+        $archive = $archiveBigInstance->getFullArchiveBig($id);
+
         $response = Curl::to($site->url)
             ->withData([
-                'route' => 'api',
-                'key' => $site->token,
+                'route'  => 'api',
+                'key'    => $site->token,
                 'method' => 'updateArchiveBig',
-                'url' => env('APP_HOST') . '/client/update-archive-big/' . $id,
+                'data'   => $archive,
             ])
             ->post();
 
@@ -86,9 +88,7 @@ class TriggerAction extends Controller
         ];
     }
 
-    // send client (site) request to update his arvhive home
-    // route for client is hardcore in controller
-    //    - /client/update-archive-home/$clientId
+    // send client (site) his archive home for store
     // @param integer $id
     // @return array()
     public function updateArchiveHome($id)
@@ -100,12 +100,15 @@ class TriggerAction extends Controller
                 'message' => "Site id: $id not exist enymore.",
             ];
 
+        $archiveHomeInstance = new \App\Http\Controllers\Admin\ArchiveHome();
+        $archive = $archiveHomeInstance->getFullArchiveHome($id);
+
         $response = Curl::to($site->url)
             ->withData([
-                'route' => 'api',
-                'key' => $site->token,
-                'method' => 'updateArchiveHome',
-                'url' => env('APP_HOST') . '/client/update-archive-home/' . $id,
+                'route'   => 'api',
+                'key'     => $site->token,
+                'method'  => 'updateArchiveHome',
+                'data'    => $archive,
             ])
             ->post();
 

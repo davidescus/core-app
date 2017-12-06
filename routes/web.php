@@ -25,11 +25,17 @@ use Illuminate\Support\Facades\Artisan;
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
-/*/ Will delete this sun is possible
-$app->get('/ActivationCheck', function () use ($app) {
-   return response()->json(new \App\Src\Subscription\ActivationNowCheck());
-});
-*/
+$app->get('/some-route', ['middleware' => 'auth', function () use ($app) {
+    $user = Auth::user();
+
+    return $user->name;
+    return $app->version();
+}]);
+
+    /* -------------------------------------------------------------------
+     * - RESET -
+     * Here we can reset application.
+     ---------------------------------------------------------------------*/
 
 // reset entire aplication
 $app->get('/reset', function () use ($app) {
@@ -41,42 +47,6 @@ $app->get('/reset', function () use ($app) {
 // import events
 $app->get('/import-events', function () use ($app) {
     new \App\Http\Controllers\Cron\PortalNewEvents();
-});
-
-// test route for sending emails
-/* $app->get('/send-mail', function () use ($app) { */
-/*     new \App\Http\Controllers\Cron\SendMail(); */
-/* }); */
-
-$app->get('/test', ['middleware' => 'auth', function () use ($app) {
-    $user = Auth::user();
-
-    return $user->name;
-    return $app->version();
-}]);
-
-
-    /* -------------------------------------------------------------------
-     * - CLIENT -
-     * all routes group for clients (sites)
-     ---------------------------------------------------------------------*/
-
-$app->group(['prefix' => 'client'], function ($app) {
-
-    // @param integer $id
-    // get general configuration for site
-    // @return array()
-    $app->get('/get-configuration/{id}', 'Client\Configuration@index');
-
-    // @param integer $id
-    // get archive-big events for site.
-    // @return array() indexed by table idintifier.
-    $app->get('/update-archive-big/{id}', 'Client\ArchiveBig@index');
-
-    // @param integer $id
-    // get archive-home events for site.
-    // @return array() indexed by table idintifier.
-    $app->get('/update-archive-home/{id}', 'Client\ArchiveHome@index');
 });
 
     /* -------------------------------------------------------------------

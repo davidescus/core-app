@@ -7,16 +7,7 @@ use Illuminate\Http\Request;
 
 class Site extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
+    // @return array of objects
     public function index()
     {
         return \App\Site::all();
@@ -112,9 +103,13 @@ class Site extends Controller
         ]);
     }
 
-    /*
-     * @return array()
-     */
+    // delete:
+    //     - associated predictions
+    //     - result status
+    //     - association with packages
+    //     - associated packages
+    //     - associated packages predictions
+    // @return array()
     public function destroy($id) {
 
         $site = \App\Site::find($id);
@@ -127,23 +122,13 @@ class Site extends Controller
             ]);
         }
 
-        // delete site predictions
         \App\SitePrediction::where('siteId', $id)->delete();
-
-        // result class and status
         \App\SiteResultStatus::where('siteId', $id)->delete();
-
-        // association with packages
         \App\SitePackage::where('siteId', $id)->delete();
 
-        // packages and package associated predictions
         $packages = \App\Package::where('siteId', $id)->get()->toArray();
         foreach ($packages as $p) {
-
-            // associated predictions
             \App\PackagePrediction::where('packageId', $p['id'])->delete();
-
-            // delete pacakge
             \App\Package::find($p['id'])->delete();
         }
 
@@ -154,9 +139,7 @@ class Site extends Controller
         ]);
     }
 
-    /*
-     * @return array()
-     */
+    // @return array of objects
     public function getIdsAndNames()
     {
         return \App\Site::select('id', 'name')->get();
@@ -194,4 +177,27 @@ class Site extends Controller
         }
     }
 
+    // @param integer $id
+    // get general configuration for site
+    // @return array()
+    public function getSiteConfiguration($id)
+    {
+        $site = \App\Site::find($id);
+        if (!$site)
+            return false;
+
+        return [
+            'key'        => $site->token,
+            'name'       => $site->name,
+            'url'        => $site->url,
+            'dateFormat' => $site->dateFormat,
+            'imap'       => [
+                'host'       => $site->imapHost,
+                'port'       => $site->imapPort,
+                'user'       => $site->imapUser,
+                'password'   => $site->imapPassword,
+                'encryption' => $site->imapEncryption,
+            ],
+        ];
+    }
 }
