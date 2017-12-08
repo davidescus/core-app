@@ -33,22 +33,14 @@ class TriggerAction extends Controller
             ->post();
 
         $response = json_decode($response, true);
-        if (!$response)
-            return [
-                'type' => 'error',
-                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
-            ];
 
         // if success update isConnected
-        if ($response['success']) {
+        if (isset($response['success']) && $response['success']) {
             $site->isConnect = 1;
             $site->save();
         }
 
-        return [
-            'type' => $response['success'] ? 'success' : 'error',
-            'message' => $response['message'],
-        ];
+        return $this->checkResponse($response);
     }
 
     // send client (site) his archive big for store.
@@ -75,17 +67,7 @@ class TriggerAction extends Controller
             ])
             ->post();
 
-        $response = json_decode($response, true);
-        if (!$response)
-            return [
-                'type' => 'error',
-                'message' => 'Client site not respond, check Website Url and client site availability in browser.',
-            ];
-
-        return [
-            'type' => $response['success'] ? 'success' : 'error',
-            'message' => $response['message'],
-        ];
+        return $this->checkResponse($response);
     }
 
     // send client (site) his archive home for store
@@ -112,6 +94,11 @@ class TriggerAction extends Controller
             ])
             ->post();
 
+        return $this->checkResponse($response);
+    }
+
+     private function checkResponse($response)
+     {
         $response = json_decode($response, true);
         if (!$response)
             return [
@@ -123,5 +110,5 @@ class TriggerAction extends Controller
             'type' => $response['success'] ? 'success' : 'error',
             'message' => $response['message'],
         ];
-    }
+     }
 }
