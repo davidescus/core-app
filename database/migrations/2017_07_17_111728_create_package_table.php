@@ -34,7 +34,6 @@ class CreatePackageTable extends Migration
             $table->string('price');
             $table->string('paymentCodePaypal');
             $table->string('paymentCodeHipay');
-            $table->string('price');
             $table->string('fromName');
             $table->string('subject');
             $table->text('template');
