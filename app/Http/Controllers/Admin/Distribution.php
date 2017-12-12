@@ -121,30 +121,98 @@ class Distribution extends Controller
                 'message' => "Start must be greather with 10 min than current GMT time: \n" . gmdate('Y-m-d H:i:s'),
             ];
 
-        if ($timeStart + (5 * 60) > $timeEnd)
-            return [
-                'type' => 'error',
-                'message' => "End must be greather than start with minimum 5 minutes",
-            ];
-
         $events = \App\Distribution::where('isEmailSend', '0')
             ->where('systemDate', gmdate('Y-m-d'))
             ->where('eventDate', '>', gmdate('Y-m-d H:i:s', strtotime('+10min')))
             ->whereNull('mailingDate')
             ->get();
 
-        // TODO get sites with common users and implement distance beetwentime for those sites.
+        $sites = [];  // [siteId=> [common sites ids], ....]
+        foreach($events as $event) {
+            $eventDate = strtotime($event->eventDate);
+            /* $eventDate = $event->eventDate; */
 
-        $emailScheduler = new \App\Src\Distribution\EmailSchedule($events, [], $timeStart, $timeEnd);
+            if (!isset($sites[$event->siteId])) {
+                $sites[$event->siteId] = [
+                    'time' => $eventDate,
+                    'commonUsersWith' => [],
+                ];
+            }
+
+            if ($eventDate < $sites[$event->siteId]['time']) {
+                $sites[$event->siteId]['time'] = $eventDate;
+            }
+        }
+
+        foreach ($sites as $k => $site) {
+            if ($site['time'] < $timeEnd) {
+                unset($sites[$k]);
+
+                // return if you have events that start before schedule end
+                return [
+                    'type' => 'error',
+                    'message' => 'You can not have events that start before schedule end!',
+                ];
+            }
+        }
+
+        foreach ($sites as $k => $v) {
+            $customers = \App\Subscription::select('customerId')
+                ->where('siteId', $k)
+                ->where('status', 'active')
+                ->get();
+
+            foreach ($customers as $customer) {
+                $custom = \App\Customer::find($customer->customerId);
+                $customerEntities = \App\Customer::where('email', $custom->email)
+                    ->get();
+
+                $customerIds = [];
+                foreach ($customerEntities as $v)
+                    $customerIds[] = $v->id;
+
+                $commonSites = \App\Subscription::select('siteId')
+                    ->whereIn('customerId', $customerIds)
+                    ->where('status', 'active')
+                    ->get();
+
+                foreach ($commonSites as $commonSite) {
+                    if ($commonSite->siteId == $k)
+                        continue;
+
+                    if (! in_array( $commonSite->siteId, $sites[$k]))
+                        $sites[$k]['commonUsersWith'][] = $commonSite->siteId;
+                }
+            }
+        }
+
+        $emailScheduler = new \App\Src\Distribution\EmailSchedule($sites, $timeStart, $timeEnd);
         $emailScheduler->createSchedule();
-        $events = $emailScheduler->getEvents();
+        $scheduled = $emailScheduler->getEventsOrdered();
 
-        foreach ($events as $event)
-            $event->save();
+        $msg = '';
+        if ($emailScheduler->error) {
+            foreach ($emailScheduler->error as $e)
+                $msg .= "\r\n" . $e;
+
+            return [
+                'type' => 'error',
+                'message' => $msg,
+            ];
+        }
+
+        $scheduledNumber = 0;
+        foreach ($events as $event) {
+            if (isset($scheduled['data'][$event->siteId])) {
+                $event->mailingDate = $scheduled['data'][$event->siteId]['schedule'];
+                $event->save();
+                $scheduledNumber++;
+            }
+        }
 
         return [
             'type' => 'success',
-            'message' => 'Email Scheduler was created with success for: ' . count($events) .' events!',
+            'message' => 'Email Scheduler was created with success for: ' . $scheduledNumber .' events!',
         ];
     }
 

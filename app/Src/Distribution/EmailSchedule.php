@@ -4,37 +4,83 @@ namespace App\Src\Distribution;
 
 class EmailSchedule
 {
-    private $events = [];
-    private $siteCommonUsers = [];
-    private $time = [];
+    private $sites = [];
+    private $timeStart;
+    private $timeEnd;
+    private $positionsNumber = 0;
+    private $sitesNumber = 0;
+    private $sitesCommonUsers = [];
+    private $times = [];
+    private $ordered = [];
 
-    public function __construct($events, array $siteCommonUsers, int $timeStart, int $timeEnd)
+    public $error = [];
+
+    public function __construct(array $sites, int $timeStart, int $timeEnd)
     {
-        $this->events = $events;
-        $this->siteCommonUsers = $siteCommonUsers;
-        $this->time['start'] = $timeStart;
-        $this->time['end'] = $timeEnd;
+        $this->sites = $sites;
+        $this->timeStart = $timeStart;
+        $this->timeEnd = $timeEnd;
     }
 
+
+    // if no sites will not check anything, return []
+    // if number of positions less than number of sites with common users will return error
     public function createSchedule()
     {
-        $smd = []; // siteId => date
-        foreach ($this->events as $e) {
-            if (!isset($smd[$e->siteId]))
-                $smd[$e->siteId] = date('Y-m-d H:i:s', rand($this->time['start'], $this->time['end']));
+        $this->sitesNumber = count($this->sites);
+
+        if (! $this->sitesNumber > 0)
+            return;
+
+        $this->positionsNumber = intval(($this->timeEnd - $this->timeStart) / 60);
+
+        foreach($this->sites as $k => $v) {
+
+            if ($v['time'] <= $this->timeEnd) {
+                unset($this->sites[$k]);
+                continue;
+            }
+
+            if (count($v['commonUsersWith']))
+                $this->sitesCommonUsers[$k] = $v;
         }
 
-        // make full minutes, not work with secconds
-        foreach ($smd as $k => $v)
-            $smd[$k] = substr($v, 0, -2) . '00';
+        if ($this->positionsNumber < count($this->sitesCommonUsers) + 1) {
+            $this->error[] = "Schedule interval (minutes) must be greather than number of sites that have common users " . count($this->sitesCommonUsers) . " + 1";
+            return;
+        }
 
-        foreach ($this->events as $e)
-            $e->mailingDate = $smd[$e->siteId];
+        $noCommonUsersTime = $this->randUniqueTime();
+
+        foreach ($this->sites as $k => $v) {
+            if (! array_key_exists($k, $this->sitesCommonUsers)) {
+                $this->sites[$k]['schedule'] = $noCommonUsersTime;
+                continue;
+            }
+
+            $this->sites[$k]['schedule'] = $this->randUniqueTime();
+        }
     }
 
-    public function getEvents()
+    // recursive function that generate random time
+    public function randUniqueTime() {
+        $date = date('Y-m-d H:i', rand($this->timeStart, $this->timeEnd)) . ':00';
+
+        if (! in_array($date, $this->times)) {
+            $this->times[] = $date;
+            return $date;
+        }
+
+        return $this->randUniqueTime();
+    }
+
+    public function getEventsOrdered()
     {
-        return $this->events;
+        return [
+            'data' => $this->sites,
+            'positionsNumber' => $this->positionsNumber,
+            'sitesNumber' => $this->sitesNumber,
+        ];
     }
 }
 

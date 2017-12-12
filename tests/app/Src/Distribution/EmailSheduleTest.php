@@ -9,161 +9,88 @@ class EmailScheduldeTest extends TestCase
     {
         $this->assertInstanceOf(
             \App\Src\Distribution\EmailSchedule::class,
-            new \App\Src\Distribution\EmailSchedule([], [], 0, 0)
+            new \App\Src\Distribution\EmailSchedule([], 0, 0)
         );
     }
 
-    public function testTableWithManyCases()
+    public function testNoEvents()
     {
-        $cases = [];
-
-        // case array template
-        $case = [
-            'events' => [],
-            'siteCommonUsers' => [],
-            'timeStart' => time() + (10 * 60),
-            'timeEnd' => time() + (130 * 60),
-            'expect' => [],
+        $c = [
+            'sites' => [],
+            'timeStart' => time(),
+            'timeEnd' => time(),
         ];
 
-        // --- no events
-        $c = $case;
-        $cases[] = $c;
-        // --- /. end test case
+        $instance = new \App\Src\Distribution\EmailSchedule(
+            $c['sites'],
+            $c['timeStart'],
+            $c['timeEnd']
+        );
+        $instance->createSchedule();
+        $r = $instance->getEventsOrdered();
 
-        // --- two events in same site
-        $c = $case;
+        $this->assertTrue(
+            $instance->error === [],
+            "No events, should no have errors"
+        );
+        $this->assertTrue(
+            $r['data'] === [],
+            "No events, should return no ordered events"
+        );
+    }
 
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (20 * 60));
-        $c['events'][] = $e;
+    public function testIntervalIsGreatherThanSitesCommonUsersNumberPlusOne()
+    {
+        $c = [
+            'sites' => [
+                '1' => [
+                    'time'        => time() + (120 * 60),
+                    'commonUsersWith' => [],
+                ],
+            ],
+            'timeStart' => time(),
+            'timeEnd' => time(),
+        ];
 
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
+        $instance = new \App\Src\Distribution\EmailSchedule(
+            $c['sites'],
+            $c['timeStart'],
+            $c['timeEnd']
+        );
+        $instance->createSchedule();
+        $r = $instance->getEventsOrdered();
 
-        $cases[] = $c;
-        // --- /. end test case
+        $this->assertTrue(
+            $instance->error !== [],
+            "must have error when interval is less than number of sites with common user + 1"
+        );
+    }
 
-        // --- two events 2 sites
-        $c = $case;
+    public function testExcludeEventsThatStartBeforeScheduleTimeEnd()
+    {
+        $c = [
+            'sites' => [
+                '1' => [
+                    'time'        => time() + (49 * 60),
+                    'commonUsersWith' => [],
+                ],
+            ],
+            'timeStart' => time(),
+            'timeEnd' => time() + (59 * 60),
+        ];
 
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (20 * 60));
-        $c['events'][] = $e;
+        $instance = new \App\Src\Distribution\EmailSchedule(
+            $c['sites'],
+            $c['timeStart'],
+            $c['timeEnd']
+        );
+        $instance->createSchedule();
+        $r = $instance->getEventsOrdered();
 
-        $e = new \App\Distribution();
-        $e->siteId = 2;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $cases[] = $c;
-        // --- /. end test case
-
-        // --- 3 events 2 sites
-        $c = $case;
-
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (20 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 2;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $cases[] = $c;
-        // --- /. end test case
-
-        // --- 3 events 2 sites
-        $c = $case;
-
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (20 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 2;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $cases[] = $c;
-        // --- /. end test case
-//
-        // --- 3 events 3 sites
-        $c = $case;
-
-        $e = new \App\Distribution();
-        $e->siteId = 1;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (10 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 2;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (20 * 60));
-        $c['events'][] = $e;
-
-        $e = new \App\Distribution();
-        $e->siteId = 3;
-        $e->eventDate = gmdate('Y-m-d H:i:s', time() + (30 * 60));
-        $c['events'][] = $e;
-
-        $cases[] = $c;
-        // --- /. end test case
-
-        foreach ($cases as $c) {
-            $instance = new \App\Src\Distribution\EmailSchedule(
-                $c['events'],
-                $c['siteCommonUsers'],
-                $c['timeStart'],
-                $c['timeEnd']
-            );
-            $instance->createSchedule();
-            $results = $instance->getEvents();
-
-            $h = []; // $h[siteId] = '2017-11-11 23:43:23';
-            foreach ($results as $k => $e) {
-                if (!isset($h[$e->siteId]))
-                    $h[$e->siteId] = $e->mailingDate;
-
-                $this->assertTrue(
-                    $e->mailingDate !== null,
-                    "Null mailnigDate"
-                );
-
-                // all events for a site have same mailingDate
-                $this->assertTrue(
-                    $e->mailingDate === $h[$e->siteId],
-                    "Event from same site have diff mailingdate. Exp: " . $h[$e->siteId] . " Got: " . $e->mailingDate
-                );
-
-                // mailingDate is greather then timeStart and lower than timeEnd
-                $md = strtotime($e->mailingDate);
-                $this->assertTrue(
-                    $md >= $c['timeStart'],
-                    "mailingDate < timeStart \n mailingDate: " . $md . " timeStart: " . $c['timeStart']
-                );
-                $this->assertTrue(
-                    $md <= $c['timeEnd'],
-                    "mailingDate > timeEnd \n mailingDate: " . $md . " timeEnd: " . $c['timeEnd']
-                );
-            }
-        }
+        $this->assertEquals(
+            count($c['sites']) -1, count($r['data']),
+            "Sites that have events hwo start before schedule timeEnd muxt be excluded"
+        );
     }
 }
 
