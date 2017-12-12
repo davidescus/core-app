@@ -24,6 +24,8 @@ class Package extends Model {
         'oldPrice',
         'discount',
         'price',
+        'paymentCodePaypal',
+        'paymentCodeHipay',
         'fromName',
         'subject',
         'template',
