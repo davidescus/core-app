@@ -186,6 +186,13 @@ class Site extends Controller
         if (!$site)
             return false;
 
+        $packages = [];
+        foreach (\App\Package::where('siteId', $id)->get() as $pack) {
+            $packages[$pack->identifier]['paymentCodePaypal'] = $pack->paymentCodePaypal;
+            $packages[$pack->identifier]['paymentCodeHipay'] = $pack->paymentCodeHipay;
+        }
+
+
         return [
             'key'        => $site->token,
             'name'       => $site->name,
@@ -198,6 +205,7 @@ class Site extends Controller
                 'password'   => $site->imapPassword,
                 'encryption' => $site->imapEncryption,
             ],
+            'packages' => $packages,
         ];
     }
 }
