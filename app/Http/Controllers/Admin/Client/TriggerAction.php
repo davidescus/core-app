@@ -40,7 +40,7 @@ class TriggerAction extends Controller
             $site->save();
         }
 
-        return $this->checkResponse($response);
+        return $this->checkResponse(json_encode($response));
     }
 
     // send client (site) his archive big for store.
@@ -97,8 +97,8 @@ class TriggerAction extends Controller
         return $this->checkResponse($response);
     }
 
-     private function checkResponse($response)
-     {
+    private function checkResponse($response)
+    {
         $response = json_decode($response, true);
         if (!$response)
             return [
@@ -110,5 +110,5 @@ class TriggerAction extends Controller
             'type' => $response['success'] ? 'success' : 'error',
             'message' => $response['message'],
         ];
-     }
+    }
 }
