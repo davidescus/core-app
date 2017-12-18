@@ -97,7 +97,6 @@ class ImportNewEvents extends CronCommand
 
         $info['imported'] = $this->imported;
         $info['alreadyExists'] = $this->alreadyExists;
-        $info['message'] = "Success";
 
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
