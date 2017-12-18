@@ -18,7 +18,7 @@ class CreateMatchTable extends Migration
             $table->string('country');
             $table->string('countryCode');
             $table->string('league');
-            $table->integer('leagueId');
+            $table->integer('leagueId')->index();
             $table->string('homeTeam');
             $table->integer('homeTeamId');
             $table->string('awayTeam');

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\DistributionPublish;
 use App\Console\Commands\DistributionEmailSchedule;
+use App\Console\Commands\ImportNewEvents;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         DistributionPublish::class,
         DistributionEmailSchedule::class,
+        ImportNewEvents::class,
     ];
 
     /**
@@ -35,11 +37,6 @@ class Kernel extends ConsoleKernel
         $schedule->call(function() {
             new \App\Http\Controllers\Cron\ProcessDaysSubscription();
         })->timezone('GMT')->dailyAt('00:01');
-
-        // get new events from portal at every 5 minutes.
-        $schedule->call(function() {
-            new \App\Http\Controllers\Cron\PortalNewEvents();
-        })->everyFiveMinutes();
 
         // send for email_schedule each minute
         $schedule->call(function() {
