@@ -15,17 +15,17 @@ class CreateArchiveHomeTable extends Migration
     {
         Schema::create('archive_home', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('distributionId')->unsigned();
-            $table->integer('order')->unsigned();
-            $table->integer('associationId')->uunsigned();
-            $table->integer('eventId')->unsigned();
-            $table->integer('siteId')->unsigned();
-            $table->integer('packageId')->unsigned();
+            $table->integer('distributionId')->unsigned()->index();
+            $table->integer('order')->unsigned()->index();
+            $table->integer('associationId')->uunsigned()->index();
+            $table->integer('eventId')->unsigned()->index();
+            $table->integer('siteId')->unsigned()->index();
+            $table->integer('packageId')->unsigned()->index();
             $table->string('source');
             $table->string('provider');
-            $table->string('tableIdentifier');
-            $table->string('tipIdentifier');
-            $table->integer('isVisible')->unsigned()->default(1);
+            $table->string('tableIdentifier')->index();
+            $table->string('tipIdentifier')->index();
+            $table->integer('isVisible')->unsigned()->default(1)->index();
             $table->integer('isNoTip')->unsigned()->default(0);
             $table->integer('isVip')->unsigned()->default(0);
             $table->string('country');
@@ -45,9 +45,8 @@ class CreateArchiveHomeTable extends Migration
             $table->timestamp('eventDate')->nullable();
             $table->timestamp('mailingDate')->nullable();
             $table->timestamp('publishDate')->nullable();
-            $table->string('systemDate')->nullable();
+            $table->string('systemDate')->nullable()->index();
             $table->timestamps();
-            $table->index(['distributionId', 'order', 'associationId', 'eventId', 'siteId', 'packageId', 'tableIdentifier', 'tipIdentifier', 'isVisible', 'systemDate']);
         });
     }
 

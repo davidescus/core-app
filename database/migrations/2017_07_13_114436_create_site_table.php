@@ -30,9 +30,8 @@ class CreateSiteTable extends Migration
             $table->string('imapEncryption');
             $table->string('dateFormat');
             $table->integer('isConnect')->unsigned();
-            $table->string('token')->unique();
+            $table->string('token')->unique()->index();
             $table->timestamps();
-            $table->index(['token']);
         });
 
     }

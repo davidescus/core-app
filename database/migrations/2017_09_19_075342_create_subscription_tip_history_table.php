@@ -15,10 +15,10 @@ class CreateSubscriptionTipHistoryTable extends Migration
     {
         Schema::create('subscription_tip_history', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('subscriptionId')->unsigned();
-            $table->integer('customerId')->unsigned();
-            $table->integer('eventId')->unsigned();
-            $table->integer('siteId')->unsigned();
+            $table->integer('subscriptionId')->unsigned()->index();
+            $table->integer('customerId')->unsigned()->index();
+            $table->integer('eventId')->unsigned()->index();
+            $table->integer('siteId')->unsigned()->index();
             $table->integer('processSubscription');
             $table->string('processType');
             $table->integer('isCustom');
@@ -39,10 +39,9 @@ class CreateSubscriptionTipHistoryTable extends Migration
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
-            $table->timestamp('mailingDate')->nullable();
-            $table->string('systemDate')->nullable();
+            $table->timestamp('mailingDate')->nullable()->index();
+            $table->string('systemDate')->nullable()->index();
             $table->timestamps();
-            $table->index(['subscriptionId', 'customerId', 'eventId', 'siteId', 'mailingDate', 'systemDate']);
         });
     }
 

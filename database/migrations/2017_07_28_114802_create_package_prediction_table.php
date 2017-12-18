@@ -15,9 +15,8 @@ class CreatePackagePredictionTable extends Migration
     {
         Schema::create('package_prediction', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('packageId');
+            $table->string('packageId')->index();
             $table->string('predictionIdentifier');
-            $table->index(['packageId']);
         });
     }
 

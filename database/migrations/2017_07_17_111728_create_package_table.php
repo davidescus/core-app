@@ -15,7 +15,7 @@ class CreatePackageTable extends Migration
     {
         Schema::create('package', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('siteId');
+            $table->integer('siteId')->index();
             $table->string('name');
             $table->string('identifier');
             $table->string('tipIdentifier');
@@ -38,7 +38,6 @@ class CreatePackageTable extends Migration
             $table->string('subject');
             $table->text('template');
             $table->timestamps();
-            $table->index(['siteId']);
         });
     }
 

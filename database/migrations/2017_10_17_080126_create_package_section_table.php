@@ -15,11 +15,10 @@ class CreatePackageSectionTable extends Migration
     {
         Schema::create('package_section', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('packageId');
-            $table->string('section');
-            $table->string('systemDate');
+            $table->integer('packageId')->index();
+            $table->string('section')->index();
+            $table->string('systemDate')->index();
             $table->timestamps();
-            $table->index('packageId', 'section', 'systemDate');
         });
     }
 

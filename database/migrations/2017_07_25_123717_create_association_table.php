@@ -15,10 +15,10 @@ class CreateAssociationTable extends Migration
     {
         Schema::create('association', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('eventId')->unsigned();
+            $table->integer('eventId')->unsigned()->index();
             $table->string('source');
             $table->string('provider');
-            $table->string('type');
+            $table->string('type')->index();
             $table->integer('isNoTip')->unsigned();
             $table->integer('isVip')->unsigned();
             $table->string('country');
@@ -34,9 +34,8 @@ class CreateAssociationTable extends Migration
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
-            $table->string('systemDate')->nullable();
+            $table->string('systemDate')->nullable()->index();
             $table->timestamps();
-            $table->index(['eventId', 'type', 'systemDate']);
         });
     }
 
