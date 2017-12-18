@@ -38,6 +38,7 @@ class CreatePackageTable extends Migration
             $table->string('subject');
             $table->text('template');
             $table->timestamps();
+            $table->index(['siteId']);
         });
     }
 

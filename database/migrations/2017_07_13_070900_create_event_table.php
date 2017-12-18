@@ -15,22 +15,23 @@ class CreateEventTable extends Migration
     {
         Schema::create('event', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('source')->index();
-            $table->string('provider')->index();
+            $table->string('source');
+            $table->string('provider');
             $table->string('country');
             $table->string('countryCode');
-            $table->string('league')->index();
+            $table->string('league');
             $table->integer('leagueId')->unsigned();
             $table->string('homeTeam');
             $table->integer('homeTeamId')->unsigned();
             $table->string('awayTeam');
             $table->integer('awayTeamId')->unsigned();
-            $table->string('odd')->index();
+            $table->string('odd');
             $table->string('predictionId');
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
             $table->timestamps();
+            $table->index(['source', 'provider', 'league', 'odd']);
         });
     }
 

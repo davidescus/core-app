@@ -15,10 +15,10 @@ class CreateSubscriptionTipHistoryTable extends Migration
     {
         Schema::create('subscription_tip_history', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('subscriptionId')->unsigned()->index();
-            $table->integer('customerId')->unsigned()->index();
-            $table->integer('eventId')->unsigned()->index();
-            $table->integer('siteId')->unsigned()->index();
+            $table->integer('subscriptionId')->unsigned();
+            $table->integer('customerId')->unsigned();
+            $table->integer('eventId')->unsigned();
+            $table->integer('siteId')->unsigned();
             $table->integer('processSubscription');
             $table->string('processType');
             $table->integer('isCustom');
@@ -33,15 +33,16 @@ class CreateSubscriptionTipHistoryTable extends Migration
             $table->integer('homeTeamId')->unsigned();
             $table->string('awayTeam');
             $table->integer('awayTeamId')->unsigned();
-            $table->string('odd');
+            $table->string('odd', 10);
             $table->string('predictionId');
             $table->string('predictionName');
             $table->string('result');
             $table->string('statusId', 2);
             $table->timestamp('eventDate')->nullable();
-            $table->timestamp('mailingDate')->nullable()->index();
-            $table->string('systemDate')->nullable()->index();
+            $table->timestamp('mailingDate')->nullable();
+            $table->string('systemDate')->nullable();
             $table->timestamps();
+            $table->index(['subscriptionId', 'customerId', 'eventId', 'siteId', 'mailingDate', 'systemDate']);
         });
     }
 

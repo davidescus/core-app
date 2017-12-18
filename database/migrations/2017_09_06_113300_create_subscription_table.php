@@ -15,22 +15,23 @@ class CreateSubscriptionTable extends Migration
     {
         Schema::create('subscription', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('parentId')->unsigned()->index();
+            $table->integer('parentId')->unsigned();
             $table->string('name');
-            $table->integer('customerId')->unsigned()->index();
-            $table->integer('siteId')->unsigned()->index();
-            $table->integer('packageId')->unsigned()->index();
+            $table->integer('customerId')->unsigned();
+            $table->integer('siteId')->unsigned();
+            $table->integer('packageId')->unsigned();
             $table->integer('isCustom');
             $table->integer('isVip')->unsigned();
             $table->string('type');
             $table->integer('subscription');
-            $table->string('dateStart')->nullable()->index();
-            $table->string('dateEnd')->nullable()->index();
+            $table->string('dateStart')->nullable();
+            $table->string('dateEnd')->nullable();
             $table->integer('tipsLeft');
             $table->integer('tipsBlocked');
             $table->string('status');
             $table->timestamp('archivedDate')->nullable();
             $table->timestamps();
+            $table->index(['parentId', 'customerId', 'siteId', 'packageId', 'dateStart', 'dateEnd']);
         });
     }
 

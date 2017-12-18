@@ -16,11 +16,12 @@ class CreateArchiveHomeConfTable extends Migration
         //
         Schema::create('archive_home_conf', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('siteId')->unsigned()->index();
-            $table->string('tableIdentifier')->index();
+            $table->integer('siteId')->unsigned();
+            $table->string('tableIdentifier');
             $table->integer('eventsNumber');
             $table->string('dateStart');
             $table->timestamps();
+            $table->index(['siteId', 'tableIdentifier']);
         });
     }
 

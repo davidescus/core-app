@@ -37,7 +37,7 @@ class CreateArchiveBigTable extends Migration
             $table->integer('homeTeamId')->unsigned();
             $table->string('awayTeam');
             $table->integer('awayTeamId')->unsigned();
-            $table->string('odd');
+            $table->string('odd', 10);
             $table->string('predictionId');
             $table->string('predictionName');
             $table->string('result');

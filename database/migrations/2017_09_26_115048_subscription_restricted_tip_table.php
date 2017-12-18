@@ -15,10 +15,11 @@ class SubscriptionRestrictedTipTable extends Migration
     {
         Schema::create('subscription_restricted_tip', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('subscriptionId')->index();
-            $table->integer('distributionId')->index();
-            $table->string('systemDate')->index();
+            $table->integer('subscriptionId');
+            $table->integer('distributionId');
+            $table->string('systemDate');
             $table->timestamps();
+            $table->index(['subscriptionId', 'distributionId', 'systemDate']);
         });
     }
 

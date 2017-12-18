@@ -17,6 +17,7 @@ class CreatePackagePredictionTable extends Migration
             $table->increments('id');
             $table->string('packageId');
             $table->string('predictionIdentifier');
+            $table->index(['packageId']);
         });
     }
 

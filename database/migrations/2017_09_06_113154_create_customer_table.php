@@ -16,11 +16,12 @@ class CreateCustomerTable extends Migration
         //
         Schema::create('customer', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('siteId')->unsigned()->index();
+            $table->integer('siteId')->unsigned();
             $table->string('name');
-            $table->string('email')->index();
-            $table->string('activeEmail')->index();
+            $table->string('email');
+            $table->string('activeEmail');
             $table->timestamps();
+            $table->index(['siteId', 'email', 'activeEmail']);
         });
     }
 
