@@ -149,6 +149,12 @@ class Event extends Controller
         // update subscriptionTipHistory
         \App\SubscriptionTipHistory::where('eventId', $eventId)->update($update);
 
+        // update archive home
+        \App\ArchiveBig::where('eventId', $eventId)->update($update);
+
+        // update update archive big
+        \App\ArchiveHome::where('eventId', $eventId)->update($update);
+
         // process subscriptions
         $subscriptionInstance = new \App\Http\Controllers\Admin\Subscription();
         $subscriptionInstance->processSubscriptions($eventId);
