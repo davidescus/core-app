@@ -133,6 +133,13 @@ class Event extends Controller
             'statusId' => $statusId,
         ];
 
+        // update match
+        \App\Match::where('id', $event->matchId)
+            ->where('leagueId', $event->leagueId)
+            ->update([
+                'result' => $result,
+            ]);
+
         // update associations
         \App\Association::where('eventId', $eventId)->update($update);
 
