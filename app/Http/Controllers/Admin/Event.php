@@ -93,6 +93,9 @@ class Event extends Controller
         $match['odd'] = $odd;
         $match['source'] = 'feed';
         $match['provider'] = 'event';
+        $match['matchId'] = $match['id'];
+
+        unset($match['id']);
 
         $event = \App\Event::create($match);
 

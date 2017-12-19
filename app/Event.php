@@ -7,6 +7,7 @@ class Event extends Model {
     protected $table = 'event';
 
     protected $fillable = [
+        'matchId',
         'source',
         'provider',
         'country',
