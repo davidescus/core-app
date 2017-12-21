@@ -29,6 +29,10 @@ class SetStatusByScore
             return false;
         }
 
+        // 1x2
+        if ($this->predictionIdentifier == 'equal')
+            $this->status = ($this->homeTeam === $this->awayTeam) ? 1 : 2;
+
         // over / under
         if ($this->predictionIdentifier == 'over_1.5')
             $this->status = ($this->homeTeam + $this->awayTeam) > 1.5 ? 1 : 2;
