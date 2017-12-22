@@ -260,6 +260,25 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return array()
     $app->get("/prediction", 'Admin\Prediction@index');
 
+    // get statusId for event by result
+    // @param string eventId
+    // @param string result
+    // @return array()
+    $app->post("/prediction/status-by-result/{eventId}", function(Request $r, $eventId) use ($app) {
+        $result = $r->input('result');
+
+        $event = \App\Event::find($eventId);
+
+        $statusByScore = new \App\Src\Prediction\SetStatusByScore($result, $event->predictionId);
+        $statusByScore->evaluateStatus();
+        $statusId = $statusByScore->getStatus();
+
+        return [
+            'type' => $statusId > 0 ? 'success' : 'error',
+            'statusId' => $statusId,
+        ];
+    });
+
     /*
      * Site Prediction
      ---------------------------------------------------------------------*/
