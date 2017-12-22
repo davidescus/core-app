@@ -30,8 +30,30 @@ class SetStatusByScore
         }
 
         // 1x2
+        if ($this->predictionIdentifier == 'team1')
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+
         if ($this->predictionIdentifier == 'equal')
             $this->status = ($this->homeTeam === $this->awayTeam) ? 1 : 2;
+
+        if ($this->predictionIdentifier == 'team2')
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+
+        // to score
+        if ($this->predictionIdentifier == 'noGoal')
+            $this->status = ($this->homeTeam < 1 && $this->awayTeam < 1) ? 1 : 2;
+
+        if ($this->predictionIdentifier == 'oneToScore') {
+            if ($this->homeTeam < 1 && $this->awayTeam > 0)
+                $this->status = 1;
+            elseif ($this->homeTeam > 0 && $this->awayTeam < 1)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'bothToScore')
+            $this->status = ($this->homeTeam >  0 && $this->awayTeam > 0) ? 1 : 2;
 
         // over / under
         if ($this->predictionIdentifier == 'over_1.5')
@@ -51,6 +73,265 @@ class SetStatusByScore
 
         if ($this->predictionIdentifier == 'under_3.5')
             $this->status = ($this->homeTeam + $this->awayTeam) < 3.5 ? 1 : 2;
+
+        // over /under 1, 2, 3
+        if ($this->predictionIdentifier == 'over_1') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 1)
+                $this->status = 3;
+            elseif ($total > 1)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'over_2') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 2)
+                $this->status = 3;
+            elseif ($total > 2)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'over_3') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 3)
+                $this->status = 3;
+            elseif ($total > 3)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'under_1') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 1)
+                $this->status = 3;
+            elseif ($total > 1)
+                $this->status = 2;
+            else
+                $this->status = 1;
+        }
+        if ($this->predictionIdentifier == 'under_2') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 2)
+                $this->status = 3;
+            elseif ($total > 2)
+                $this->status = 2;
+            else
+                $this->status = 1;
+        }
+        if ($this->predictionIdentifier == 'under_3') {
+            $total = $this->homeTeam + $this->awayTeam;
+            if ($total == 3)
+                $this->status = 3;
+            elseif ($total > 3)
+                $this->status = 2;
+            else
+                $this->status = 1;
+        }
+
+        // ah
+        if ($this->predictionIdentifier == 'team1-ah_+0.5') {
+            $this->homeTeam += 0.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_+1.5') {
+            $this->homeTeam += 1.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_+2.5') {
+            $this->homeTeam += 2.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_+3.5') {
+            $this->homeTeam += 3.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+
+        if ($this->predictionIdentifier == 'team2-ah_+0.5') {
+            $this->awayTeam += 0.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_+1.5') {
+            $this->awayTeam += 1.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_+2.5') {
+            $this->awayTeam += 2.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_+3.5') {
+            $this->awayTeam += 3.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+
+        if ($this->predictionIdentifier == 'team1-ah_-0.5') {
+            $this->homeTeam -= 0.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_-1.5') {
+            $this->homeTeam -= 1.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_-2.5') {
+            $this->homeTeam -= 2.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_-3.5') {
+            $this->homeTeam -= 3.5;
+            $this->status = ($this->homeTeam > $this->awayTeam) ? 1 : 2;
+        }
+
+        if ($this->predictionIdentifier == 'team2-ah_-0.5') {
+            $this->awayTeam -= 0.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_-1.5') {
+            $this->awayTeam -= 1.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_-2.5') {
+            $this->awayTeam -= 2.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_-3.5') {
+            $this->awayTeam -= 3.5;
+            $this->status = ($this->homeTeam < $this->awayTeam) ? 1 : 2;
+        }
+
+
+        // ah 1, 2, 3
+        if ($this->predictionIdentifier == 'team1-ah_0') {
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'team2-ah_0') {
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'team1-ah_+1') {
+            $this->homeTeam += 1;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_+2') {
+            $this->homeTeam += 2;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_+3') {
+            $this->homeTeam += 3;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'team1-ah_-1') {
+            $this->homeTeam -= 1;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_-2') {
+            $this->homeTeam -= 2;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team1-ah_-3') {
+            $this->homeTeam -= 3;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam > $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'team2-ah_+1') {
+            $this->awayTeam += 1;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_+2') {
+            $this->awayTeam += 2;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_+3') {
+            $this->awayTeam += 3;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
+        if ($this->predictionIdentifier == 'team2-ah_-1') {
+            $this->awayTeam -= 1;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_-2') {
+            $this->awayTeam -= 2;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+        if ($this->predictionIdentifier == 'team2-ah_-3') {
+            $this->awayTeam -= 3;
+            if ($this->homeTeam == $this->awayTeam)
+                $this->status = 3;
+            elseif ($this->homeTeam < $this->awayTeam)
+                $this->status = 1;
+            else
+                $this->status = 2;
+        }
+
     }
 
     public function getErrors()
