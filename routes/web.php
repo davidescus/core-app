@@ -20,6 +20,7 @@ use PHPMailer\PHPMailer\SMTP;
 
 use Illuminate\Support\Facades\Artisan;
 
+
     /* -------------------------------------------------------------------
      * - TESTING -
      * This to test will not remain here.
@@ -353,7 +354,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @param string  $result
     // @param integer $statusId
     // @retun array()
-    $app->post('/event/update-result-status/{id}', 'Admin\Event@updateResultAndStatus');
+    $app->post('/event/update-result-status/{id}', function(Request $r, $id) use ($app) {
+        $result = $r->input('result');
+        $statusId = $r->input('statusId');
+
+        $eventInstance = new \App\Http\Controllers\Admin\Event();
+        return $eventInstance->updateResultAndStatus($id, $result, $statusId);
+    });
 
     // Events
     // get all associated events

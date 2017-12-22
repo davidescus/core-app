@@ -110,9 +110,7 @@ class Event extends Controller
     // @param string  $result
     // @param integer $statusId
     // @retun array()
-    public function updateResultAndStatus(Request $r, $eventId) {
-        $result = $r->input('result');
-        $statusId = $r->input('statusId');
+    public function updateResultAndStatus($eventId, $result, $statusId) {
 
         //  TODO check validity of result and status
 
