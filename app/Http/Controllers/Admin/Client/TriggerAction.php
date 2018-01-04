@@ -32,7 +32,7 @@ class TriggerAction extends Controller
             ])
             ->post();
 
-        $response = json_decode($response, true);
+        $response = $this->decodeJSON($response);
 
         // if success update isConnected
         if (isset($response['success']) && $response['success']) {
@@ -99,7 +99,7 @@ class TriggerAction extends Controller
 
     private function checkResponse($response)
     {
-        $response = json_decode($response, true);
+        $response = $this->decodeJSON($response);
         if (!$response)
             return [
                 'type' => 'error',
@@ -110,5 +110,15 @@ class TriggerAction extends Controller
             'type' => $response['success'] ? 'success' : 'error',
             'message' => $response['message'],
         ];
+    }
+
+    private function decodeJSON($json)
+    {
+        // remove unused characters from json
+        if (0 === strpos(bin2hex($json), 'efbbbf')) {
+            $json = substr($json, 3);
+        }
+
+        return (array) json_decode($json, true);
     }
 }
