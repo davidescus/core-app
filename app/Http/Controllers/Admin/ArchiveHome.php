@@ -223,7 +223,7 @@ class ArchiveHome extends Controller
         $vipFlags = [];
 
         $data = [];
-        foreach ($events as $e) {
+        foreach ($events as $k => $e) {
 
             // add result statusName and statusClass and predictionName
             // only when event is tip (NOT noTip)
@@ -232,6 +232,14 @@ class ArchiveHome extends Controller
                 $e['statusClass'] = $results[$e['statusId']]['statusClass'];
                 $e['predictionName'] = $predictions[$e['predictionId']]['name'];
             }
+
+            // change team name in prediction
+            if (strpos($e['predictionName'], '{{team1}}') !== false) {
+                $e['predictionName'] = str_replace('{{team1}}', $e['homeTeam'], $e['predictionName']);
+            }
+
+            if (strpos($e['predictionName'], '{{team2}}') !== false)
+                $e['predictionName'] = str_replace('{{team2}}', $e['awayTeam'], $e['predictionName']);
 
             // vip flag
             if (!isset($vipFlags[$e['packageId']])) {

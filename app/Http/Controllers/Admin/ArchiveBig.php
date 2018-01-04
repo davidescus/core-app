@@ -207,6 +207,13 @@ class ArchiveBig extends Controller
             }
             $e['vipFlag'] = $vipFlags[$e['packageId']];
 
+            // change team name in prediction
+            if (strpos($e['predictionName'], '{{team1}}') !== false) {
+                $e['predictionName'] = str_replace('{{team1}}', $e['homeTeam'], $e['predictionName']);
+            }
+
+            if (strpos($e['predictionName'], '{{team2}}') !== false)
+                $e['predictionName'] = str_replace('{{team2}}', $e['awayTeam'], $e['predictionName']);
 
             $table = $e['tableIdentifier'];
             $year  = date('Y', strtotime($e['systemDate']));
