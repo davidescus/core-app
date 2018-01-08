@@ -47,6 +47,14 @@ class ReplaceTipsInTemplate extends Controller
 
         foreach ($this->events as $event) {
 
+            // change team name in prediction
+            if (strpos($event['predictionName'], '{{team1}}') !== false) {
+                $event['predictionName'] = str_replace('{{team1}}', $event['homeTeam'], $event['predictionName']);
+            }
+
+            if (strpos($event['predictionName'], '{{team2}}') !== false)
+                $event['predictionName'] = str_replace('{{team2}}', $event['awayTeam'], $event['predictionName']);
+
             $find = [
                 '{{eventDate}}',
                 '{{country}}',
