@@ -26,8 +26,7 @@ class SendMail extends Controller
 
             // update emails status, if we have many servers running, for not send an email many times from many servers
             foreach ($emails as $email) {
-                $email->status = 'send';
-                $email->info   = 'Sended with success';
+                $email->status = 'inProgress';
                 $email->update();
             }
 
@@ -36,6 +35,10 @@ class SendMail extends Controller
                 $this->email = $email;
 
                 $this->sendEmail();
+
+                $email->mailingDate = gmdate('Y-m-d H:i:s');
+                $email->status = 'send';
+                $email->info   = 'Sended with success';
 
                 if ($this->errMessage != '') {
                     $email->status = 'error';
@@ -63,6 +66,14 @@ class SendMail extends Controller
             $this->encryption = $site->smtpEncription;
         }
 
+        if ($this->email->provider == 'packageDailyTips') {
+            $this->host = getenv('EMAIL_HOST');
+            $this->port = getenv('EMAIL_PORT');
+            $this->user = getenv('EMAIL_USER');
+            $this->password = getenv('EMAIL_PASS');
+            $this->encryption = getenv('EMAIL_ENCRYPTION');
+        }
+
         $mail = new PHPMailer(true);
 
         try {
@@ -75,9 +86,9 @@ class SendMail extends Controller
             $mail->Port = $this->port;
             $mail->Username = $this->user;
             $mail->Password = $this->password;
-            $mail->setFrom($site->email, $this->email->fromName);
+            $mail->setFrom($this->email->from, $this->email->fromName);
             $mail->addAddress($this->email->to);
-            $mail->addReplyTo($site->email);
+            $mail->addReplyTo($this->email->from);
             $mail->Subject = $this->email->subject;
             $mail->MsgHTML($this->email->body);
             $mail->isHtml(true);
