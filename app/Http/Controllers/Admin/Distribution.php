@@ -470,6 +470,20 @@ class Distribution extends Controller
         $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
 
         $message = "Start sending emails to: \r\n";
+
+        // get package
+        $package = \App\Package::find($validate->packageId);
+
+        // get site by packageId;
+        $site = \App\Site::find($package->siteId);
+
+        // when use send will not edit template, will not have custom template
+        // here we must remove section
+        if (! $template) {
+            $replaceSection = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
+            $template = $replaceSection->template;
+        }
+
         foreach ($subscriptions as $s) {
 
             // remove restricted events
@@ -532,19 +546,6 @@ class Distribution extends Controller
                 ]);
             }
 
-            // get package
-            $package = \App\Package::find($validate->packageId);
-
-            // get site by packageId;
-            $site = \App\Site::find($package->siteId);
-
-            // when use send will not edit template, will not have custom template
-            // here we must remove section
-            if (! $template) {
-                $replaceSection = new \App\Http\Controllers\Admin\Email\RemoveSection($package->template, $validate->isNoTip);
-                $template = $replaceSection->template;
-            }
-
             // replace tips in template
             $replaceTips = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $subscriptionEvents, $validate->isNoTip);
 
@@ -573,6 +574,25 @@ class Distribution extends Controller
             // insert in email_schedule
             \App\EmailSchedule::create($args);
         }
+
+        // send also email to site email for confimation tips are sended.
+        $replaceTipsInTemplateInstance = new \App\Http\Controllers\Admin\Email\ReplaceTipsInTemplate($template, $events, $validate->isNoTip);
+        $template = $replaceTipsInTemplateInstance->template;
+
+        \App\EmailSchedule::create([
+            'provider'        => 'packageDailyTips',
+            'sender'          => $site->id,
+            'type'            => 'dailyTipsCheck',
+            'identifierName'  => 'packageId',
+            'identifierValue' => $package->id,
+            'from'            => getenv('EMAIL_USER'),
+            'fromName'        => $package->fromName,
+            'to'              => $site->email,
+            'toName'          => $site->name,
+            'subject'         => $package->subject,
+            'body'            => $template,
+            'status'          => 'waiting',
+        ]);
 
         return [
             'type'    => 'success',
