@@ -466,16 +466,21 @@ class Distribution extends Controller
             $distribution->update();
         }
 
-        // get events from database.
-        $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
-
-        $message = "Start sending emails to: \r\n";
-
         // get package
         $package = \App\Package::find($validate->packageId);
 
         // get site by packageId;
         $site = \App\Site::find($package->siteId);
+
+        // get events from database.
+        $events = \App\Distribution::whereIn('id', $ids)->get()->toArray();
+
+        // set eventDate  according to date format of site
+        foreach ($events as $k => $event) {
+            $events[$k]['eventDate'] = date($site->dateFormat, strtotime($event['eventDate']));
+        }
+
+        $message = "Start sending emails to: \r\n";
 
         // when use send will not edit template, will not have custom template
         // here we must remove section
