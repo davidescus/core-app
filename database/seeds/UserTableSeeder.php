@@ -18,17 +18,18 @@ class UserTableSeeder extends Seeder {
         User::firstOrCreate([
             'name'       => 'David D',
             'email'      => 'david@app.com',
-            'password'   => sha1('admin'),
         ]);
         User::firstOrCreate([
             'name'       => 'Florin H',
             'email'      => 'florin@app.com',
-            'password'   => sha1('admin'),
         ]);
         User::firstOrCreate([
             'name'       => 'Cristi B',
             'email'      => 'cristi@app.com',
-            'password'   => sha1('admin'),
+        ]);
+        User::firstOrCreate([
+            'name'       => 'Marius',
+            'email'      => 'marius@app.com',
         ]);
     }
 }
