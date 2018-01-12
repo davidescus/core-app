@@ -571,7 +571,7 @@ class Distribution extends Controller
                 'fromName'        => $package->fromName,
                 'to'              => $customer->activeEmail,
                 'toName'          => $customer->name ? $customer->name : $customer->activeEmail,
-                'subject'         => $package->subject,
+                'subject'         => str_replace('{{date}}', gmdate($site->dateFormat, time()), $package->subject),
                 'body'            => $replaceCustomerInfoTemplate->template,
                 'status'          => 'waiting',
             ];
@@ -594,7 +594,7 @@ class Distribution extends Controller
             'fromName'        => $package->fromName,
             'to'              => $site->email,
             'toName'          => $site->name,
-            'subject'         => $package->subject,
+            'subject'         => str_replace('{{date}}', gmdate($site->dateFormat, time()), $package->subject),
             'body'            => $template,
             'status'          => 'waiting',
         ]);
