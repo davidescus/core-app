@@ -60,6 +60,7 @@ class Archive extends Controller
 
             // check if event was already published on another package with same tip
             if (\App\ArchiveBig::where('eventId', $distribution['eventId'])
+                ->where('siteId', $distribution['siteId'])
                 ->where('tableIdentifier', $distribution['tableIdentifier'])
                 ->where('systemDate', $distribution['systemDate'])
                 ->where('tipIdentifier', $distribution['tipIdentifier'])->count())
