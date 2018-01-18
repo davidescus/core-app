@@ -14,14 +14,22 @@ class CronCommand extends Command {
         if ($cron && !$cron->date_end) {
             //if last cron has been running for more than 30m, probably dead
             if (($cron->date_start + 30 * 60) < time()) {
-                $this->error(sprintf('CRON %s (ID %s) is probably dead', $cron->type, $cron->id));
-                $cron->info = $this->error;
+                $info = [
+                    'error' => (sprintf('CRON %s (ID %s) is probably deadn new cron was started.', $cron->type, $cron->id)),
+                ];
+                $cron->info = json_encode($info);
                 $cron->save();
             } else {
-                $this->info(sprintf('Previous cron (ID %s) is still running', $cron->id));
+                $info = [
+                    'warning' => (sprintf('Previous cron (ID %s) is still running', $cron->id)),
+                ];
+                $cron->info = json_encode($info);
+                $cron->save();
                 exit;
             }
         }
+
+        echo "New cron was started";
 
         $cron = new Cron;
         $cron->type = $this->name;
