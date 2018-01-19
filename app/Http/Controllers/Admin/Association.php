@@ -28,8 +28,23 @@ class Association extends Controller
             $date = gmdate('Y-m-d');
 
         $associations = \App\Association::where('type', $tableIdentifier)->where('systemDate', $date)->get();
-        foreach ($associations as $association)
+        foreach ($associations as $association) {
+
+            $unique = [];
+            $count = 0;
+
             $association->status;
+            $distributions = \App\Distribution::where('associationId', $association->id)->get();
+            foreach ($distributions as $e) {
+                if (array_key_exists($e->siteId, $unique))
+                    if (array_key_exists($e->tipIdentifier, $unique[$e->siteId]))
+                        continue;
+
+                $unique[$e->siteId][$e->tipIdentifier] = true;
+                $count++;
+            }
+            $association->distributedNumber = $count;
+        }
 
         return $associations;
     }
