@@ -652,4 +652,52 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         return $archive->publish($ids);
     });
 
+    /*
+     * Test
+     * Here we collect test routes for imap, smtp and other many types
+     ---------------------------------------------------------------------*/
+
+    // Test
+    // @param int $siteId
+    // @param string $email
+    // for test smtp connection will create new record in email_schedule table with a test email
+    // @return array()
+    $app->post('/test/send-test-email/{siteid}', function (Request $r, $siteId) use ($app) {
+        $email = $r->input('email');
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            return [
+                'type' => 'error',
+                'message' => 'You must enter a valid email address',
+            ];
+
+        $site = \App\Site::find($siteId);
+        if ($site == null)
+            return [
+                'type' => 'error',
+                'message' => "Can not find site with id: $siteId",
+            ];
+
+        $args = [
+            'provider'        => 'site',
+            'sender'          => $site->id,
+            'type'            => 'testSmpt',
+            'identifierName'  => 'siteId',
+            'identifierValue' => $site->id,
+            'from'            => $site->email,
+            'fromName'        => $site->name,
+            'to'              => $email,
+            'toName'          => $email,
+            'subject'         => 'Test smpt for ' . $site->name,
+            'body'            => 'This is a test email to check smpt configuration.',
+            'status'          => 'waiting',
+        ];
+        //\App\EmailSchedule::create($args);
+
+        return [
+            'type' => 'success',
+            'message' => "An emai was scheduled for sendind \n to: $email \n from: $site->name",
+        ];
+    });
+
 });
