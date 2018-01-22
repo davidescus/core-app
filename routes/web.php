@@ -67,6 +67,26 @@ $app->post('/admin/login', 'Admin\Login@index');
 
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
+
+    /*
+     * Archive Home
+     ---------------------------------------------------------------------*/
+
+    // Info
+    // @return array()
+    $app->get('/info/dates', function () use ($app) {
+        return [
+            '+3day' => gmdate('Y-m-d', strtotime('+3day')),
+            '+2day' => gmdate('Y-m-d', strtotime('+2day')),
+            '+1day' => gmdate('Y-m-d', strtotime('+1day')),
+            'today' => gmdate('Y-m-d'),
+            'time' => gmdate('H:i'),
+            '-1day' => gmdate('Y-m-d', strtotime('-1day')),
+            '-2day' => gmdate('Y-m-d', strtotime('-2day')),
+            '-3day' => gmdate('Y-m-d', strtotime('-3day')),
+        ];
+    });
+
     /*
      * Archive Home
      ---------------------------------------------------------------------*/
