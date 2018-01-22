@@ -69,7 +69,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
 
     /*
-     * Archive Home
+     * Information routes
      ---------------------------------------------------------------------*/
 
     // Info
