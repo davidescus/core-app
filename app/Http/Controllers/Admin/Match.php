@@ -27,6 +27,8 @@ class Match extends Controller
     // @return array()
     public function getMatchesByFilter($table, $filter)
     {
+        $filter = trim(urldecode($filter));
+
         $events = \App\Match::where('country', 'like', '%' . $filter . '%')
             ->orWhere('league', 'like', '%' . $filter . '%')
             ->orWhere('homeTeam', 'like', '%' . $filter . '%')
