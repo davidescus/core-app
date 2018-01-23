@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# source .env file
-source ../../.env;
-
 # gdrive configuration
 #http://olivermarshall.net/how-to-upload-a-file-to-google-drive-from-the-command-line/
 
@@ -11,10 +8,13 @@ STORAGE=$PWD/storage
 FILE=$STORAGE/$DATE.sql
 TARGZ=$FILE.tar.gz
 
-# create file
-docker exec $DB_CONTAINER /usr/bin/mysqldump -u $DB_ROOT_USER --password=$DB_ROOT_PASS< $DB_DATABASE > $FILE
+# source .env file
+source ../../.env;
 
-tar -cvzf $TARGZ $FILE
+# create file
+docker exec $DB_CONTAINER /usr/bin/mysqldump -u $DB_ROOT_USER --password=$DB_ROOT_PASS $DB_DATABASE > $FILE
+
+tar -cvzf storage/$DATE.sql.tar.gz storage/$DATE.sql
 
 rm -f $FILE
 

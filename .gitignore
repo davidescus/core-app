@@ -4,3 +4,6 @@
 Homestead.json
 Homestead.yaml
 .env
+
+/backups/mysql/storage/*
+!/backups/mysql/storage/.gitkeep
