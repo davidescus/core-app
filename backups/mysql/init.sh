@@ -18,7 +18,7 @@ tar -cvzf storage/$DATE.sql.tar.gz storage/$DATE.sql
 
 rm -f $FILE
 
-gdrive upload $TARGZ
+gdrive upload $TARGZ --parent $GDRIVE_DIR_BACKUP_ID
 
 # delete files
 for i in `ls -pt $STORAGE/*.sql.tar.gz | tail -n+100`;
