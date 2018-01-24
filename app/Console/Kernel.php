@@ -6,6 +6,7 @@ use App\Console\Commands\DistributionPublish;
 use App\Console\Commands\DistributionEmailSchedule;
 use App\Console\Commands\ImportNewEvents;
 use App\Console\Commands\SetResultAndStatus;
+use App\Console\Commands\PublishArchives;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         DistributionEmailSchedule::class,
         ImportNewEvents::class,
         SetResultAndStatus::class,
+        PublishArchives::class,
     ];
 
     /**
