@@ -95,6 +95,13 @@ class Event extends Controller
         $match['provider'] = 'event';
         $match['matchId'] = $match['id'];
 
+        if ($match['result'] != '') {
+            $statusByScore = new \App\Src\Prediction\SetStatusByScore($match['result'], $match['predictionId']);
+            $statusByScore->evaluateStatus();
+            $statusId = $statusByScore->getStatus();
+            $match['statusId'] = $statusId;
+        }
+
         unset($match['id']);
 
         $event = \App\Event::create($match);
