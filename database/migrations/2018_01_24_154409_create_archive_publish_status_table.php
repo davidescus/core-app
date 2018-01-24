@@ -16,6 +16,7 @@ class CreateArchivePublishStatusTable extends Migration
         //
         Schema::create('archive_publish_status', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('siteId');
             $table->string('type');
             $table->timestamps();
         });
