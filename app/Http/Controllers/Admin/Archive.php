@@ -73,6 +73,18 @@ class Archive extends Controller
             $distribution['distributionId'] = $distribution['id'];
             unset($distribution['id']);
 
+            if (! \App\ArchivePublishStatus::where('siteId' , $distribution['siteId'])->where('type' , 'archiveBig')->count())
+                \App\ArchivePublishStatus::create([
+                    'siteId' => $distribution['siteId'],
+                    'type'   => 'archiveBig'
+                ]);
+
+            if (! \App\ArchivePublishStatus::where('siteId' , $distribution['siteId'])->where('type' , 'archiveHome')->count())
+                \App\ArchivePublishStatus::create([
+                    'siteId' => $distribution['siteId'],
+                    'type'   => 'archiveHome'
+                ]);
+
             // ---- Insert event in archive big
             \App\ArchiveBig::create($distribution);
 
