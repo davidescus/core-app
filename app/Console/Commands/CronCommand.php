@@ -29,8 +29,6 @@ class CronCommand extends Command {
             }
         }
 
-        echo "New cron was started";
-
         $cron = new Cron;
         $cron->type = $this->name;
         $cron->date_start = time();
