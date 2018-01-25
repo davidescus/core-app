@@ -37,14 +37,14 @@ class DistributionPublish extends CronCommand
             $this->stopCron($cron, []);
             return true;
         }
-        $info = [
+        $dataInfo = [
             'sent' => 0,
             'errors' => []
         ];
         foreach($events as $siteId => $values) {
             $site = Site::find($siteId);
             if (!$site) {
-                $info['errors'][] = "Couldn't find site with id $siteId";
+                $dataInfo['errors'][] = "Couldn't find site with id $siteId";
                 continue;
             }
             foreach($values as $systemDate => $info) {
@@ -60,11 +60,11 @@ class DistributionPublish extends CronCommand
 
                     if (!$event->isPublish && $event->result && $event->status) {
                         if (!$this->publish($site, $event))
-                            $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                            $dataInfo['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
                         else {
-                            if (!isset($info['sent']))
-                                $info['sent'] = 0;
-                            $info['sent']++;
+                            if (!isset($dataInfo['sent']))
+                                $dataInfo['sent'] = 0;
+                            $dataInfo['sent']++;
                         }
                     }
                 }
@@ -82,9 +82,9 @@ class DistributionPublish extends CronCommand
                                     continue;
 
                                 if (!$this->publish($site, $event))
-                                    $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                                    $dataInfo['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
                                 else
-                                    $info['sent']++;
+                                    $dataInfo['sent']++;
                             }
                         } else {
                            if ($info['publishTime'] && $info['publishTime'] >= $this->timestamp) {
@@ -93,9 +93,9 @@ class DistributionPublish extends CronCommand
                                        continue;
 
                                    if (!$this->publish($site, $event))
-                                       $info['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
+                                       $dataInfo['errors'][] = "Couldn't publish eventId {$event->id} to siteId {$site->id}";
                                    else
-                                       $info['sent']++;
+                                       $dataInfo['sent']++;
                                }
                            } else {
                                if (!$info['publishTime'])
@@ -137,8 +137,8 @@ class DistributionPublish extends CronCommand
                 }
             }
         }
-        $this->info(json_encode($info));
-        $this->stopCron($cron, $info);
+        $this->info(json_encode($dataInfo));
+        $this->stopCron($cron, $dataInfo);
         return true;
     }
 
