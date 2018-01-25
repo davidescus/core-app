@@ -26,12 +26,10 @@ use Illuminate\Support\Facades\Artisan;
      * This to test will not remain here.
      ---------------------------------------------------------------------*/
 
-$app->get('/some-route', ['middleware' => 'auth', function () use ($app) {
-    $user = Auth::user();
-
-    return $user->name;
-    return $app->version();
-}]);
+// create sha1
+/* $app->get('/generate-pass', function () use ($app) { */
+/*     return sha1(''); */
+/* }); */
 
     /* -------------------------------------------------------------------
      * - RESET -
@@ -39,11 +37,11 @@ $app->get('/some-route', ['middleware' => 'auth', function () use ($app) {
      ---------------------------------------------------------------------*/
 
 // reset entire aplication
-$app->get('/reset', function () use ($app) {
-    Artisan::call('migrate:refresh');
-    Artisan::call('db:seed');
-    return "Application was reset!";
-});
+/* $app->get('/reset', function () use ($app) { */
+/*     Artisan::call('migrate:refresh'); */
+/*     Artisan::call('db:seed'); */
+/*     return "Application was reset!"; */
+/* }); */
 
 // import events
 $app->get('/import-events', function () use ($app) {
