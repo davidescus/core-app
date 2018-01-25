@@ -67,7 +67,15 @@ class TriggerAction extends Controller
             ])
             ->post();
 
-        return $this->checkResponse($response);
+        $resp = $this->checkResponse($response);
+
+        if ($resp['type'] == 'success') {
+            \App\ArchivePublishStatus::where('siteId', $site->id)
+            ->where('type', 'archiveHome')
+            ->delete();
+        }
+
+        return $resp;
     }
 
     // send client (site) his archive home for store
@@ -94,7 +102,15 @@ class TriggerAction extends Controller
             ])
             ->post();
 
-        return $this->checkResponse($response);
+        $resp = $this->checkResponse($response);
+
+        if ($resp['type'] == 'success') {
+            \App\ArchivePublishStatus::where('siteId', $site->id)
+            ->where('type', 'archiveHome')
+            ->delete();
+        }
+
+        return $resp;
     }
 
     private function checkResponse($response)
