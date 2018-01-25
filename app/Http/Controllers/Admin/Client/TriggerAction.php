@@ -71,7 +71,7 @@ class TriggerAction extends Controller
 
         if ($resp['type'] == 'success') {
             \App\ArchivePublishStatus::where('siteId', $site->id)
-            ->where('type', 'archiveHome')
+            ->where('type', 'archiveBig')
             ->delete();
         }
 
