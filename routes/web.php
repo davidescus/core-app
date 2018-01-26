@@ -630,6 +630,12 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     //   - Not Delete events already sended in archives
     $app->post("/distribution/delete", 'Admin\Distribution@destroy');
 
+    // Distribution
+    // @param array $ids
+    // delete distributed events
+    //   - Not Delete events already sended in archives
+    $app->post("/distribution/force-delete", 'Admin\Distribution@forceDestroy');
+
     /*
      * Archive
      ---------------------------------------------------------------------*/
