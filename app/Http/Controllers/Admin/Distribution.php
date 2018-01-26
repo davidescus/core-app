@@ -622,7 +622,9 @@ class Distribution extends Controller
         $notFound = 0;
         $canNotDelete = 0;
         $deleted = 0;
+        $forceDestroy = false;
         foreach ($ids as $id) {
+
             $distribution = \App\Distribution::find($id);
 
             if (!$distribution) {
@@ -632,11 +634,13 @@ class Distribution extends Controller
 
             if ($distribution->isPublish) {
                 $canNotDelete++;
+                $forceDestroy = true;
                 continue;
             }
 
             if ($distribution->isEmailSend) {
                 $canNotDelete++;
+                $forceDestroy = true;
                 continue;
             }
 
@@ -647,14 +651,83 @@ class Distribution extends Controller
         $message = '';
         if ($notFound)
             $message .= "$notFound events not founded, maybe was deleted.\r\n";
-        if ($canNotDelete)
-            $message .= "$canNotDelete can not be deleted.\r\n";
+        if ($canNotDelete) {
+            $message .= "Are you sure you want to force delete those: \r\n";
+            $message .= "$canNotDelete events must be forced to delete becouse they are already sended by email or publish to archives..\r\n";
+        }
         if ($deleted)
             $message .= "$deleted events was successful deleted.\r\n";
 
         return [
             "type" => "success",
-            "message" => $message
+            "message" => $message,
+            "forceDestroy" => $forceDestroy,
+        ];
+    }
+
+    /*
+     * @param array $ids
+     * delete distributed events
+     *   - Not Delete events already sended in archives
+     */
+    public function forceDestroy(Request $r) {
+        $ids = $r->input('ids');
+
+        if (!$ids)
+            return [
+                "type" => "error",
+                "message" => "No events provided!",
+            ];
+
+        $deleted = 0;
+        $message = '';
+        foreach ($ids as $id) {
+
+            $distribution = \App\Distribution::find($id);
+
+            if (!$distribution) {
+                continue;
+            }
+
+            \App\ArchiveHome::where('eventId', $distribution->eventId)
+                ->where('siteId', $distribution->siteId)
+                ->delete();
+
+            \App\ArchiveBig::where('eventId', $distribution->eventId)
+                ->where('siteId', $distribution->siteId)
+                ->delete();
+
+            \App\SubscriptionRestrictedTip::where('distributionId', $distribution->id)
+                ->where('systemDate', $distribution->systemDate)
+                ->delete();
+
+            \App\SubscriptionTipHistory::where('eventId', $distribution->eventId)
+                ->where('siteId', $distribution->siteId)
+                ->delete();
+
+            if (! \App\ArchivePublishStatus::where('siteId' , $distribution['siteId'])->where('type' , 'archiveBig')->count())
+                \App\ArchivePublishStatus::create([
+                    'siteId' => $distribution['siteId'],
+                    'type'   => 'archiveBig'
+                ]);
+
+            if (! \App\ArchivePublishStatus::where('siteId' , $distribution['siteId'])->where('type' , 'archiveHome')->count())
+                \App\ArchivePublishStatus::create([
+                    'siteId' => $distribution['siteId'],
+                    'type'   => 'archiveHome'
+                ]);
+
+            $distribution->delete();
+
+            /* $distribution->delete(); */
+            $deleted++;
+        }
+
+        $message .= "$deleted events was successful forced to delete.\r\n";
+
+        return [
+            "type" => "success",
+            "message" => $message,
         ];
     }
 }
