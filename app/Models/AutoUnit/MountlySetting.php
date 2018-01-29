@@ -8,6 +8,14 @@ class MountlySetting extends Model {
 
     protected $fillable = [
         'siteId',
+        'date',
+        'tipIdentifier',
+        'minOdd',
+        'maxOdd',
+        'win',
+        'loss',
+        'draw',
+        'winrate',
     ];
 
 //    protected $hidden = [ ‘password’ ];
