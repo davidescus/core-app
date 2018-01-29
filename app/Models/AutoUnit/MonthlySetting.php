@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class MountlySetting extends Model {
+class MonthlySetting extends Model {
 
-    protected $table = 'auto_unit_mountly_setting';
+    protected $table = 'auto_unit_monthly_setting';
 
     protected $fillable = [
         'siteId',
