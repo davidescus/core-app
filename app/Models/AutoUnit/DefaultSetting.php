@@ -8,6 +8,13 @@ class DefaultSetting extends Model {
 
     protected $fillable = [
         'siteId',
+        'tipIdentifier',
+        'minOdd',
+        'maxOdd',
+        'win',
+        'loss',
+        'draw',
+        'winrate',
     ];
 
 //    protected $hidden = [ ‘password’ ];

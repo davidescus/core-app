@@ -17,6 +17,7 @@ class CreateAutoUnitMonthlySettingTable extends Migration
             $table->increments('id');
             $table->integer('siteId');
             $table->timestamps();
+        });
     }
 
     /**

@@ -16,7 +16,15 @@ class CreateAutoUnitDefaultSettingTable extends Migration
         Schema::create('auto_unit_default_setting', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('siteId');
+            $table->string('tableIdentifier');
+            $table->string('minOdd');
+            $table->string('maxOdd');
+            $table->integer('win');
+            $table->integer('loss');
+            $table->integer('draw');
+            $table->string('winrate');
             $table->timestamps();
+        });
     }
 
     /**
