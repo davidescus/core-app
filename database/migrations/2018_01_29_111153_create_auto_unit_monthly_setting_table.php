@@ -23,10 +23,10 @@ class CreateAutoUnitMonthlySettingTable extends Migration
             $table->integer('win');
             $table->integer('loss');
             $table->integer('draw');
-            $table->integer('prediction1x2');
-            $table->integer('predictionOU');
-            $table->integer('predictionAH');
-            $table->integer('predictionGG');
+            $table->string('prediction1x2');
+            $table->string('predictionOU');
+            $table->string('predictionAH');
+            $table->string('predictionGG');
             $table->string('winrate');
             $table->timestamps();
         });
