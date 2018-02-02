@@ -25,7 +25,7 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->integer('prediction1x2');
             $table->integer('predictionOU');
             $table->integer('predictionAH');
-            $table->integer('predictionBTS');
+            $table->integer('predictionGG');
             $table->string('winrate');
             $table->timestamps();
         });

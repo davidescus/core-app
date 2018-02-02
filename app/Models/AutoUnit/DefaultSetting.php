@@ -17,7 +17,7 @@ class DefaultSetting extends Model {
         'prediction1x2',
         'predictionOU',
         'predictionAH',
-        'predictionBTS',
+        'predictionGG',
         'winrate',
     ];
 

@@ -18,7 +18,7 @@ class MonthlySetting extends Model {
         'prediction1x2',
         'predictionOU',
         'predictionAH',
-        'predictionBTS',
+        'predictionGG',
         'winrate',
     ];
 
