@@ -38,6 +38,6 @@ class CreateAutoUnitDefaultSettingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('auto-unit_default_setting');
+        Schema::dropIfExists('auto_unit_default_setting');
     }
 }
