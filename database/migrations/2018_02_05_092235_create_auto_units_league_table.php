@@ -16,7 +16,7 @@ class CreateAutoUnitsLeagueTable extends Migration
         Schema::create('auto_unit_league', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
-            $table->date('string');
+            $table->string('date');
             $table->integer('siteId');
             $table->string('tipIdentifier');
             $table->integer('leagueId');
