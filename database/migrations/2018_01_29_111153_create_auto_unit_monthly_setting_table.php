@@ -15,9 +15,9 @@ class CreateAutoUnitMonthlySettingTable extends Migration
     {
         Schema::create('auto_unit_monthly_setting', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('siteId');
-            $table->string('date');
-            $table->string('tipIdentifier');
+            $table->integer('siteId')->index();
+            $table->string('date')->index();
+            $table->string('tipIdentifier')->index();
             $table->string('minOdd');
             $table->string('maxOdd');
             $table->integer('win');

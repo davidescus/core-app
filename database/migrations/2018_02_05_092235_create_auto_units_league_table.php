@@ -15,11 +15,11 @@ class CreateAutoUnitsLeagueTable extends Migration
     {
         Schema::create('auto_unit_league', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type');
-            $table->string('date');
-            $table->integer('siteId');
-            $table->string('tipIdentifier');
-            $table->integer('leagueId');
+            $table->string('type')->index();
+            $table->string('date')->index();
+            $table->integer('siteId')->index();
+            $table->string('tipIdentifier')->index();
+            $table->integer('leagueId')->index();
             $table->timestamps();
         });
     }
