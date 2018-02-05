@@ -39,6 +39,7 @@ class CreateAutoUnitMonthlySettingTable extends Migration
      */
     public function down()
     {
+
         Schema::dropIfExists('auto_unit_monthly_setting');
     }
 }
