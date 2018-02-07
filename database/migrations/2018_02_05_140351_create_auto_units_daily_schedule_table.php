@@ -15,6 +15,7 @@ class CreateAutoUnitsDailyScheduleTable extends Migration
     {
         Schema::create('auto_unit_daily_schedule', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('date')->index();
             $table->integer('siteId')->index();
             $table->string('tipIdentifier')->index();
             $table->string('tableIdentifier')->index();

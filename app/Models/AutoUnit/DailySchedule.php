@@ -8,6 +8,7 @@ class DailySchedule extends Model {
 
     protected $fillable = [
         'siteId',
+        'date',
         'tipIdentifier',
         'tableIdentifier',
         'predictionGroup',
