@@ -17,6 +17,7 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->increments('id');
             $table->integer('siteId')->index();
             $table->string('tipIdentifier')->index();
+            $table->string('tableIdentifier')->index();
             $table->string('minOdd');
             $table->string('maxOdd');
             $table->integer('win');

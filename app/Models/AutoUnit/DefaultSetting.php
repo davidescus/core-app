@@ -9,6 +9,7 @@ class DefaultSetting extends Model {
     protected $fillable = [
         'siteId',
         'tipIdentifier',
+        'tableIdentifier',
         'minOdd',
         'maxOdd',
         'win',

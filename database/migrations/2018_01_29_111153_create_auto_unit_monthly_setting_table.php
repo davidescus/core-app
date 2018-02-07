@@ -18,6 +18,7 @@ class CreateAutoUnitMonthlySettingTable extends Migration
             $table->integer('siteId')->index();
             $table->string('date')->index();
             $table->string('tipIdentifier')->index();
+            $table->string('tableIdentifier')->index();
             $table->string('minOdd');
             $table->string('maxOdd');
             $table->integer('win');

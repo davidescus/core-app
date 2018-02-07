@@ -10,6 +10,7 @@ class MonthlySetting extends Model {
         'siteId',
         'date',
         'tipIdentifier',
+        'tableIdentifier',
         'minOdd',
         'maxOdd',
         'win',
