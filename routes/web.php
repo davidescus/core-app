@@ -320,6 +320,11 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         $tipIdentifier = $r->input('tipIdentifier');
         $date = $r->input('date');
 
+        $win = 0;
+        $loss = 0;
+        $draw = 0;
+        $postp = 0;
+
         // get events for archive
         $archiveEvents = \App\ArchiveBig::where('siteId', $siteId)
             ->where('tableIdentifier', $tableIdentifier)
@@ -343,6 +348,18 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // we must move the flag for table type fron association to archive
             $archiveEvents[$k]['isPosted']    = true;
             $archiveEvents[$k]['isScheduled'] = false;
+
+            if ($v['statusId'] == 1)
+                $win++;
+
+            if ($v['statusId'] == 2)
+                $loss++;
+
+            if ($v['statusId'] == 3)
+                $draw++;
+
+            if ($v['statusId'] == 4)
+                $postp++;
         }
 
         usort($archiveEvents, function($a, $b) {
@@ -360,7 +377,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ->get()
             ->toArray();
 
-        foreach ($scheduledEvents as $k => $e) {
+        foreach ($scheduledEvents as $k => $v) {
 
             $scheduledEvents[$k]['homeTeam'] = '?';
             $scheduledEvents[$k]['awayTeam'] = '?';
@@ -375,9 +392,24 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             $scheduledEvents[$k]['isScheduled'] = true;
 
             // unset oldest scheduled events
-            if ($minDate != null)
-                if (strtotime($minDate) >= strtotime($e['systemDate']))
+            if ($minDate != null) {
+                if (strtotime($minDate) >= strtotime($v['systemDate'])) {
                     unset($scheduledEvents[$k]);
+                    continue;
+                }
+            }
+
+            if ($v['statusId'] == 1)
+                $win++;
+
+            if ($v['statusId'] == 2)
+                $loss++;
+
+            if ($v['statusId'] == 3)
+                $draw++;
+
+            if ($v['statusId'] == 4)
+                $postp++;
         }
 
         $allEvents = array_merge($scheduledEvents, $archiveEvents);
@@ -386,7 +418,15 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             return strtotime($b['systemDate']) - strtotime($a['systemDate']);
         });
 
-        return $allEvents;
+        return [
+            'events' => $allEvents,
+            'win'    => $win,
+            'loss'   => $loss,
+            'draw'   => $draw,
+            'postp'  => $postp,
+            'winrate' => round(($win * 100) / ($win + $loss),2),
+            'total'  => $win + $loss + $draw + $postp,
+        ];
     });
 
     /*
