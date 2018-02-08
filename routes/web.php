@@ -66,6 +66,330 @@ $app->post('/admin/login', 'Admin\Login@index');
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
+     * Auto Units
+     ---------------------------------------------------------------------*/
+
+    // auto-units
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // @param string $date
+    // @return array()
+    $app->get('/auto-unit/get-schedule', function (Request $r) use ($app) {
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+        $date = $r->input('date');
+
+        // get distinct tip for database
+        $tips = \App\Package::distinct()
+            ->where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->get(['tipIdentifier']);
+
+        // get all leagues from aplication
+        $leagues = \App\League::all();
+
+        // get configuration for each tip
+        $data = [];
+        $configType = 'default';
+        foreach ($tips as $key => $tip) {
+            $tipIdentifier = $tip->tipIdentifier;
+
+            if ($date == 'default') {
+                $schedule = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->first();
+
+                foreach ($leagues as $league) {
+                    $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                        ->where('tipIdentifier', $tipIdentifier)
+                        ->where('type', 'default')
+                        ->where('leagueId', $league->id)
+                        ->count();
+
+                    $league->isAssociated = false;
+                    if ($leagueIsAssociated) {
+                        $league->isAssociated = true;
+                    }
+                }
+
+                // check if already exists leagues
+            } else {
+                $schedule = \App\Models\AutoUnit\MonthlySetting::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->where('date', $date)
+                    ->first();
+
+                foreach ($leagues as $league) {
+                    $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                        ->where('tipIdentifier', $tipIdentifier)
+                        ->where('type', 'monthly')
+                        ->where('date', $date)
+                        ->where('leagueId', $league->id)
+                        ->count();
+
+                    $league->isAssociated = false;
+                    if ($leagueIsAssociated) {
+                        $league->isAssociated = true;
+                    }
+                }
+
+                $configType = 'monthly';
+
+                // schedule not exists for selected month
+                // get default configuration
+                if (! $schedule) {
+                    $schedule = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
+                        ->where('tipIdentifier', $tipIdentifier)
+                        ->first();
+
+                    foreach ($leagues as $league) {
+                        $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                            ->where('tipIdentifier', $tipIdentifier)
+                            ->where('type', 'default')
+                            ->where('leagueId', $league->id)
+                            ->count();
+
+                        $league->isAssociated = false;
+                        if ($leagueIsAssociated) {
+                            $league->isAssociated = true;
+                        }
+                    }
+
+                    $configType = 'monthly default';
+                }
+            }
+
+            if ($schedule) {
+                $schedule->predictions = [];
+                $schedule->leagues = $leagues;
+                $schedule->tipIdentifier = $tipIdentifier;
+                $schedule->configType = $configType;
+                $data[$key] = $schedule;
+                continue;
+            }
+
+            $data[$key] = [
+                'predictions'   => [],
+                'leagues'       => $leagues,
+                'tipIdentifier' => $tipIdentifier,
+                'configType'    => $configType,
+            ];
+        }
+        return $data;
+    });
+
+    // auto-units
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // @param string $date
+    // @param  array all settings for a tip
+    // @return array()
+    $app->post('/auto-unit/save-tip-settings', function (Request $r) use ($app) {
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+        $tipIdentifier = $r->input('tipIdentifier');
+        $date = $r->input('date');
+        $leagues = $r->input('leagues');
+
+        // default settings
+        if ($date === 'default') {
+
+            // create or update default settings
+            $defaultExists = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->count();
+
+            if (! $defaultExists) {
+                    $default = \App\Models\AutoUnit\DefaultSetting::create($r->all());
+            } else {
+                $default = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->first();
+
+                $default->minOdd = $r->input('minOdd');
+                $default->maxOdd = $r->input('maxOdd');
+                $default->win = $r->input('win');
+                $default->loss = $r->input('loss');
+                $default->draw = $r->input('draw');
+                $default->winrate = $r->input('winrate');
+                $default->save();
+            }
+
+            // save associated leagues
+            \App\Models\AutoUnit\League::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->where('type', 'default')
+                ->delete();
+
+            if (is_array($leagues) && count($leagues) > 0) {
+                foreach ($leagues as $league) {
+                    \App\Models\AutoUnit\League::create([
+                        'siteId' => $siteId,
+                        'tipIdentifier' => $tipIdentifier,
+                        'leagueId' => $league,
+                        'type' => 'default',
+                    ]);
+                }
+            }
+
+            return [
+                'type' => 'success',
+                'message' => '*** Default configuration was updated with success.'
+            ];
+        } else {
+
+            // create or update monthly settings
+            $defaultExists = \App\Models\AutoUnit\MonthlySetting::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->where('date', $date)
+                ->count();
+
+            if (! $defaultExists) {
+                    $default = \App\Models\AutoUnit\MonthlySetting::create($r->all());
+            } else {
+                $default = \App\Models\AutoUnit\MonthlySetting::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->where('date', $date)
+                    ->first();
+
+                $default->date = $date;
+                $default->minOdd = $r->input('minOdd');
+                $default->maxOdd = $r->input('maxOdd');
+                $default->win = $r->input('win');
+                $default->loss = $r->input('loss');
+                $default->draw = $r->input('draw');
+                $default->winrate = $r->input('winrate');
+                $default->save();
+            }
+
+            // delete all schedule for selected month
+            \App\Models\AutoUnit\DailySchedule::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->where('date', $date)
+                ->delete();
+
+            // create monthly schedule
+            $scheduleInstance = new \App\Src\AutoUnit\Schedule($default);
+            $scheduleInstance->createSchedule();
+
+            foreach ($scheduleInstance->getSchedule() as $day) {
+                \App\Models\AutoUnit\DailySchedule::create($day);
+            }
+
+            // save associated leagues
+            \App\Models\AutoUnit\League::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->where('type', 'monthly')
+                ->where('date', $date)
+                ->delete();
+
+            if (is_array($leagues) && count($leagues) > 0) {
+                foreach ($leagues as $league) {
+                    \App\Models\AutoUnit\League::create([
+                        'siteId' => $siteId,
+                        'leagueId' => $league,
+                        'tipIdentifier' => $tipIdentifier,
+                        'type' => 'monthly',
+                        'date' => $date,
+                    ]);
+                }
+            }
+
+            return [
+                'type' => 'success',
+                'message' => '*** Monthly configuration was updated with success.'
+            ];
+        }
+
+
+        return [
+            'type' => 'error',
+            'message' => 'Unknown configuration type',
+        ];
+    });
+
+    // auto-units
+    // @param integer $siteId
+    // @param string $tableIdentifier
+    // @param string $date
+    // @param  array all settings for a tip
+    // @return array()
+    $app->get('/auto-unit/get-scheduled-events', function (Request $r) use ($app) {
+        $siteId = $r->input('siteId');
+        $tableIdentifier = $r->input('tableIdentifier');
+        $tipIdentifier = $r->input('tipIdentifier');
+        $date = $r->input('date');
+
+        // get events for archive
+        $archiveEvents = \App\ArchiveBig::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->where('systemDate', '>=', $date . '-01')
+            ->where('systemDate', '<=', $date . '-31')
+            ->get()
+            ->toArray();
+
+        foreach ($archiveEvents as $k => $v) {
+
+            $archiveEvents[$k]['isRealUser'] = false;
+            $archiveEvents[$k]['isNoUser']   = true;
+
+            // check if event was for real users
+            if (\App\SubscriptionTipHistory::where('eventId', $v['eventId'])->where('siteId', $v['siteId'])->count()) {
+                $archiveEvents[$k]['isRealUser'] = true;
+                $archiveEvents[$k]['isNoUser']   = false;
+            }
+            $archiveEvents[$k]['isAutoUnit'] = false;
+
+            // we must move the flag for table type fron association to archive
+            $archiveEvents[$k]['isPosted']    = true;
+            $archiveEvents[$k]['isScheduled'] = false;
+        }
+
+        usort($archiveEvents, function($a, $b) {
+            return strtotime($b['systemDate']) - strtotime($a['systemDate']);
+        });
+
+        $minDate = null;
+        if (!empty($archiveEvents))
+            $minDate = $archiveEvents[0]['systemDate'];
+
+        // get scheduled events
+        $scheduledEvents = \App\Models\AutoUnit\DailySchedule::where('siteId', $siteId)
+            ->where('tableIdentifier', $tableIdentifier)
+            ->where('date', $date)
+            ->get()
+            ->toArray();
+
+        foreach ($scheduledEvents as $k => $e) {
+
+            $scheduledEvents[$k]['homeTeam'] = '?';
+            $scheduledEvents[$k]['awayTeam'] = '?';
+            $scheduledEvents[$k]['league']   = '?';
+            $scheduledEvents[$k]['odd']      = '?';
+
+            $scheduledEvents[$k]['isRealUser'] = false;
+            $scheduledEvents[$k]['isNoUser']   = false;
+            $scheduledEvents[$k]['isAutoUnit'] = true;
+
+            $scheduledEvents[$k]['isPosted']    = false;
+            $scheduledEvents[$k]['isScheduled'] = true;
+
+            // unset oldest scheduled events
+            if ($minDate != null)
+                if (strtotime($minDate) >= strtotime($e['systemDate']))
+                    unset($scheduledEvents[$k]);
+        }
+
+        $allEvents = array_merge($scheduledEvents, $archiveEvents);
+
+        usort($allEvents, function($a, $b) {
+            return strtotime($b['systemDate']) - strtotime($a['systemDate']);
+        });
+
+        return $allEvents;
+    });
+
+    /*
      * Archive Home
      ---------------------------------------------------------------------*/
 
@@ -705,3 +1029,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
 });
+
+
+
+

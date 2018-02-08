@@ -23,9 +23,11 @@ Class Schedule
         foreach ($this->range as $day) {
             $this->schedule[] = [
                 'siteId'          => $this->settings->siteId,
+                'date'            => $this->settings->date,
                 'tipIdentifier'   => $this->settings->tipIdentifier,
+                'tableIdentifier' => $this->settings->tableIdentifier,
                 'predictionGroup' => 'To Implement',
-                'statusId'        => 1,
+                'statusId'        => rand(1, 4),
                 'systemDate'      => $day,
             ];
         }
