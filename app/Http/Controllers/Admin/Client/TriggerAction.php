@@ -21,7 +21,7 @@ class TriggerAction extends Controller
             ];
 
         $siteInstance = new \App\Http\Controllers\Admin\Site();
-        $conf = $siteInstance->getSiteConfiguration($id);
+        $conf = base64_encode(json_encode($siteInstance->getSiteConfiguration($id)));
 
         $response = Curl::to($site->url)
             ->withData([
@@ -56,7 +56,7 @@ class TriggerAction extends Controller
             ];
 
         $archiveBigInstance = new \App\Http\Controllers\Admin\ArchiveBig();
-        $archive = $archiveBigInstance->getFullArchiveBig($id);
+        $archive = base64_encode(json_encode($archiveBigInstance->getFullArchiveBig($id)));
 
         $response = Curl::to($site->url)
             ->withData([
@@ -91,7 +91,7 @@ class TriggerAction extends Controller
             ];
 
         $archiveHomeInstance = new \App\Http\Controllers\Admin\ArchiveHome();
-        $archive = $archiveHomeInstance->getFullArchiveHome($id);
+        $archive = base64_encode(json_encode($archiveHomeInstance->getFullArchiveHome($id)));
 
         $response = Curl::to($site->url)
             ->withData([
