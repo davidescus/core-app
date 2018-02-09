@@ -424,7 +424,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             'loss'   => $loss,
             'draw'   => $draw,
             'postp'  => $postp,
-            'winrate' => round(($win * 100) / ($win + $loss),2),
+            'winrate' => $win > 0 || $loss > 0 ? round(($win * 100) / ($win + $loss),2) : 0,
             'total'  => $win + $loss + $draw + $postp,
         ];
     });
