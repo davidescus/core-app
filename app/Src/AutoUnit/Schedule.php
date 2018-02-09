@@ -19,6 +19,13 @@ Class Schedule
         // set range of each day for all month
         $this->setRangeOfDays();
 
+        $predictions = [
+            '1x2',
+            'ah',
+            'o/u',
+            'gg',
+        ];
+
         // set range of each day
         foreach ($this->range as $day) {
             $this->schedule[] = [
@@ -26,8 +33,8 @@ Class Schedule
                 'date'            => $this->settings->date,
                 'tipIdentifier'   => $this->settings->tipIdentifier,
                 'tableIdentifier' => $this->settings->tableIdentifier,
-                'predictionGroup' => 'To Implement',
-                'statusId'        => rand(1, 4),
+                'predictionGroup' => $predictions[rand(0,3)],
+                'statusId'        => rand(1, 3),
                 'systemDate'      => $day,
             ];
         }
