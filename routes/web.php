@@ -448,6 +448,75 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         ];
     });
 
+    // auto-units
+    // @param array $date
+    // @param array $siteId
+    // @param array $tipIdentifier
+    // @param array $tableIdentifier
+    // @param array $predictionGroup
+    // @param array $statusId
+    // @param array $systemDate
+    // store new event
+    // @return array()
+    $app->post('/auto-unit/save-new-schedule-event', function (Request $r) use ($app) {
+        $data = [
+            'siteId' => $r->input('siteId'),
+            'date' => $r->input('date'),
+            'tipIdentifier' => $r->input('tipIdentifier'),
+            'tableIdentifier' => $r->input('tableIdentifier'),
+            'predictionGroup' => $r->input('predictionGroup'),
+            'statusId' => $r->input('statusId'),
+            'systemDate' => $r->input('systemDate'),
+        ];
+
+        $systemDate = $data['systemDate'];
+        $date = new \DateTime($systemDate);
+
+        if ($date->format('Y-m-d') != $systemDate)
+            return [
+                'type'    => 'error',
+                'message' => "Invalid date format!",
+            ];
+
+        if ($date->format('Y-m') != gmdate('Y-m'))
+            return [
+                'type'    => 'error',
+                'message' => "Event must be in same month.",
+            ];
+
+        $today = new \DateTime();
+        $today->modify('-1 day');
+        if ($date->getTimestamp() < $today->getTimestamp())
+            return [
+                'type'    => 'error',
+                'message' => "Date must be equal or greather than today",
+            ];
+
+        // only events in selected month
+        $monthDate = new \DateTime($data['date'] . '-01');
+        if ($date->format('Y-m') != $monthDate->format('Y-m'))
+            return [
+                'type'    => 'error',
+                'message' => "You can create new event only in selected month",
+            ];
+
+        // check for empy values
+        foreach ($data as $k => $v) {
+            if (empty($v))
+                return [
+                    'type'    => 'error',
+                    'message' => "Field: $k can not be empty.",
+                ];
+        }
+
+        \App\Models\AutoUnit\DailySchedule::create($data);
+
+        return [
+            'type' => 'success',
+            'message'    => "New event was successful added in monthly scheduler",
+        ];
+    });
+
     /*
      * Archive Home
      ---------------------------------------------------------------------*/
