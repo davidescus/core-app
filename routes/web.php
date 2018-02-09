@@ -85,8 +85,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             ->where('tableIdentifier', $tableIdentifier)
             ->get(['tipIdentifier']);
 
-        // get all leagues from aplication
-        $leagues = \App\League::all();
 
         // get configuration for each tip
         $data = [];
@@ -94,21 +92,27 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         foreach ($tips as $key => $tip) {
             $tipIdentifier = $tip->tipIdentifier;
 
+            // get all leagues from aplication
+            $leagues = \App\League::all();
+
             if ($date == 'default') {
                 $schedule = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
                     ->where('tipIdentifier', $tipIdentifier)
                     ->first();
 
-                foreach ($leagues as $league) {
-                    $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
-                        ->where('tipIdentifier', $tipIdentifier)
-                        ->where('type', 'default')
-                        ->where('leagueId', $league->id)
-                        ->count();
+                $associatedLeagues = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->where('type', 'default')
+                    /* ->where('leagueId', $league->id) */
+                    ->get();
 
+                foreach ($leagues as $league) {
                     $league->isAssociated = false;
-                    if ($leagueIsAssociated) {
-                        $league->isAssociated = true;
+                    foreach ($associatedLeagues as $assocLeague) {
+                        if ($league->id == $assocLeague->leagueId) {
+                            $league->isAssociated = true;
+                            continue 2;
+                        }
                     }
                 }
 
@@ -119,17 +123,21 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     ->where('date', $date)
                     ->first();
 
-                foreach ($leagues as $league) {
-                    $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
-                        ->where('tipIdentifier', $tipIdentifier)
-                        ->where('type', 'monthly')
-                        ->where('date', $date)
-                        ->where('leagueId', $league->id)
-                        ->count();
+                $associatedLeagues = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                    ->where('tipIdentifier', $tipIdentifier)
+                    ->where('type', 'monthly')
+                    ->where('date', $date)
+                    ->get();
 
+                foreach ($leagues as $league) {
                     $league->isAssociated = false;
-                    if ($leagueIsAssociated) {
-                        $league->isAssociated = true;
+                    if (count($associatedLeagues) > 0) {
+                        foreach ($associatedLeagues as $assocLeague) {
+                            if ($league->id == $assocLeague->leagueId) {
+                                $league->isAssociated = true;
+                                continue 2;
+                            }
+                        }
                     }
                 }
 
@@ -142,16 +150,20 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                         ->where('tipIdentifier', $tipIdentifier)
                         ->first();
 
-                    foreach ($leagues as $league) {
-                        $leagueIsAssociated = \App\Models\AutoUnit\League::where('siteId', $siteId)
-                            ->where('tipIdentifier', $tipIdentifier)
-                            ->where('type', 'default')
-                            ->where('leagueId', $league->id)
-                            ->count();
+                    $associatedLeagues = \App\Models\AutoUnit\League::where('siteId', $siteId)
+                        ->where('tipIdentifier', $tipIdentifier)
+                        ->where('type', 'default')
+                        ->get();
 
+                    foreach ($leagues as $league) {
                         $league->isAssociated = false;
-                        if ($leagueIsAssociated) {
-                            $league->isAssociated = true;
+                        if (count($associatedLeagues) > 0) {
+                            foreach ($associatedLeagues as $assocLeague) {
+                                if ($league->id == $assocLeague->leagueId) {
+                                    $league->isAssociated = true;
+                                    continue 2;
+                                }
+                            }
                         }
                     }
 
