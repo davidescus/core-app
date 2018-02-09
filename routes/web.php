@@ -429,6 +429,25 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         ];
     });
 
+    // auto-units
+    // @param array $ids
+    // delete events for AutoUnit Schedule
+    // @return array()
+    $app->post('/auto-unit/delete-event', function (Request $r) use ($app) {
+        $ids = $r->input('ids');
+        $count = 0;
+
+        foreach ($ids as $id) {
+            \App\Models\AutoUnit\DailySchedule::find($id)->delete();
+            $count++;
+        }
+
+        return [
+            'type' => 'success',
+            'message'    => "$count events was deleted from AutoUnit Scheduler",
+        ];
+    });
+
     /*
      * Archive Home
      ---------------------------------------------------------------------*/
