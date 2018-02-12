@@ -42,7 +42,7 @@ class AutoUnitAddEvents extends CronCommand
 
     private function setTodayFinishedEvents()
     {
-        $this->todayFinishedEvents\App\Match::where('eventDate', 'like', '%' . $this->systemDate . '%')
+        $this->todayFinishedEvents = \App\Match::where('eventDate', 'like', '%' . $this->systemDate . '%')
             ->where('result', '<>', '')
             ->get()
             ->toArray();
