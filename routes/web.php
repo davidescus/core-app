@@ -878,6 +878,35 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     // @return object
     $app->get('/match/{id}', 'Admin\Match@get');
 
+    /*
+     * Odd
+     ---------------------------------------------------------------------*/
+
+    // get odd value if exist
+    // @param string $matchId
+    // @param string $leagueId
+    // @param string $predictionId
+    // @return array()
+    $app->post('/odd/get-value', function(Request $r) use ($app) {
+        $matchId = $r->input('matchId');
+        $leagueId = $r->input('leagueId');
+        $predictionId = $r->input('predictionId');
+        $oddValue = '';
+
+        $odd = \App\Models\Events\Odd::where('matchId', $matchId)
+            ->where('leagueId', $leagueId)
+            ->where('predictionId', $predictionId)
+            ->first();
+
+        if ($odd)
+            $oddValue = $odd->odd;
+
+        return [
+            'type'    => 'success',
+            'message' => 'success',
+            'value'   => $oddValue,
+        ];
+    });
 
     /*
      * Associations - 4 tables
