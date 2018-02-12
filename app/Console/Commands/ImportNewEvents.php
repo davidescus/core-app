@@ -10,6 +10,8 @@ class ImportNewEvents extends CronCommand
     protected $imported = 0;
     protected $alreadyExists = 0;
 
+    private $predictions;
+
 
     public function fire()
     {
@@ -30,6 +32,9 @@ class ImportNewEvents extends CronCommand
 
         $c = Parser::xml($xml);
 
+        foreach (\App\Prediction::all() as $pred)
+            $this->predictions[$pred->identifier] = true;
+
         foreach ($c['match'] as $k => $match) {
 
             $m = [
@@ -47,6 +52,10 @@ class ImportNewEvents extends CronCommand
             ];
 
             if (\App\Match::where('id', $m['id'])->where('leagueId', $m['leagueId'])->count()) {
+                // odds
+                if (!empty($match['odds']))
+                    $this->insertOdds($m['id'], $m['leagueId'], $match['odds']);
+
                 $this->alreadyExists++;
                 continue;
             }
@@ -92,6 +101,11 @@ class ImportNewEvents extends CronCommand
             // store new match
             \App\Match::create($m);
 
+            // odds
+            if (!empty($match['odds'])) {
+                $this->insertOdds($m['id'], $m['leagueId'], $match['odds']);
+            }
+
             $this->imported++;
         }
 
@@ -101,5 +115,51 @@ class ImportNewEvents extends CronCommand
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
         return true;
+    }
+
+    // TODO till now get odd for ah and over/under
+    private function insertOdds($matchId, $leagueId, $odds)
+    {
+        $predictionId = null;
+
+        foreach ($odds['odd'] as $odd) {
+
+            $predictionId = null;
+
+            // over / under
+            if ($odd['type'] == 'total') {
+                $predictionId = strtolower($odd['element']) . '_' . $odd['typekey'];
+            }
+
+            // ah
+            if ($odd['type'] == 'asian_handicap') {
+                $predictionId = ($odd['element'] == 'Home') ? 'team1-ah_' : 'team2-ah_';
+
+                if ($odd['typekey'][0] == '-' || $odd['typekey'] == '0')
+                    $predictionId .= trim($odd['typekey']);
+                else
+                    $predictionId .= '+' . trim($odd['typekey']);
+            }
+
+            // continue if odd not exists in out database
+            if (! isset($this->predictions[$predictionId]))
+               continue;
+
+            $oddExists = \App\Models\Events\Odd::where('matchId', $matchId)
+                ->where('leagueId', $leagueId)
+                ->where('predictionId', $predictionId)
+                ->count();
+
+            // continue if odd already exists
+            if ($oddExists)
+                continue;
+
+            \App\Models\Events\Odd::create([
+                'matchId' => $matchId,
+                'leagueId' => $leagueId,
+                'predictionId' => $predictionId,
+                'odd' => $odd['value'],
+            ]);
+        }
     }
 }
