@@ -106,6 +106,28 @@ class Event extends Controller
 
         $event = \App\Event::create($match);
 
+        $existingOdd = \App\Models\Events\Odd::where('matchId', $matchId)
+            ->where('leagueId', $match['leagueId'])
+            ->where('predictionId', $predictionId)
+            ->first();
+
+        if (! $existingOdd) {
+            \App\Models\Events\Odd::create([
+                'matchId' => $matchId,
+                'leagueId' => $match['leagueId'],
+                'predictionId' => $predictionId,
+                'odd' => $odd,
+            ]);
+        } else {
+            // odd already exists , check if it is the same
+            if ($existingOdd->odd != $odd) {
+
+                // update odd
+                $existingOdd->odd = $odd;
+                $existingOdd->save();
+            }
+        }
+
         return [
             'type' => 'success',
             'message' => "Event was creeated with success",
