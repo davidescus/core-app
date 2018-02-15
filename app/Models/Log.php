@@ -1,4 +1,4 @@
-<?php namespace App\Models\Events;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -7,8 +7,9 @@ class Log extends Model {
     protected $table = 'log';
 
     protected $fillable = [
-        'type',
         'identifier',
+        'type',
+        'module',
         'status',
         'info',
     ];

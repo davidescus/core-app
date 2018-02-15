@@ -15,8 +15,9 @@ class CreateLogTable extends Migration
     {
         Schema::create('log', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type')->index();
             $table->string('identifier')->index();
+            $table->string('type')->index();
+            $table->string('module')->index();
             $table->integer('status')->index();
             $table->text('info');
             $table->timestamps();
