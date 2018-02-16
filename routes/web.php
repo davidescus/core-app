@@ -561,7 +561,9 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             'countPanic' => count($panic),
         ];
     });
-    // get all logs
+
+    // mark a log as solved
+    // @param int $id
     // @return array()
     $app->get('/log/mark-solved/{id}', function ($id) use ($app) {
 
