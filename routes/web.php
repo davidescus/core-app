@@ -530,6 +530,52 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
     /*
+     * Logs
+     ---------------------------------------------------------------------*/
+
+    // get all logs
+    // @return array()
+    $app->get('/log/all', function () use ($app) {
+
+        $logs = \App\Models\Log::where('status', 1)
+            ->get();
+
+        $warning = [];
+        $panic = [];
+
+        foreach ($logs as $log) {
+            $log->info = json_decode($log->info);
+
+            if ($log->type == 'panic')
+                $panic[] = $log;
+            if ($log->type == 'warning')
+                $warning[] = $log;
+        }
+
+        return [
+            'type' => 'success',
+            'lastUpdate' => gmdate('Y-m-d H:i:s'),
+            'warning' => $warning,
+            'countWarning' => count($warning),
+            'panic' => $panic,
+            'countPanic' => count($panic),
+        ];
+    });
+    // get all logs
+    // @return array()
+    $app->get('/log/mark-solved/{id}', function ($id) use ($app) {
+
+        $log = \App\Models\Log::find($id);
+        $log->status = 0;
+        $log->save();
+
+        return [
+            'type' => 'success',
+            'message' => 'Successful solved',
+        ];
+    });
+
+    /*
      * Archive Home
      ---------------------------------------------------------------------*/
 
