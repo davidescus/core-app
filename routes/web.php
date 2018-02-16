@@ -538,6 +538,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     $app->get('/log/all', function () use ($app) {
 
         $logs = \App\Models\Log::where('status', 1)
+            ->orderBy('created_at', 'DESC')
             ->get();
 
         $warning = [];
