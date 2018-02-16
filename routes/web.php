@@ -349,13 +349,20 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
             $archiveEvents[$k]['isRealUser'] = false;
             $archiveEvents[$k]['isNoUser']   = true;
+            $archiveEvents[$k]['isAutoUnit'] = false;
 
             // check if event was for real users
             if (\App\SubscriptionTipHistory::where('eventId', $v['eventId'])->where('siteId', $v['siteId'])->count()) {
                 $archiveEvents[$k]['isRealUser'] = true;
                 $archiveEvents[$k]['isNoUser']   = false;
             }
-            $archiveEvents[$k]['isAutoUnit'] = false;
+
+            if ($archiveEvents[$k]['isNoUser']) {
+                if ($v['provider'] == 'autounit') {
+                    $archiveEvents[$k]['isNoUser']   = false;
+                    $archiveEvents[$k]['isAutoUnit'] = true;
+                }
+            }
 
             // we must move the flag for table type fron association to archive
             $archiveEvents[$k]['isPosted']    = true;
