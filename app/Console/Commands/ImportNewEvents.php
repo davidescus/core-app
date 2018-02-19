@@ -121,6 +121,7 @@ class ImportNewEvents extends CronCommand
     private function insertOdds($matchId, $leagueId, $odds)
     {
         $predictionId = null;
+        $toInsert = [];
 
         foreach ($odds['odd'] as $odd) {
 
@@ -139,6 +140,11 @@ class ImportNewEvents extends CronCommand
                     $predictionId .= trim($odd['typekey']);
                 else
                     $predictionId .= '+' . trim($odd['typekey']);
+            }
+
+            //g/g
+            if ($odd['type'] == 'goal_nogoal') {
+                $predictionId = $odd['element'] == 'Yes' ? 'bothToScore' : 'noGoal';
             }
 
             // continue if odd not exists in out database
