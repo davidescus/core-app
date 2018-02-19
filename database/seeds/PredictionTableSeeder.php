@@ -22,7 +22,6 @@ class PredictionTableSeeder extends Seeder {
             ],
             'g/g' => [
                 ['identifier' => 'bothToScore', 'name' => 'Both To Score'],
-                ['identifier' => 'oneToScore', 'name' => 'One To Score'],
                 ['identifier' => 'noGoal', 'name' => 'No Goal'],
             ],
             'o/u' => [
