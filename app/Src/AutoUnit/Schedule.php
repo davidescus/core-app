@@ -28,13 +28,19 @@ Class Schedule
 
         // set range of each day
         foreach ($this->range as $day) {
+
+            $predictionGroup = $predictions[rand(0,3)];
+
+            // draw result only for AH
+            $statusId = $predictionGroup == 'ah' ? rand(1, 3) : rand(1, 2);
+
             $this->schedule[] = [
                 'siteId'          => $this->settings->siteId,
                 'date'            => $this->settings->date,
                 'tipIdentifier'   => $this->settings->tipIdentifier,
                 'tableIdentifier' => $this->settings->tableIdentifier,
-                'predictionGroup' => $predictions[rand(0,3)],
-                'statusId'        => rand(1, 3),
+                'predictionGroup' => $predictionGroup,
+                'statusId'        => $statusId,
                 'systemDate'      => $day,
             ];
         }
