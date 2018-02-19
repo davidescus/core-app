@@ -57,28 +57,6 @@ class SetStatusByScoreTest extends TestCase
         $table[] = $c;
 
         $c = [
-            'name' => 'One To Score',
-            'score' => '1-0',
-            'prediction' => 'oneToScore',
-            'expect' => 1,
-        ];
-        $table[] = $c;
-        $c = [
-            'name' => 'One To Score',
-            'score' => '0-0',
-            'prediction' => 'oneToScore',
-            'expect' => 2,
-        ];
-        $table[] = $c;
-        $c = [
-            'name' => 'One To Score',
-            'score' => '1-1',
-            'prediction' => 'oneToScore',
-            'expect' => 2,
-        ];
-        $table[] = $c;
-
-        $c = [
             'name' => 'Both To Score',
             'score' => '1-0',
             'prediction' => 'bothToScore',
