@@ -18,7 +18,7 @@ class PredictionTableSeeder extends Seeder {
             '1x2' => [
                 ['identifier' => 'team1', 'name' => 'Team 1'],
                 ['identifier' => 'team2', 'name' => 'Team 2'],
-                ['identifier' => 'equal', 'name' => 'Equal'],
+                ['identifier' => 'equal', 'name' => 'X'],
             ],
             'g/g' => [
                 ['identifier' => 'bothToScore', 'name' => 'Both To Score'],
