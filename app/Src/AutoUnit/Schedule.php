@@ -41,6 +41,8 @@ Class Schedule
                 'tableIdentifier' => $this->settings->tableIdentifier,
                 'predictionGroup' => $predictionGroup,
                 'statusId'        => $statusId,
+                'status'          => 'waiting',
+                'info'            => json_encode([]),
                 'systemDate'      => $day,
             ];
         }

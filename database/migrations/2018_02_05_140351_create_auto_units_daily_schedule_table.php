@@ -21,6 +21,8 @@ class CreateAutoUnitsDailyScheduleTable extends Migration
             $table->string('tableIdentifier')->index();
             $table->string('predictionGroup');
             $table->integer('statusId');
+            $table->string('status')->index();
+            $table->text('info');
             $table->date('systemDate');
             $table->timestamps();
         });

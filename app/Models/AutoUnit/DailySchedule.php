@@ -13,6 +13,8 @@ class DailySchedule extends Model {
         'tableIdentifier',
         'predictionGroup',
         'statusId',
+        'status',
+        'info',
         'systemDate',
     ];
 
