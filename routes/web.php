@@ -485,6 +485,8 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             'tableIdentifier' => $r->input('tableIdentifier'),
             'predictionGroup' => $r->input('predictionGroup'),
             'statusId' => $r->input('statusId'),
+            'status' => 'waiting',
+            'info' => json_encode([]),
             'systemDate' => $r->input('systemDate'),
         ];
 
