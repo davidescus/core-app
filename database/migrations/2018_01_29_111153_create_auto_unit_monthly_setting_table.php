@@ -30,8 +30,6 @@ class CreateAutoUnitMonthlySettingTable extends Migration
             $table->string('predictionGG');
             $table->string('winrate');
             $table->string('configType');
-            $table->integer('minTips');
-            $table->integer('maxTips');
             $table->integer('tipsPerDay');
             $table->integer('tipsNumber');
             $table->timestamps();

@@ -22,8 +22,6 @@ class MonthlySetting extends Model {
         'predictionGG',
         'winrate',
         'configType',
-        'minTips',
-        'maxTips',
         'tipsPerDay',
         'tipsNumber',
     ];
