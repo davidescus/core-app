@@ -20,6 +20,11 @@ class DefaultSetting extends Model {
         'predictionAH',
         'predictionGG',
         'winrate',
+        'configType',
+        'minTips',
+        'maxTips',
+        'tipsPerDay',
+        'tipsNumber',
     ];
 
 //    protected $hidden = [ ‘password’ ];
