@@ -19,10 +19,9 @@ class DefaultSetting extends Model {
         'predictionOU',
         'predictionAH',
         'predictionGG',
-        'winrate',
         'configType',
-        'minTips',
-        'maxTips',
+        'minWinrate',
+        'maxWinrate',
         'tipsPerDay',
     ];
 

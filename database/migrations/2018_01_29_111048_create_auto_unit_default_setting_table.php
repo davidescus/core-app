@@ -27,10 +27,9 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->string('predictionOU');
             $table->string('predictionAH');
             $table->string('predictionGG');
-            $table->string('winrate');
             $table->string('configType');
-            $table->integer('minTips');
-            $table->integer('maxTips');
+            $table->integer('minWinrate');
+            $table->integer('maxWinrate');
             $table->integer('tipsPerDay');
             $table->timestamps();
         });
