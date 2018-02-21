@@ -12,8 +12,6 @@ class DefaultSetting extends Model {
         'tableIdentifier',
         'minOdd',
         'maxOdd',
-        'win',
-        'loss',
         'draw',
         'prediction1x2',
         'predictionOU',
@@ -22,6 +20,8 @@ class DefaultSetting extends Model {
         'configType',
         'minWinrate',
         'maxWinrate',
+        'minTips',
+        'maxTips',
         'tipsPerDay',
     ];
 

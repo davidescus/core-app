@@ -20,8 +20,6 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->string('tableIdentifier')->index();
             $table->string('minOdd');
             $table->string('maxOdd');
-            $table->integer('win');
-            $table->integer('loss');
             $table->integer('draw');
             $table->string('prediction1x2');
             $table->string('predictionOU');
@@ -30,6 +28,8 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->string('configType');
             $table->integer('minWinrate');
             $table->integer('maxWinrate');
+            $table->integer('minTips');
+            $table->integer('maxTips');
             $table->integer('tipsPerDay');
             $table->timestamps();
         });

@@ -92,6 +92,13 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         foreach ($tips as $key => $tip) {
             $tipIdentifier = $tip->tipIdentifier;
 
+            $isDefaultConf = false;
+
+            // get package
+            $package = \App\Package::where('siteId', $siteId)
+                ->where('tipIdentifier', $tipIdentifier)
+                ->first();
+
             // get all leagues from aplication
             $leagues = \App\League::all();
 
@@ -115,6 +122,8 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                         }
                     }
                 }
+
+                $isDefaultConf = true;
 
                 // check if already exists leagues
             } else {
@@ -171,16 +180,30 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 }
             }
 
+            // if there is default or monthly schedule
             if ($schedule) {
+                $schedule->isTips = ($package->subscriptionType == 'tips');
+                $schedule->isDays = ($package->subscriptionType == 'days');
+                $schedule->isDefaultConf = $isDefaultConf;
                 $schedule->predictions = [];
                 $schedule->leagues = $leagues;
                 $schedule->tipIdentifier = $tipIdentifier;
                 $schedule->configType = $configType;
+
+                if ($date != 'default') {
+                    if (! $schedule->tipsNumber)
+                        $schedule->tipsNumber = rand($schedule->minTips, $schedule->maxTips);
+                }
                 $data[$key] = $schedule;
+
                 continue;
             }
 
+            // there is not a schedule default or monthly
             $data[$key] = [
+                'isTips'        => ($package->subscriptionType == 'tips'),
+                'isDays'        => ($package->subscriptionType == 'days'),
+                'isDefaultConf' => $isDefaultConf,
                 'predictions'   => [],
                 'leagues'       => $leagues,
                 'tipIdentifier' => $tipIdentifier,
@@ -203,8 +226,14 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
         $date = $r->input('date');
         $leagues = $r->input('leagues');
 
+        $configType = $r->input('configType');
+        $minWinrate = $r->input('minWinrate');
+        $maxWinrate = $r->input('maxWinrate');
+        $tipsPerDay = $r->input('tipsPerDay');
+        $tipsNumber = $r->input('tipsNumber');
+
         // default settings
-        if ($date === 'default') {
+        if ($date == 'default') {
 
             // create or update default settings
             $defaultExists = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
@@ -220,10 +249,15 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
                 $default->minOdd = $r->input('minOdd');
                 $default->maxOdd = $r->input('maxOdd');
-                $default->win = $r->input('win');
-                $default->loss = $r->input('loss');
+                $default->prediction1x2 = $r->input('prediction1x2');
+                $default->predictionOU = $r->input('predictionOU');
+                $default->predictionAH = $r->input('predictionAH');
+                $default->predictionGG = $r->input('predictionGG');
                 $default->draw = $r->input('draw');
-                $default->winrate = $r->input('winrate');
+                $default->configType = $configType;
+                $default->minWinrate = $minWinrate;
+                $default->maxWinrate = $maxWinrate;
+                $default->tipsPerDay = $tipsPerDay;
                 $default->save();
             }
 
@@ -267,10 +301,17 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 $default->date = $date;
                 $default->minOdd = $r->input('minOdd');
                 $default->maxOdd = $r->input('maxOdd');
+                $default->prediction1x2 = $r->input('prediction1x2');
+                $default->predictionOU = $r->input('predictionOU');
+                $default->predictionAH = $r->input('predictionAH');
+                $default->predictionGG = $r->input('predictionGG');
                 $default->win = $r->input('win');
                 $default->loss = $r->input('loss');
                 $default->draw = $r->input('draw');
                 $default->winrate = $r->input('winrate');
+                $default->configType = $configType;
+                $default->tipsPerDay = $tipsPerDay;
+                $default->tipsNumber = $tipsNumber;
                 $default->save();
             }
 
