@@ -32,7 +32,6 @@ class CreateAutoUnitDefaultSettingTable extends Migration
             $table->integer('minTips');
             $table->integer('maxTips');
             $table->integer('tipsPerDay');
-            $table->integer('tipsNumber');
             $table->timestamps();
         });
     }

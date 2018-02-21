@@ -24,7 +24,6 @@ class DefaultSetting extends Model {
         'minTips',
         'maxTips',
         'tipsPerDay',
-        'tipsNumber',
     ];
 
 //    protected $hidden = [ ‘password’ ];
