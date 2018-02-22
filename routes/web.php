@@ -88,7 +88,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
         // get configuration for each tip
         $data = [];
-        $configType = 'default';
+        $scheduleType = 'default';
         foreach ($tips as $key => $tip) {
             $tipIdentifier = $tip->tipIdentifier;
 
@@ -150,7 +150,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     }
                 }
 
-                $configType = 'monthly';
+                $scheduleType = 'monthly';
 
                 // schedule not exists for selected month
                 // get default configuration
@@ -176,7 +176,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                         }
                     }
 
-                    $configType = 'monthly default';
+                    $scheduleType = 'monthly default';
                 }
             }
 
@@ -188,12 +188,35 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 $schedule->predictions = [];
                 $schedule->leagues = $leagues;
                 $schedule->tipIdentifier = $tipIdentifier;
-                $schedule->configType = $configType;
+                $schedule->scheduleType = $scheduleType;
+                $schedule->daysInMonth = (int) date('t', time());
 
                 if ($date != 'default') {
                     if (! $schedule->tipsNumber)
                         $schedule->tipsNumber = rand($schedule->minTips, $schedule->maxTips);
+
+                    if (! $schedule->winrate) {
+                        $schedule->winrate = rand($schedule->minWinrate, $schedule->maxWinrate);
+
+                        if($schedule->configType == 'days') {
+                            $dayInMonth = (int) date('t', strtotime($date . '-01'));
+                            $totalEvents = $dayInMonth * $schedule->tipsPerDay;
+                        }
+
+                        if($schedule->configType == 'tips') {
+                            $dayInMonth = (int) $schedule->tipsNumber;
+                            $totalEvents = $dayInMonth;
+                        }
+
+                        if ($dayInMonth > 0) {
+                            $totalEvents = $totalEvents - $schedule->draw;
+
+                            $schedule->win = intval(($schedule->winrate/100) * $totalEvents);
+                            $schedule->loss = $totalEvents - $schedule->win;
+                        }
+                    }
                 }
+
                 $data[$key] = $schedule;
 
                 continue;
@@ -207,7 +230,8 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'predictions'   => [],
                 'leagues'       => $leagues,
                 'tipIdentifier' => $tipIdentifier,
-                'configType'    => $configType,
+                'scheduleType'  => $scheduleType,
+                'daysInMonth'   => (int) date('t', time()),
             ];
         }
         return $data;
@@ -283,6 +307,25 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => '*** Default configuration was updated with success.'
             ];
         } else {
+
+            if ($configType == 'tips') {
+                if ($r->input('win') + $r->input('loss') + $r->input('draw') != $r->input('tipsNumber'))
+                    return [
+                        'type' => 'error',
+                        'message' => 'Win + Loss + Draw must be equal with TipsNumber',
+                    ];
+            }
+
+            if ($configType == 'days') {
+
+                $dayInMonth = (int) date('t', strtotime($date . '-01'));
+                $totalTips = $dayInMonth * $r->input('tipsPerDay');
+                if ($r->input('win') + $r->input('loss') + $r->input('draw') != $totalTips)
+                    return [
+                        'type' => 'error',
+                        'message' => 'Win + Loss + Draw must be equal with TipsPerDay * number of days in month (' . $totalTips . ')',
+                    ];
+            }
 
             // create or update monthly settings
             $defaultExists = \App\Models\AutoUnit\MonthlySetting::where('siteId', $siteId)
