@@ -189,7 +189,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 $schedule->leagues = $leagues;
                 $schedule->tipIdentifier = $tipIdentifier;
                 $schedule->scheduleType = $scheduleType;
-                $schedule->daysInMonth = (int) date('t', time());
+                $schedule->daysInMonth = (int) date('t', strtotime($date . '-01'));
 
                 if ($date != 'default') {
                     if (! $schedule->tipsNumber)
@@ -198,6 +198,18 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                     if (! $schedule->winrate) {
                         $schedule->winrate = rand($schedule->minWinrate, $schedule->maxWinrate);
 
+                        // that will be rewrited by specific configuration
+                        if ($package->subscriptionType == 'days') {
+                            $dayInMonth = (int) date('t', strtotime($date . '-01'));
+                            $totalEvents = $dayInMonth * $schedule->tipsPerDay;
+                        }
+
+                        if ($package->subscriptionType == 'tips') {
+                            $dayInMonth = (int) $schedule->tipsNumber;
+                            $totalEvents = $dayInMonth;
+                        }
+
+                        // this is the specific configuration
                         if($schedule->configType == 'days') {
                             $dayInMonth = (int) date('t', strtotime($date . '-01'));
                             $totalEvents = $dayInMonth * $schedule->tipsPerDay;
@@ -231,8 +243,10 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'leagues'       => $leagues,
                 'tipIdentifier' => $tipIdentifier,
                 'scheduleType'  => $scheduleType,
-                'daysInMonth'   => (int) date('t', time()),
             ];
+
+            if ($date != 'default')
+                $data[$key]['daysInMonth'] = (int) date('t', strtotime($date . '-01'));
         }
         return $data;
     });
