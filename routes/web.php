@@ -1345,7 +1345,7 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             'body'            => 'This is a test email to check smpt configuration.',
             'status'          => 'waiting',
         ];
-        //\App\EmailSchedule::create($args);
+        \App\EmailSchedule::create($args);
 
         return [
             'type' => 'success',
