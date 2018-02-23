@@ -147,6 +147,17 @@ class ImportNewEvents extends CronCommand
                 $predictionId = $odd['element'] == 'Yes' ? 'bothToScore' : 'noGoal';
             }
 
+            //1x2
+            if ($odd['type'] == '3W') {
+
+                if ($odd['element'] == 'HO')
+                    $predictionId = 'team1';
+                elseif ($odd['element'] == 'AO')
+                    $predictionId = 'team2';
+                else
+                    $predictionId = 'equal';
+            }
+
             // continue if odd not exists in out database
             if (! isset($this->predictions[$predictionId]))
                continue;
