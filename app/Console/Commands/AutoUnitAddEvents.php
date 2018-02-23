@@ -49,6 +49,7 @@ class AutoUnitAddEvents extends CronCommand
 
             $eventExists = \App\Distribution::where('siteId', $schedule['siteId'])
                 ->where('tipIdentifier', $schedule['tipIdentifier'])
+                ->where('provider', '!=', 'autounit')
                 ->where('systemDate', $this->systemDate)
                 ->count();
 
@@ -214,7 +215,7 @@ class AutoUnitAddEvents extends CronCommand
 
             $event['type'] = 'nun';
 
-            if ($package->isvip) {
+            if ($package->isVip) {
                 $event['type'] = 'nuv';
                 $event['isVip'] = 1;
             }
