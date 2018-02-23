@@ -29,7 +29,6 @@ Class Schedule
             'gg',
         ];
 
-
         // days type
         if ($this->settings->configType == 'days') {
 
@@ -37,46 +36,20 @@ Class Schedule
 
             if ($this->totalTips > 0) {
 
-                $p = [
-                    '1x2' => 0,
-                    'OU'  => 0,
-                    'AH'  => 0,
-                    'GG'  => 0,
-                ];
-
                 $t = $this->totalTips;
-                $exit = false;
-                while (!$exit) {
-
-                    $_1x2 = $this->incrementEventsNumber($p, '1x2');
-                    if ($_1x2)
-                        $p['1x2']++;
-
-                    $_ah = $this->incrementEventsNumber($p, 'AH');
-                    if ($_ah)
-                        $p['AH']++;
-
-                    $_ou = $this->incrementEventsNumber($p, 'OU');
-                    if ($_ou)
-                        $p['OU']++;
-
-                    $_gg = $this->incrementEventsNumber($p, 'GG');
-                    if ($_gg)
-                        $p['GG']++;
-
-                    if ($_1x2 == false && $_ah == false && $_ou == false && $_gg == false)
-                        $exit = true;
-                }
+                $p = $this->getPredictionsGroupNumber();
 
                 for ($x = $this->settings->tipsPerDay; $x > 0; $x--) {
 
                     foreach ($this->range as $day) {
 
                         $predictionGroup = $this->getRandomPrediction($p);
-                        $p[$predictionGroup]--;
 
-                        if ($predictionGroup === null)
+                        if ($predictionGroup === null) {
                             continue;
+                        }
+
+                        $p[$predictionGroup]--;
 
                         $statusId = $this->getRandomStatus($predictionGroup);
                         if ($statusId === null)
@@ -97,67 +70,98 @@ Class Schedule
                 }
             }
         }
+
+        if ($this->settings->configType == 'tips') {
+
+            $this->totalTips = $this->settings->tipsNumber;
+
+            $daysNumber = count($this->range);
+            $totalTips = $this->settings->win + $this->settings->loss + $this->settings->draw;
+
+            if ($totalTips < 1)
+                return;
+
+            $multiply = ceil($totalTips / $daysNumber);
+
+            $t = $this->totalTips;
+            $p = $this->getPredictionsGroupNumber();
+
+            for ($x = 0; $x < $multiply; $x++) {
+                $p = $this->addTipsRandomEvents($p);
+            }
+
+            /* print_r($this->range); */
+            /* print_r($this->settings->toArray()); */
+        }
     }
 
-    private function getRandomStatus($predictionGroup, $count = 0)
+    public function addTipsRandomEvents(array $p)
     {
-        if ($count > 1000)
-            return null;
 
-        $w = $this->settings->win > 0 ? $this->settings->win : 1;
-        $l = $this->settings->loss > 0 ? $this->settings->loss : 1;
-        $d = $this->settings->draw > 0 ? $this->settings->draw : 1;
+        /* error_reporting(E_ALL); */
+        /* ini_set('display_errors', 1); */
+        foreach ($this->range as $day) {
 
-        $wp = round(($w * 100) / ($w + $l + $d));
-        $lp = round(($w * 100) / ($w + $l + $d));
-        $dp = round(($w * 100) / ($w + $l + $d));
+            $predictionGroup = $this->getRandomPrediction($p);
 
-        $rand = rand(1,99);
+            if ($predictionGroup === null)
+                continue;
 
-        $statusId = ($rand < $wp) ? 1 : 2;
+            $p[$predictionGroup]--;
 
-        /* $statusId = rand(1,2); */
+            $statusId = $this->getRandomStatus($predictionGroup);
+            if ($statusId === null)
+                continue;
 
-        // for draw
-        if ($predictionGroup == 'AH' || $predictionGroup == 'OU')
-           $statusId = rand(1,3);
-
-        if ($statusId == 1) {
-            if ($this->settings->win > 0) {
-                $this->settings->win--;
-                return $statusId;
-            }
+            $this->schedule[] = [
+                'siteId'          => $this->settings->siteId,
+                'date'            => $this->settings->date,
+                'tipIdentifier'   => $this->settings->tipIdentifier,
+                'tableIdentifier' => $this->settings->tableIdentifier,
+                'predictionGroup' => $predictionGroup,
+                'statusId'        => $statusId,
+                'status'          => 'waiting',
+                'info'            => json_encode([]),
+                'systemDate'      => $this->range[rand(0, count($this->range) -1)],
+            ];
         }
 
-        if ($statusId == 2) {
-            if ($this->settings->loss > 0) {
-                $this->settings->loss--;
-                return $statusId;
-            }
-        }
-
-        if ($statusId == 3) {
-            if ($this->settings->draw > 0) {
-                $this->settings->draw--;
-                return $statusId;
-            }
-        }
-
-        return $this->getRandomStatus($predictionGroup, $count++);
+        return $p;
     }
 
-    private function getRandomPrediction($p, $count = 0)
+    private function getPredictionsGroupNumber() :array
     {
-        $v = ['1x2', 'OU', 'AH', 'GG'];
-        $prediction = $v[rand(0,3)];
+        $p = [
+            '1x2' => 0,
+            'OU'  => 0,
+            'AH'  => 0,
+            'GG'  => 0,
+        ];
 
-        if ($p[$prediction] > 0)
-            return $prediction;
+        $exit = false;
+        while ($exit == false) {
 
-        if ($count > 200)
-            return null;
+            $_1x2 = $this->incrementEventsNumber($p, '1x2');
+            if ($_1x2)
+                $p['1x2']++;
 
-        return $this->getRandomPrediction($p, $count++);
+            $_ah = $this->incrementEventsNumber($p, 'AH');
+            if ($_ah)
+                $p['AH']++;
+
+            $_ou = $this->incrementEventsNumber($p, 'OU');
+            if ($_ou)
+                $p['OU']++;
+
+            $_gg = $this->incrementEventsNumber($p, 'GG');
+            if ($_gg)
+                $p['GG']++;
+
+            if ($_1x2 == false && $_ah == false && $_ou == false && $_gg == false)
+                $exit = true;
+        }
+
+        return $p;
     }
 
     private function incrementEventsNumber(array $p, string $type)
@@ -171,6 +175,65 @@ Class Schedule
             return false;
 
         return true;
+    }
+
+    private function getRandomStatus($predictionGroup)
+    {
+        $w = $this->settings->win > 0 ? $this->settings->win : 1;
+        $l = $this->settings->loss > 0 ? $this->settings->loss : 1;
+        $d = $this->settings->draw > 0 ? $this->settings->draw : 1;
+
+        $wp = round(($w * 100) / ($w + $l + $d));
+        $lp = round(($w * 100) / ($w + $l + $d));
+        $dp = round(($w * 100) / ($w + $l + $d));
+
+        for ($i = 0; $i < 1000; $i++) {
+
+            $rand = rand(1,99);
+            $statusId = ($rand < $wp) ? 1 : 2;
+
+            // for draw
+            if ($predictionGroup == 'AH' || $predictionGroup == 'OU')
+               $statusId = rand(1,3);
+
+            if ($statusId == 1) {
+                if ($this->settings->win > 0) {
+                    $this->settings->win--;
+                    return $statusId;
+                }
+            }
+
+            if ($statusId == 2) {
+                if ($this->settings->loss > 0) {
+                    $this->settings->loss--;
+                    return $statusId;
+                }
+            }
+
+            if ($statusId == 3) {
+                if ($this->settings->draw > 0) {
+                    $this->settings->draw--;
+                    return $statusId;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function getRandomPrediction($p)
+    {
+        $v = ['1x2', 'OU', 'AH', 'GG'];
+
+        for ($i = 0; $i < 1000; $i++) {
+
+            $prediction = $v[rand(0,3)];
+
+            if ($p[$prediction] > 0)
+                return $prediction;
+        }
+
+        return null;
     }
 
     private function setRangeOfDays() : void
