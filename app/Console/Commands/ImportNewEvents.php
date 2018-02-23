@@ -147,7 +147,7 @@ class ImportNewEvents extends CronCommand
                 $predictionId = $odd['element'] == 'Yes' ? 'bothToScore' : 'noGoal';
             }
 
-            //1x2
+            //1x2 HO -> homeTeam | AO -> awayTeam | DO -> equal
             if ($odd['type'] == '3W') {
 
                 if ($odd['element'] == 'HO')
