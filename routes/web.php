@@ -43,6 +43,12 @@ use Illuminate\Support\Facades\Artisan;
 /*     return "Application was reset!"; */
 /* }); */
 
+// reset entire aplication
+$app->get('/autounit', function () use ($app) {
+    Artisan::call('autounit:add-events');
+    return "Autounit was runn with success!";
+});
+
 // import events
 $app->get('/import-events', function () use ($app) {
     new \App\Http\Controllers\Cron\PortalNewEvents();
