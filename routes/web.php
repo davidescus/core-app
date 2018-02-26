@@ -81,6 +81,67 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
     });
 
     /*
+     * Team
+     ---------------------------------------------------------------------*/
+
+    // @param $countryCode
+    // @return array()
+    $app->get('/team-country/{countryCode}', function ($countryCode) use ($app) {
+        $teams = \App\Models\Team\Country::select('teamId')
+            ->where('countryCode', $countryCode)
+            ->get();
+
+        foreach ($teams as $team) {
+            $t = \App\Team::find($team->teamId);
+            $team->name = $t->name;
+        }
+
+        return $teams;
+    });
+
+    // @param $teamId
+    // @return string
+    $app->get('/team/alias/get/{teamId}', function ($teamId) use ($app) {
+        $alias = \App\Models\Team\Alias::where('teamId', $teamId)->first();
+        return [
+            'teamId' => $teamId,
+            'alias'  => $alias ? $alias->alias : '',
+        ];
+    });
+
+    // @param integer $teamId
+    // @paramstring $alias
+    // @return array();
+    $app->post('/team/alias/{teamId}', function (Request $r, $teamId) use ($app) {
+
+        $alias = $r->input('alias');
+
+        $teamAlias = \App\Models\Team\Alias::where('teamId', $teamId)
+            ->first();
+
+        if ($teamAlias) {
+
+            $teamAlias->update(['alias' => $alias]);
+
+            return [
+                'type' => 'success',
+                'message'  => 'Alias for team was updated with success!',
+            ];
+        }
+
+        \App\Models\Team\Alias::create([
+            'teamId' => $teamId,
+            'alias' => $alias,
+        ]);
+
+        return [
+            'type' => 'success',
+            'message'  => 'Alias for team was created with success!',
+        ];
+
+    });
+
+    /*
      * Auto Units
      ---------------------------------------------------------------------*/
 
