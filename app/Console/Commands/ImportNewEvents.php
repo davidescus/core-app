@@ -56,6 +56,12 @@ class ImportNewEvents extends CronCommand
                 if (!empty($match['odds']))
                     $this->insertOdds($m['id'], $m['leagueId'], $match['odds']);
 
+                // associationteam country
+                if ($m['countryCode']) {
+                    $this->createIfNotExistsTeamCountry($m['countryCode'], $m['homeTeamId']);
+                    $this->createIfNotExistsTeamCountry($m['countryCode'], $m['homeTeamId']);
+                }
+
                 $this->alreadyExists++;
                 continue;
             }
@@ -90,6 +96,8 @@ class ImportNewEvents extends CronCommand
                 ]);
             }
 
+            $this->createIfNotExistsTeamCountry($m['countryCode'], $m['homeTeamId']);
+
             // store awayTeam if not exists
             if(!\App\Team::find($m['awayTeamId'])) {
                 \App\Team::create([
@@ -97,6 +105,8 @@ class ImportNewEvents extends CronCommand
                     'name' => $m['awayTeam'],
                 ]);
             }
+
+            $this->createIfNotExistsTeamCountry($m['countryCode'], $m['awayTeamId']);
 
             // store new match
             \App\Match::create($m);
@@ -115,6 +125,17 @@ class ImportNewEvents extends CronCommand
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
         return true;
+    }
+
+    // @param string $countryCode
+    // @param int $teamId
+    private function createIfNotExistsTeamCountry($countryCode, $teamId)
+    {
+        if (!\App\TeamCountry::where('countryCode', $countryCode)->where('teamId', $teamId)->count())
+            \App\TeamCountry::create([
+                'countryCode' => $countryCode,
+                'teamId' => $teamId,
+            ]);
     }
 
     // TODO till now get odd for ah and over/under
