@@ -8,7 +8,7 @@ class TeamCountry extends Model {
 
     protected $fillable = [
         'countryCode',
-        'teeamId',
+        'teamId',
     ];
 
 //    protected $hidden = [ ‘password’ ];
