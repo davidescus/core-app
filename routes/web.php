@@ -72,6 +72,15 @@ $app->post('/admin/login', 'Admin\Login@index');
 $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
     /*
+     * Country
+     ---------------------------------------------------------------------*/
+
+    // @return array()
+    $app->get('/country/all', function () use ($app) {
+        return \App\Country::all();
+    });
+
+    /*
      * Auto Units
      ---------------------------------------------------------------------*/
 
