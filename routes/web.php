@@ -116,6 +116,31 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
 
         $alias = $r->input('alias');
 
+        $updateHome = ['homeTeam' => $alias];
+        $updateAway = ['awayTeam' => $alias];
+
+        // update match
+        \App\Match::where('homeTeamId', $teamId)->update($updateHome);
+        \App\Match::where('awayTeamId', $teamId)->update($updateAway);
+        // update event
+        \App\Event::where('homeTeamId', $teamId)->update($updateHome);
+        \App\Event::where('awayTeamId', $teamId)->update($updateAway);
+        // update association
+        \App\Association::where('homeTeamId', $teamId)->update($updateHome);
+        \App\Association::where('awayTeamId', $teamId)->update($updateAway);
+        // update distribution
+        \App\Distribution::where('homeTeamId', $teamId)->update($updateHome);
+        \App\Distribution::where('awayTeamId', $teamId)->update($updateAway);
+        // update archiveHome
+        \App\ArchiveHome::where('homeTeamId', $teamId)->update($updateHome);
+        \App\ArchiveHome::where('awayTeamId', $teamId)->update($updateAway);
+        // update archiveBig
+        \App\ArchiveBig::where('homeTeamId', $teamId)->update($updateHome);
+        \App\ArchiveBig::where('awayTeamId', $teamId)->update($updateAway);
+        // update subscriptionTipHistory
+        \App\SubscriptionTipHistory::where('homeTeamId', $teamId)->update($updateHome);
+        \App\SubscriptionTipHistory::where('awayTeamId', $teamId)->update($updateAway);
+
         $teamAlias = \App\Models\Team\Alias::where('teamId', $teamId)
             ->first();
 
