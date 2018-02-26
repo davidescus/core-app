@@ -108,6 +108,14 @@ class ImportNewEvents extends CronCommand
 
             $this->createIfNotExistsTeamCountry($m['countryCode'], $m['awayTeamId']);
 
+            $homeTeamAlias = $this->getAlias($m['homeTeamId']);
+            if ($homeTeamAlias != null)
+                $m['homeTeam'] = $homeTeamAlias;
+
+            $awayTeamAlias = $this->getAlias($m['awayTeamId']);
+            if ($awayTeamAlias != null)
+                $m['awayTeam'] = $awayTeamAlias;
+
             // store new match
             \App\Match::create($m);
 
@@ -125,6 +133,17 @@ class ImportNewEvents extends CronCommand
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
         return true;
+    }
+
+    private function getAlias($teamId)
+    {
+        $alias = \App\Models\Team\Alias::where('teamId', $teamId)
+            ->first();
+
+        if (!$alias)
+            return null;
+
+        return $alias->alias;
     }
 
     // @param string $countryCode
