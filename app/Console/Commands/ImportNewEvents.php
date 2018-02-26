@@ -131,8 +131,8 @@ class ImportNewEvents extends CronCommand
     // @param int $teamId
     private function createIfNotExistsTeamCountry($countryCode, $teamId)
     {
-        if (!\App\TeamCountry::where('countryCode', $countryCode)->where('teamId', $teamId)->count())
-            \App\TeamCountry::create([
+        if (!\App\Models\Team\Country::where('countryCode', $countryCode)->where('teamId', $teamId)->count())
+            \App\Models\Team\Country::create([
                 'countryCode' => $countryCode,
                 'teamId' => $teamId,
             ]);

@@ -1,8 +1,8 @@
-<?php namespace App;
+<?php namespace App\Models\Team;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TeamCountry extends Model {
+class Country extends Model {
 
     protected $table = 'team_country';
 
