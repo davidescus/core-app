@@ -232,7 +232,7 @@ class ImportNewEvents extends CronCommand
                 'matchId' => $matchId,
                 'leagueId' => $leagueId,
                 'predictionId' => $predictionId,
-                'odd' => $odd['value'],
+                'odd' => number_format((float) $odd['value'], 2, '.', ''),
             ]);
         }
     }
