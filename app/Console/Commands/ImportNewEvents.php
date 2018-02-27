@@ -60,6 +60,9 @@ class ImportNewEvents extends CronCommand
                 if ($m['countryCode']) {
                     $this->createIfNotExistsTeamCountry($m['countryCode'], $m['homeTeamId']);
                     $this->createIfNotExistsTeamCountry($m['countryCode'], $m['homeTeamId']);
+
+                    if ($m['leagueId'])
+                        $this->createIfNotExistsLeagueCountry($m['countryCode'], $m['leagueId']);
                 }
 
                 $this->alreadyExists++;
@@ -87,6 +90,8 @@ class ImportNewEvents extends CronCommand
                     'name' => $m['league']
                 ]);
             }
+
+            $this->createIfNotExistsLeagueCountry($m['countryCode'], $m['leagueId']);
 
             // store homeTeam if not exists
             if(!\App\Team::find($m['homeTeamId'])) {
@@ -133,6 +138,18 @@ class ImportNewEvents extends CronCommand
         $this->info(json_encode($info));
         $this->stopCron($cron, $info);
         return true;
+    }
+
+    private function createIfNotExistsLeagueCountry($countryCode, $leagueId)
+    {
+        $lc = \App\Models\League\Country::where('leagueId', $leagueId)
+            ->count();
+
+        if (! $lc)
+            \App\Models\League\Country::create([
+                'countryCode' => $countryCode,
+                'leagueId'    => $leagueId,
+            ]);
     }
 
     private function getAlias($teamId)
