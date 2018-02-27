@@ -203,6 +203,22 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
             // get all leagues from aplication
             $leagues = \App\League::all();
 
+            $country = [];
+            foreach (\App\Country::all()->toArray() as $c)
+                $country[$c['code']] = $c['name'];
+
+            $leagueCountry = [];
+            foreach (\App\Models\League\Country::all()->toArray() as $lc)
+                $leagueCountry[$lc['leagueId']] = $lc['countryCode'];
+
+            foreach ($leagues as $l) {
+                if (array_key_exists($l->id, $leagueCountry)) {
+                    $code = $leagueCountry[$l->id];
+                    if (array_key_exists($code, $country))
+                        $l->name = $country[$code] . ': ' . $l->name;
+                }
+            }
+
             if ($date == 'default') {
                 $schedule = \App\Models\AutoUnit\DefaultSetting::where('siteId', $siteId)
                     ->where('tipIdentifier', $tipIdentifier)
