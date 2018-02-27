@@ -90,7 +90,7 @@ class Event extends Controller
         }
 
         $match['predictionId'] = $predictionId;
-        $match['odd'] = $odd;
+        $match['odd'] = number_format((float) $odd, 2, '.', '');
         $match['source'] = 'feed';
         $match['provider'] = 'event';
         $match['matchId'] = $match['id'];
