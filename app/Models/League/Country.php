@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class League extends Model {
+class Country extends Model {
 
     protected $table = 'league_country';
 
