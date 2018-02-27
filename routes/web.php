@@ -698,12 +698,6 @@ $app->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($app) {
                 'message' => "Invalid date format!",
             ];
 
-        if ($date->format('Y-m') != gmdate('Y-m'))
-            return [
-                'type'    => 'error',
-                'message' => "Event must be in same month.",
-            ];
-
         $today = new \DateTime();
         $today->modify('-1 day');
         if ($date->getTimestamp() < $today->getTimestamp())
