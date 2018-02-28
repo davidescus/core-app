@@ -9,6 +9,7 @@ class Site extends Model {
     protected $fillable = [
         'name',
         'email',
+        'url',
         'smtpHost',
         'smtpPort',
         'smtpUser',
