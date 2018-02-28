@@ -26,7 +26,7 @@ rm -f $FILE
 /usr/local/bin/gdrive upload $TARGZ --parent $GDRIVE_DIR_BACKUP_ID
 
 # delete files
-for i in `ls -pt $STORAGE/*.sql.tar.gz | tail -n+4`;
+for i in `ls -pt $STORAGE/*.sql.tar.gz | tail -n+10`;
     do
         if [ -f $i ] ; then
             rm $i
