@@ -99,6 +99,13 @@ class ArchiveHome extends Controller
         $eventsNumber = $r->input('eventsNumber');
         $dateStart = $r->input('dateStart');
 
+        $date = new \DateTime($dateStart);
+        if (! $date || $date->format('Y-m-d') != $dateStart)
+            return [
+                'type' => 'error',
+                'message' =>"Invalid date start.",
+            ];
+
         $row = \App\ArchiveHomeConf::where('siteId', $siteId)
             ->where('tableIdentifier', $tableIdentifier)
             ->update([
