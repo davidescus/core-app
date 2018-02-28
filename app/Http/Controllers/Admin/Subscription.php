@@ -475,6 +475,15 @@ class Subscription extends Controller
         // delete subscription
         \App\Subscription::where('id', $id)->delete();
 
+        // delete child subscription derived from this subscription
+        $child = \App\Subscription::where('parentId', $id)->first();
+
+        while ($child) {
+            $childId = $child->id;
+            $child->delete();
+            $child = \App\Subscription::where('parentId', $childId)->first();
+        }
+
         // move package (packages group in no users if is possible)
         $packageInstance = new \App\Http\Controllers\Admin\Package();
         $packageInstance->evaluateAndChangeSection($package->id);

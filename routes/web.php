@@ -43,7 +43,7 @@ use Illuminate\Support\Facades\Artisan;
 /*     return "Application was reset!"; */
 /* }); */
 
-// reset entire aplication
+// run autounit from url.
 $app->get('/autounit', function () use ($app) {
     Artisan::call('autounit:add-events');
     return "Autounit was runn with success!";
