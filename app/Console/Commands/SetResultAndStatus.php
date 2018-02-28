@@ -13,17 +13,18 @@ class SetResultAndStatus extends CronCommand
     {
         $cron = $this->startCron();
         $info = [
-            'processed' => 0,
-            'notFound'  => 0,
-            'pending'   => 0,
-            'message'   => []
+            'appEventNoResult' => 0,
+            'processed'        => 0,
+            'notFound'         => 0,
+            'pending'          => 0,
+            'message'          => []
         ];
 
         $matches = \App\Match::where('result', '')
             ->where('eventDate', '<' , gmdate('Y-m-d H:i:s', time() - (105 * 60)))
             ->get();
 
-        echo count($matches);
+        $info['appEventNoResult'] = count($matches);
 
         foreach ($matches as $match) {
 
@@ -61,6 +62,7 @@ class SetResultAndStatus extends CronCommand
                     ->get();
 
                 foreach ($events as $event) {
+
                     $statusByScore = new \App\Src\Prediction\SetStatusByScore($score, $event->predictionId);
                     $statusByScore->evaluateStatus();
                     $statusId = $statusByScore->getStatus();
