@@ -64,7 +64,7 @@ class ReplaceTipsInTemplate extends Controller
                 '{{predictionName}}',
             ];
             $replace = [
-                $event['eventDate'],
+                date('Y-m-d', strtotime($event['eventDate'])),
                 $event['country'],
                 $event['league'],
                 $event['homeTeam'],
