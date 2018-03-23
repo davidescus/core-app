@@ -11,7 +11,9 @@ class Subscription extends Controller
     // get all subscriptions
     // @return array()
     public function index() {
+        $added = [];
         $subscriptions = \App\Subscription::all()->toArray();
+        $allSubscriptions = $subscriptions;
 
         foreach ($subscriptions as $k => $v) {
 
@@ -30,15 +32,29 @@ class Subscription extends Controller
             $c = \App\Subscription::where('parentId', $v['id'])->get()->toArray();
             $cn = count($c);
 
-            if ($cn) {
-                foreach ($c as $s) {
-                    $s['customerEmail'] = \App\Customer::find($s['customerId'])->email;
-                    $s['siteName'] = \App\Site::find($s['siteId'])->name;
-                    $subscriptions[$k]['childrens'][] = $s;
+            while ($c) {
+                if (count($c)) {
+                    foreach ($c as $s) {
+                        $s['customerEmail'] = \App\Customer::find($s['customerId'])->email;
+                        $s['siteName'] = \App\Site::find($s['siteId'])->name;
+                        $subscriptions[$k]['childrens'][] = $s;
+                        $added[$s['id']] = true;
+                    }
                 }
-                continue;
+
+                $c = \App\Subscription::where('parentId', $c[0]['id'])->get()->toArray();
+            }
+            $added[$v['id']] = true;
+        }
+
+        foreach ($allSubscriptions as $subscription) {
+            if (! array_key_exists($subscription['id'], $added)) {
+                $subscription['customerEmail'] = \App\Customer::find($subscription['customerId'])->email;
+                $subscription['siteName'] = \App\Site::find($subscription['siteId'])->name;
+                $subscriptions[] = $subscription;
             }
         }
+
         return $subscriptions;
     }
 
