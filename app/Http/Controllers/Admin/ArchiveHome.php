@@ -223,8 +223,10 @@ class ArchiveHome extends Controller
         foreach (\App\SitePrediction::where('siteId', $id)->get()->toArray() as $k => $v)
            $predictions[$v['predictionIdentifier']] = $v;
 
+        $currentDate = gmdate('Y-m-d H:i:s');
         $events = \App\ArchiveHome::where('siteId', $id)
             ->where('isVisible', '1')
+            ->where('publishDate', '<', $currentDate)
             ->orderBy('order', 'asc')->get()->toArray();
 
         $vipFlags = [];
