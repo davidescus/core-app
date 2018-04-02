@@ -119,7 +119,7 @@ class DistributionPublish extends CronCommand
 
                         if (!$info['publishTime']) {
                             if ($info['winRate'] >= 50)
-                                $info['publishTime'] = strtotime('today ' . getenv('PUBLISH_EVENTS_ON_WIN_START') . ':00:00') + mt_rand(10 * 60, 4 * 60 * 60);
+                                $info['publishTime'] = strtotime('today ' . getenv('PUBLISH_EVENTS_ON_WIN_START') . ':00:00') + mt_rand(0, 4 * 60 * 60);
                             else
                                 $info['publishTime'] = strtotime('tomorrow 09:00:00') + mt_rand(0, 30 * 60);
 

@@ -226,7 +226,6 @@ class ArchiveHome extends Controller
         $currentDate = gmdate('Y-m-d H:i:s');
         $events = \App\ArchiveHome::where('siteId', $id)
             ->where('isVisible', '1')
-            ->where('publishDate', '<', $currentDate)
             ->orderBy('order', 'asc')->get()->toArray();
 
         $vipFlags = [];
